@@ -4,11 +4,11 @@ import bookCard from './cpns/bookCard.vue'
 import bookFilter from './cpns/bookFilter.vue'
 import { ref, onMounted } from 'vue'
 import eventBus from '@/eventbus/index'
+import {useBookStore} from '@/store'
 
-const params = ref({})
+const bookStore = useBookStore()
 
-eventBus.on('updateFilter', async (nparams) => {
-  params.value = nparams as Object
+eventBus.on('updateFilter', async () => {
   await fetchBooks(currentPage.value)
 })
 
@@ -21,8 +21,7 @@ const bookIds = ref<number[]>([])
 const fetchBooks = async (page: number) => {
   dataLoaded.value = false
   try {
-    const response = await bookNumberRequest(params.value)
-    console.log(response)
+    const response = await bookNumberRequest(bookStore.params)
     totalBooks.value = response.data
     const startIndex = (page - 1) * pageSize + 1
     bookIds.value = Array.from(
@@ -55,7 +54,7 @@ onMounted(async () => {
 
 <template>
   <CommonPage :show-footer="true">
-    <n-grid :x-gap="12" :y-gap="8" :cols="4">
+    <n-grid :x-gap="8" :y-gap="5" :cols="4">
       <n-grid-item v-for="id in bookIds" :key="id">
         <book-card :id="id" />
       </n-grid-item>

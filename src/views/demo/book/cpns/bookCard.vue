@@ -22,12 +22,15 @@
                   </span>
                 </p>
                 <p>
-                  出版社：<n-tag type="info" round>{{
+                  出版社：<n-button text quaterary round type="info" @click="selectFilter('publish', bookInfo.publish)">{{
                     bookInfo.publish
-                  }}</n-tag>
+                  }}</n-button>
+                </p>
+                <p v-if="bookInfo.producer">
+                  出版方：<n-button text quaterary round type="primary" @click="selectFilter('producer', bookInfo.producer)">{{ bookInfo.producer }}</n-button>
                 </p>
                 <p v-if="bookInfo.series">
-                  丛书：<n-tag round>{{ formattedSeries }}</n-tag>
+                  丛书：<n-button text quaterary round type="primary" @click="selectFilter('series', bookInfo.series)">{{ formattedSeries }}</n-button>
                 </p>
               </div>
             </div>
@@ -50,7 +53,7 @@
     <n-card class="card" :hoverable="true">
       <div class="card-content" />
       <template #action>
-        <span class="time"></span>
+        <span class="time">购买于</span>
       </template>
     </n-card>
   </div>
@@ -62,6 +65,9 @@ import { Ibook } from '@/service/book/types'
 import { bookInfoRequest } from '@/service/book/book'
 import bookDetail from './bookDetail.vue'
 import eventBus from '@/eventbus/index'
+import {useBookStore} from '@/store'
+
+const bookStore = useBookStore()
 
 const props = defineProps({
   id: {
@@ -69,6 +75,13 @@ const props = defineProps({
     required: true
   }
 })
+
+const selectFilter = (key: string, value: string) => {
+  bookStore.setParams({
+    [key]: [value]
+  })
+  eventBus.emit('updateFilter')
+}
 
 const showDetailModal = ref(false)
 
@@ -79,10 +92,8 @@ function updateDetailVisible(id: Number) {
   }
 }
 
-const params = ref({})
 
-eventBus.on('updateFilter', async (nparams) => {
-  params.value = nparams as Object
+eventBus.on('updateFilter', async () => {
   await fetchBookInfo()
 })
 
@@ -90,7 +101,7 @@ const bookInfo = ref<Ibook | null>(null)
 const decodedCover = ref<string | undefined>(undefined)
 
 const formattedAuthors = computed(() => {
-  const MAX_LENGTH = 18
+  const MAX_LENGTH = 16
   const authors = bookInfo.value?.author || []
   let displayAuthors = authors.join(', ')
   if (displayAuthors.length > MAX_LENGTH) {
@@ -114,9 +125,14 @@ const fetchBookInfo = async () => {
   try {
     const response = await bookInfoRequest({
       n: props.id,
-      ...params.value
+      ...bookStore.getParams
     })
-    console.log(response)
+    if (response.code != 200)
+      return 
+    if (response['data'].length === 0) {
+      bookInfo.value = null
+      return
+    }
     bookInfo.value = response['data'][0]
     if (bookInfo.value.cover_base64) {
       decodedCover.value = base64ToUrl(bookInfo.value.cover_base64)

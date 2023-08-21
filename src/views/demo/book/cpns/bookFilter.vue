@@ -73,10 +73,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
+import { ref, Ref, watch, onMounted } from 'vue'
 import { bookParamRequest } from '@/service/book/book'
 import { IbookParams } from '@/service/book/types'
 import eventBus from '@/eventbus/index'
+import { useBookStore } from '@/store'
+
+const bookStore = useBookStore()
 
 const props = defineProps({
   showFilterModal: {
@@ -85,7 +88,7 @@ const props = defineProps({
   }
 })
 
-defineEmits(['updateFilterVisible'])
+const emits = defineEmits(['updateFilterVisible'])
 
 const showFilterModal = ref(false)
 watch(
@@ -97,14 +100,19 @@ watch(
   }
 )
 
-const selectedPublish = ref([])
-const selectedSeries = ref([])
-const selectedProduce = ref([])
+const selectedPublish: Ref<string[]> = ref([])
+const selectedSeries: Ref<string[]> = ref([])
+const selectedProduce: Ref<string[]> = ref([])
 const selectedDateRange = ref<[number, number]>([
-  Date.parse('2000-01-01'),
-  Date.now()
+  Date.parse(bookStore.getParams?.buy_date_from ?? '2000-01-01'),
+  Date.parse(bookStore.getParams?.buy_date_to ?? new Date(Date.now())
+      .toISOString()
+      .slice(0, 10),)
 ])
-const priceRange = ref<[number, number]>([0, 10000])
+const priceRange = ref<[number, number]>([
+  bookStore.getParams?.buy_price_from ?? 0,
+  bookStore.getParams?.buy_price_to ?? 10000
+])
 const seriesOptions = ref<{ label: string; value: string }[]>([])
 const publishOptions = ref<{ label: string; value: string }[]>([])
 const produceOptions = ref<{ label: string; value: string }[]>([])
@@ -142,8 +150,9 @@ const applyFilter = () => {
     buy_price_from: priceRange.value[0],
     buy_price_to: priceRange.value[1]
   }
-  console.log(filters)
-  eventBus.emit('updateFilter', filters)
+  bookStore.setParams(filters)
+  eventBus.emit('updateFilter')
+  emits('updateFilterVisible')
 }
 
 const clearFilter = () => {
@@ -153,6 +162,12 @@ const clearFilter = () => {
   selectedDateRange.value = [Date.parse('2000-01-01'), Date.now()]
   priceRange.value = [0, 10000]
 }
+
+eventBus.on('updateFilter', async () => {
+  selectedPublish.value = bookStore.getParams?.publish ?? []
+  selectedSeries.value = bookStore.getParams?.series ?? []
+  selectedProduce.value = bookStore.getParams?.producer ?? []
+})
 
 onMounted(async () => {
   publishOptions.value = await getInfo('publish')
