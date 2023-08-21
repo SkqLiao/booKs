@@ -3,7 +3,7 @@ import hyRequest from '../index'
 import { IDataType, Ibook, IbookParams } from './types'
 
 export function bookInfoRequest(params: Object) {
-  return hyRequest.get<IDataType<[Ibook]>>({
+  return hyRequest.get<IDataType<Ibook[]>>({
     url: '/book/get.php',
     params: params
   })
