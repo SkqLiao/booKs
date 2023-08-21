@@ -68,8 +68,8 @@ if ($result->num_rows > 0) {
 } else {
     $response['data'] = 0;
 }
+$response["response"] = "查询成功";
 $response["code"] = 200;
-$response['response'] = $sql;
 echo json_encode($response);
 
 // 关闭数据库连接

@@ -136,8 +136,6 @@ if ($result->num_rows > 0) {
     $response['code'] = 404;
 }
 
-$response['response'] = $sql;
-
 // 输出响应数据
 echo json_encode($response);
 
