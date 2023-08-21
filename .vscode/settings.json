@@ -3,12 +3,8 @@
     "@/": "${workspaceRoot}/src",
     "~/": "${workspaceRoot}"
   },
-  "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "prettier.printWidth": 120,
-  "prettier.singleQuote": true,
-  "prettier.semi": false,
-  "prettier.endOfLine": "lf",
+  "editor.formatOnSave": true,
   "files.eol": "\n",
 
   "[javascript]": {
@@ -30,5 +26,6 @@
   "files.associations": {
     "*.env.*": "dotenv",
     "*.css": "postcss"
-  }
+  },
+  "vue3snippets.enable-compile-vue-file-on-did-save-code": false
 }

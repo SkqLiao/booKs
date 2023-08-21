@@ -12,7 +12,10 @@ export class AxiosRejectError extends Error {
     this.data = data
   }
 }
-export function resolveResError(code: number | string | undefined, message = ''): string {
+export function resolveResError(
+  code: number | string | undefined,
+  message = ''
+): string {
   switch (code) {
     case 400:
       message = message ?? '请求参数错误'

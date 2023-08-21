@@ -6,21 +6,21 @@ const users = {
     name: '大脸怪(admin)',
     avatar: 'https://assets.qszone.com/images/avatar.jpg',
     email: 'Ronnie@123.com',
-    role: ['admin'],
+    role: ['admin']
   },
   editor: {
     id: 2,
     name: '大脸怪(editor)',
     avatar: 'https://assets.qszone.com/images/avatar.jpg',
     email: 'Ronnie@123.com',
-    role: ['editor'],
+    role: ['editor']
   },
   guest: {
     id: 3,
     name: '访客(guest)',
     avatar: 'https://assets.qszone.com/images/avatar.jpg',
-    role: [],
-  },
+    role: []
+  }
 }
 export default [
   {
@@ -31,9 +31,9 @@ export default [
       return {
         code: 0,
         data: {
-          ...(users[token] || users.guest),
-        },
+          ...(users[token] || users.guest)
+        }
       }
-    },
-  },
+    }
+  }
 ]

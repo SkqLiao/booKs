@@ -53,7 +53,12 @@ export function isFunction(val: any): boolean {
 }
 
 export function isPromise(val: any): boolean {
-  return is(val, 'Promise') && isObject(val) && isFunction(val.then) && isFunction(val.catch)
+  return (
+    is(val, 'Promise') &&
+    isObject(val) &&
+    isFunction(val.then) &&
+    isFunction(val.catch)
+  )
 }
 
 export function isElement(val: any): boolean {
@@ -72,14 +77,11 @@ export function isNullOrWhitespace(val: any): boolean {
 
 /** 空数组 or 空字符 or 空map or 空set or 空对象 */
 export function isEmpty(val: any): boolean {
-  if (isArray(val) || isString(val))
-    return val.length === 0
+  if (isArray(val) || isString(val)) return val.length === 0
 
-  if (val instanceof Map || val instanceof Set)
-    return val.size === 0
+  if (val instanceof Map || val instanceof Set) return val.size === 0
 
-  if (isObject(val))
-    return Object.keys(val).length === 0
+  if (isObject(val)) return Object.keys(val).length === 0
 
   return false
 }
@@ -93,7 +95,7 @@ export function ifNull(val: any, def: any = '') {
 }
 
 export function isUrl(path: string): boolean {
-  const reg
-    = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/
+  const reg =
+    /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/
   return reg.test(path)
 }

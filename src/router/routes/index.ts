@@ -7,7 +7,7 @@ export const basicRoutes: RoutesType = [
     name: '404',
     path: '/404',
     component: () => import('@/views/error-page/404.vue'),
-    isHidden: true,
+    isHidden: true
   },
 
   {
@@ -16,8 +16,8 @@ export const basicRoutes: RoutesType = [
     component: () => import('@/views/login/index.vue'),
     isHidden: true,
     meta: {
-      title: '登录页',
-    },
+      title: '登录页'
+    }
   },
 
   {
@@ -27,7 +27,7 @@ export const basicRoutes: RoutesType = [
     meta: {
       title: '外部链接',
       icon: 'mdi:link-variant',
-      order: 3,
+      order: 3
     },
     children: [
       {
@@ -36,8 +36,8 @@ export const basicRoutes: RoutesType = [
         component: () => {},
         meta: {
           title: '源码 - github',
-          icon: 'mdi:github',
-        },
+          icon: 'mdi:github'
+        }
       },
       {
         name: 'LinkGiteeSrc',
@@ -45,27 +45,29 @@ export const basicRoutes: RoutesType = [
         component: () => {},
         meta: {
           title: '源码 - gitee',
-          icon: 'simple-icons:gitee',
-        },
-      },
-    ],
-  },
+          icon: 'simple-icons:gitee'
+        }
+      }
+    ]
+  }
 ]
 
 export const NOT_FOUND_ROUTE: RouteType = {
   name: 'NotFound',
   path: '/:pathMatch(.*)*',
   redirect: '/404',
-  isHidden: true,
+  isHidden: true
 }
 
 export const EMPTY_ROUTE: RouteType = {
   name: 'Empty',
   path: '/:pathMatch(.*)*',
-  component: () => {},
+  component: () => {}
 }
 
-const modules = import.meta.glob('@/views/**/route.ts', { eager: true }) as RouteModule
+const modules = import.meta.glob('@/views/**/route.ts', {
+  eager: true
+}) as RouteModule
 const asyncRoutes: RoutesType = []
 Object.keys(modules).forEach((key) => {
   asyncRoutes.push(modules[key].default)

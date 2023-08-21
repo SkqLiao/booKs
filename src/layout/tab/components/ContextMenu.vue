@@ -11,7 +11,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   show: false,
-  currentPath: '',
+  currentPath: ''
 })
 
 const emit = defineEmits(['update:show'])
@@ -24,32 +24,35 @@ const options = computed(() => [
     label: '重新加载',
     key: 'reload',
     disabled: props.currentPath !== tabStore.activeTab,
-    icon: renderIcon('mdi:refresh', { size: 14 }),
+    icon: renderIcon('mdi:refresh', { size: 14 })
   },
   {
     label: '关闭',
     key: 'close',
     disabled: tabStore.tabs.length <= 1,
-    icon: renderIcon('mdi:close', { size: 14 }),
+    icon: renderIcon('mdi:close', { size: 14 })
   },
   {
     label: '关闭其他',
     key: 'close-other',
     disabled: tabStore.tabs.length <= 1,
-    icon: renderIcon('mdi:arrow-expand-horizontal', { size: 14 }),
+    icon: renderIcon('mdi:arrow-expand-horizontal', { size: 14 })
   },
   {
     label: '关闭左侧',
     key: 'close-left',
-    disabled: tabStore.tabs.length <= 1 || props.currentPath === tabStore.tabs[0].path,
-    icon: renderIcon('mdi:arrow-expand-left', { size: 14 }),
+    disabled:
+      tabStore.tabs.length <= 1 || props.currentPath === tabStore.tabs[0].path,
+    icon: renderIcon('mdi:arrow-expand-left', { size: 14 })
   },
   {
     label: '关闭右侧',
     key: 'close-right',
-    disabled: tabStore.tabs.length <= 1 || props.currentPath === tabStore.tabs[tabStore.tabs.length - 1].path,
-    icon: renderIcon('mdi:arrow-expand-right', { size: 14 }),
-  },
+    disabled:
+      tabStore.tabs.length <= 1 ||
+      props.currentPath === tabStore.tabs[tabStore.tabs.length - 1].path,
+    icon: renderIcon('mdi:arrow-expand-right', { size: 14 })
+  }
 ])
 
 const dropdownShow = computed({
@@ -58,7 +61,7 @@ const dropdownShow = computed({
   },
   set(show) {
     emit('update:show', show)
-  },
+  }
 })
 
 const actionMap = new Map([
@@ -66,32 +69,32 @@ const actionMap = new Map([
     'reload',
     () => {
       appStore.reloadPage()
-    },
+    }
   ],
   [
     'close',
     () => {
       tabStore.removeTab(props.currentPath)
-    },
+    }
   ],
   [
     'close-other',
     () => {
       tabStore.removeOther(props.currentPath)
-    },
+    }
   ],
   [
     'close-left',
     () => {
       tabStore.removeLeft(props.currentPath)
-    },
+    }
   ],
   [
     'close-right',
     () => {
       tabStore.removeRight(props.currentPath)
-    },
-  ],
+    }
+  ]
 ])
 
 function handleHideDropdown() {

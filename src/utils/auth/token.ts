@@ -21,15 +21,12 @@ export async function refreshAccessToken() {
   const expire: number | null = getLocalExpire(TOKEN_CODE)
 
   // * token没有过期时间或者token离过期时间超过30分钟则不执行刷新
-  if (!expire || expire - new Date().getTime() > 1000 * 60 * 30)
-    return
+  if (!expire || expire - new Date().getTime() > 1000 * 60 * 30) return
 
   try {
     const res: any = await api.refreshToken()
-    if (res.code === 0)
-      setToken(res.data.token)
-  }
-  catch {
+    if (res.code === 0) setToken(res.data.token)
+  } catch {
     // 无感刷新，有异常也不提示
   }
 }

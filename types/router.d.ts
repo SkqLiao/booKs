@@ -14,7 +14,7 @@ interface RouteItem {
   path: string
   redirect?: string
   isHidden?: boolean
-  meta?: Meta,
+  meta?: Meta
   children?: RoutesType
 }
 

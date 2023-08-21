@@ -14,7 +14,7 @@ interface UserInfo {
 export const useUserStore = defineStore('user', {
   state() {
     return {
-      userInfo: <UserInfo> {},
+      userInfo: <UserInfo>{}
     }
   },
   getters: {
@@ -29,7 +29,7 @@ export const useUserStore = defineStore('user', {
     },
     role(): Array<string> {
       return this.userInfo.role || []
-    },
+    }
   },
   actions: {
     async getUserInfo() {
@@ -39,12 +39,10 @@ export const useUserStore = defineStore('user', {
           const { id, name, avatar, role } = res.data
           this.userInfo = { id, name, avatar, role }
           return Promise.resolve(res.data)
-        }
-        else {
+        } else {
           return Promise.reject(res)
         }
-      }
-      catch (error) {
+      } catch (error) {
         return Promise.reject(error)
       }
     },
@@ -60,6 +58,6 @@ export const useUserStore = defineStore('user', {
     },
     setUserInfo(userInfo = {}) {
       this.userInfo = { ...this.userInfo, ...userInfo }
-    },
-  },
+    }
+  }
 })

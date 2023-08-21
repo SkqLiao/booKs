@@ -8,6 +8,6 @@ export function setupMockPlugin(isBuild: boolean) {
     injectCode: `
       import { setupProdMockServer } from '../mock';
       setupProdMockServer();
-    `,
+    `
   })
 }

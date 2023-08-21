@@ -8,14 +8,16 @@ import unplugins from './unplugin'
 import { setupHtmlPlugin } from './html'
 import { setupMockPlugin } from './mock'
 
-export function setupVitePlugins(viteEnv: ViteEnv, isBuild: boolean): PluginOption[] {
+export function setupVitePlugins(
+  viteEnv: ViteEnv,
+  isBuild: boolean
+): PluginOption[] {
   const plugins = [vue(), ...unplugins, unocss(), setupHtmlPlugin(viteEnv)]
-  if (viteEnv.VITE_USE_MOCK)
-    plugins.push(setupMockPlugin(isBuild))
+  if (viteEnv.VITE_USE_MOCK) plugins.push(setupMockPlugin(isBuild))
 
   if (viteEnv.VITE_USE_COMPRESS) {
     plugins.push(
-      viteCompression({ algorithm: viteEnv.VITE_COMPRESS_TYPE || 'gzip' }),
+      viteCompression({ algorithm: viteEnv.VITE_COMPRESS_TYPE || 'gzip' })
     )
   }
 
@@ -24,8 +26,8 @@ export function setupVitePlugins(viteEnv: ViteEnv, isBuild: boolean): PluginOpti
       visualizer({
         open: true,
         gzipSize: true,
-        brotliSize: true,
-      }),
+        brotliSize: true
+      })
     )
   }
 

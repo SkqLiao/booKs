@@ -1,5 +1,5 @@
 module.exports = {
-  ignores: [commit => commit.includes('first commit')],
+  ignores: [(commit) => commit.includes('first commit')],
   extends: ['@commitlint/config-conventional'],
   rules: {
     'type-enum': [
@@ -18,8 +18,8 @@ module.exports = {
         'chore',
         'revert',
         'wip',
-        'mod',
-      ],
-    ],
-  },
+        'mod'
+      ]
+    ]
+  }
 }

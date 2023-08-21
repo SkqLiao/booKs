@@ -17,19 +17,17 @@ watch(currentRoute, async () => {
 })
 
 const menuOptions = computed(() => {
-  return permissionStore.menus.map(item => getMenuItem(item)).sort((a, b) => a.order - b.order)
+  return permissionStore.menus
+    .map((item) => getMenuItem(item))
+    .sort((a, b) => a.order - b.order)
 })
 
 function resolvePath(basePath: string, path: string) {
-  if (isUrl(path))
-    return path
-  return (
-    `/${
-    [basePath, path]
-      .filter(path => !!path && path !== '/')
-      .map(path => path.replace(/(^\/)|(\/$)/g, ''))
-      .join('/')}`
-  )
+  if (isUrl(path)) return path
+  return `/${[basePath, path]
+    .filter((path) => !!path && path !== '/')
+    .map((path) => path.replace(/(^\/)|(\/$)/g, ''))
+    .join('/')}`
 }
 
 interface MenuItem {
@@ -47,13 +45,14 @@ function getMenuItem(route: RouteType, basePath = ''): MenuItem {
     key: route.name,
     path: resolvePath(basePath, route.path),
     icon: getIcon(route.meta),
-    order: route.meta?.order || 0,
+    order: route.meta?.order || 0
   }
 
-  const visibleChildren = route.children ? route.children.filter((item: RouteType) => item.name && !item.isHidden) : []
+  const visibleChildren = route.children
+    ? route.children.filter((item: RouteType) => item.name && !item.isHidden)
+    : []
 
-  if (!visibleChildren.length)
-    return menuItem
+  if (!visibleChildren.length) return menuItem
 
   if (visibleChildren.length === 1) {
     // 单个子路由处理
@@ -63,18 +62,23 @@ function getMenuItem(route: RouteType, basePath = ''): MenuItem {
       key: singleRoute.name,
       path: resolvePath(menuItem.path, singleRoute.path),
       icon: getIcon(singleRoute.meta),
-      order: menuItem.order,
+      order: menuItem.order
     }
-    const visibleItems = singleRoute.children ? singleRoute.children.filter((item: RouteType) => item.name && !item.isHidden) : []
+    const visibleItems = singleRoute.children
+      ? singleRoute.children.filter(
+          (item: RouteType) => item.name && !item.isHidden
+        )
+      : []
 
     if (visibleItems.length === 1)
       menuItem = getMenuItem(visibleItems[0], menuItem.path)
     else if (visibleItems.length > 1)
-      menuItem.children = visibleItems.map(item => getMenuItem(item, menuItem.path)).sort((a, b) => a.order - b.order)
-  }
-  else {
+      menuItem.children = visibleItems
+        .map((item) => getMenuItem(item, menuItem.path))
+        .sort((a, b) => a.order - b.order)
+  } else {
     menuItem.children = visibleChildren
-      .map(item => getMenuItem(item, menuItem.path))
+      .map((item) => getMenuItem(item, menuItem.path))
       .sort((a, b) => a.order - b.order)
   }
 
@@ -82,10 +86,8 @@ function getMenuItem(route: RouteType, basePath = ''): MenuItem {
 }
 
 function getIcon(meta?: Meta): (() => import('vue').VNodeChild) | null {
-  if (meta?.customIcon)
-    return renderCustomIcon(meta.customIcon, { size: 18 })
-  if (meta?.icon)
-    return renderIcon(meta.icon, { size: 18 })
+  if (meta?.customIcon) return renderCustomIcon(meta.customIcon, { size: 18 })
+  if (meta?.icon) return renderIcon(meta.icon, { size: 18 })
   return null
 }
 
@@ -97,8 +99,7 @@ function handleMenuSelect(key: string, item: MenuOption) {
   }
   if (menuItem.path === currentRoute.path && !currentRoute.meta?.keepAlive)
     appStore.reloadPage()
-  else
-    router.push(menuItem.path)
+  else router.push(menuItem.path)
 
   // 手机端自动收起菜单
   themeStore.isMobile && themeStore.setCollapsed(true)
@@ -114,7 +115,9 @@ function handleMenuSelect(key: string, item: MenuOption) {
     :collapsed-icon-size="22"
     :collapsed-width="64"
     :options="menuOptions"
-    :value="(currentRoute.meta && currentRoute.meta.activeMenu) || currentRoute.name"
+    :value="
+      (currentRoute.meta && currentRoute.meta.activeMenu) || currentRoute.name
+    "
     @update:value="handleMenuSelect"
   />
 </template>

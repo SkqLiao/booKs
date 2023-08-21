@@ -7,7 +7,7 @@ interface Props {
 withDefaults(defineProps<Props>(), {
   showFooter: false,
   showHeader: true,
-  title: undefined,
+  title: undefined
 })
 
 const route = useRoute()
@@ -15,7 +15,15 @@ const route = useRoute()
 
 <template>
   <AppPage :show-footer="showFooter">
-    <header v-if="showHeader" px-15 mb-15 min-h-45 flex justify-between items-center>
+    <header
+      v-if="showHeader"
+      px-15
+      mb-15
+      min-h-45
+      flex
+      justify-between
+      items-center
+    >
       <slot v-if="$slots.header" name="header" />
       <template v-else>
         <h2 text-22 font-normal>

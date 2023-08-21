@@ -8,7 +8,7 @@ interface Props {
 }
 const props = withDefaults(defineProps<Props>(), {
   prefix: 'icon-custom',
-  color: 'currentColor',
+  color: 'currentColor'
 })
 
 defineOptions({ name: 'SvgIcon' })

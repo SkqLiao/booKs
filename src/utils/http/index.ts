@@ -3,11 +3,11 @@ import { reqReject, reqResolve, resReject, resResolve } from './interceptors'
 
 export function createAxios(options = {}) {
   const defaultOptions = {
-    timeout: 12000,
+    timeout: 12000
   }
   const service = axios.create({
     ...defaultOptions,
-    ...options,
+    ...options
   })
   service.interceptors.request.use(reqResolve, reqReject)
   service.interceptors.response.use(resResolve, resReject)
@@ -15,5 +15,5 @@ export function createAxios(options = {}) {
 }
 
 export const request = createAxios({
-  baseURL: import.meta.env.VITE_BASE_API,
+  baseURL: import.meta.env.VITE_BASE_API
 })

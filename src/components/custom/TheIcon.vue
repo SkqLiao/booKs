@@ -4,7 +4,7 @@ import { renderCustomIcon, renderIcon } from '@/utils'
 const props = withDefaults(defineProps<Props>(), {
   size: 14,
   color: undefined,
-  type: 'iconify',
+  type: 'iconify'
 })
 
 interface Props {
@@ -18,7 +18,7 @@ interface Props {
 const iconCom = computed(() =>
   props.type === 'iconify'
     ? renderIcon(props.icon, { size: props.size, color: props.color })
-    : renderCustomIcon(props.icon, { size: props.size, color: props.color }),
+    : renderCustomIcon(props.icon, { size: props.size, color: props.color })
 )
 </script>
 

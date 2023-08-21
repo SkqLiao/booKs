@@ -1,7 +1,19 @@
 import { defineConfig, presetAttributify, presetUno } from 'unocss'
 
 export default defineConfig({
-  exclude: ['node_modules', '.git', '.github', '.husky', '.vscode', 'build', 'dist', 'mock', 'public', 'types', './stats.html'],
+  exclude: [
+    'node_modules',
+    '.git',
+    '.github',
+    '.husky',
+    '.vscode',
+    'build',
+    'dist',
+    'mock',
+    'public',
+    'types',
+    './stats.html'
+  ],
   presets: [presetUno({ dark: 'class' }), presetAttributify()],
   shortcuts: [
     ['wh-full', 'w-full h-full'],
@@ -12,11 +24,17 @@ export default defineConfig({
     ['absolute-rt', 'absolute right-0 top-0'],
     ['absolute-rb', 'absolute right-0 bottom-0'],
     ['absolute-center', 'absolute-lt f-c-c wh-full'],
-    ['text-ellipsis', 'truncate'],
+    ['text-ellipsis', 'truncate']
   ],
   rules: [
     [/^bc-(.+)$/, ([, color]) => ({ 'border-color': `#${color}` })],
-    ['card-shadow', { 'box-shadow': '0 1px 2px -2px #00000029, 0 3px 6px #0000001f, 0 5px 12px 4px #00000017' }],
+    [
+      'card-shadow',
+      {
+        'box-shadow':
+          '0 1px 2px -2px #00000029, 0 3px 6px #0000001f, 0 5px 12px 4px #00000017'
+      }
+    ]
   ],
   theme: {
     colors: {
@@ -40,7 +58,7 @@ export default defineConfig({
       error_hover: 'var(--error-color-hover)',
       error_pressed: 'var(--error-color-pressed)',
       error_active: 'var(--error-color-active)',
-      dark: '#18181c',
-    },
-  },
+      dark: '#18181c'
+    }
+  }
 })

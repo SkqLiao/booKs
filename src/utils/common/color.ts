@@ -21,8 +21,7 @@ const darkColorCount = 4
  * @description 算法实现从ant-design调色板算法中借鉴 https://github.com/ant-design/ant-design/blob/master/components/style/color/colorPalette.less
  */
 export function getColorPalette(color: string, index: ColorIndex) {
-  if (index === 6)
-    return color
+  if (index === 6) return color
 
   const isLight = index < 6
   const hsv = colord(color).toHsv()
@@ -31,7 +30,7 @@ export function getColorPalette(color: string, index: ColorIndex) {
   const newHsv: HsvColor = {
     h: getHue(hsv, i, isLight),
     s: getSaturation(hsv, i, isLight),
-    v: getValue(hsv, i, isLight),
+    v: getValue(hsv, i, isLight)
   }
 
   return colord(newHsv).toHex()
@@ -43,7 +42,7 @@ export function getColorPalette(color: string, index: ColorIndex) {
  */
 export function getAllColorPalette(color: string) {
   const indexs: ColorIndex[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-  return indexs.map(index => getColorPalette(color, index))
+  return indexs.map((index) => getColorPalette(color, index))
 }
 
 /**
@@ -59,18 +58,14 @@ function getHue(hsv: HsvColor, i: number, isLight: boolean) {
     // 减淡变亮 色相顺时针旋转 更暖
     // 加深变暗 色相逆时针旋转 更冷
     hue = isLight ? hsv.h - hueStep * i : hsv.h + hueStep * i
-  }
-  else {
+  } else {
     // 暖色调
     // 减淡变亮 色相逆时针旋转 更暖
     // 加深变暗 色相顺时针旋转 更冷
     hue = isLight ? hsv.h + hueStep * i : hsv.h - hueStep * i
   }
-  if (hue < 0)
-    hue += 360
-
-  else if (hue >= 360)
-    hue -= 360
+  if (hue < 0) hue += 360
+  else if (hue >= 360) hue -= 360
 
   return hue
 }
@@ -83,23 +78,15 @@ function getHue(hsv: HsvColor, i: number, isLight: boolean) {
  */
 function getSaturation(hsv: HsvColor, i: number, isLight: boolean) {
   let saturation: number
-  if (isLight)
-    saturation = hsv.s - saturationStep * i
+  if (isLight) saturation = hsv.s - saturationStep * i
+  else if (i === darkColorCount) saturation = hsv.s + saturationStep
+  else saturation = hsv.s + saturationStep2 * i
 
-  else if (i === darkColorCount)
-    saturation = hsv.s + saturationStep
+  if (saturation > 100) saturation = 100
 
-  else
-    saturation = hsv.s + saturationStep2 * i
+  if (isLight && i === lightColorCount && saturation > 10) saturation = 10
 
-  if (saturation > 100)
-    saturation = 100
-
-  if (isLight && i === lightColorCount && saturation > 10)
-    saturation = 10
-
-  if (saturation < 6)
-    saturation = 6
+  if (saturation < 6) saturation = 6
 
   return saturation
 }
@@ -112,14 +99,10 @@ function getSaturation(hsv: HsvColor, i: number, isLight: boolean) {
  */
 function getValue(hsv: HsvColor, i: number, isLight: boolean) {
   let value: number
-  if (isLight)
-    value = hsv.v + brightnessStep1 * i
+  if (isLight) value = hsv.v + brightnessStep1 * i
+  else value = hsv.v - brightnessStep2 * i
 
-  else
-    value = hsv.v - brightnessStep2 * i
-
-  if (value > 100)
-    value = 100
+  if (value > 100) value = 100
 
   return value
 }
@@ -139,7 +122,11 @@ export function addColorAlpha(color: string, alpha: number) {
  * @param secondColor - 第二个颜色
  * @param ratio - 第二个颜色占比
  */
-export function mixColor(firstColor: string, secondColor: string, ratio: number) {
+export function mixColor(
+  firstColor: string,
+  secondColor: string,
+  ratio: number
+) {
   return colord(firstColor).mix(secondColor, ratio).toHex()
 }
 

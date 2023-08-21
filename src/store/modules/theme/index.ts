@@ -10,11 +10,14 @@ export const useThemeStore = defineStore('theme-store', {
   state: (): ThemeState => initThemeSettings(),
   getters: {
     naiveThemeOverrides(): GlobalThemeOverrides {
-      return getNaiveThemeOverrides({ primary: this.primaryColor, ...this.otherColor })
+      return getNaiveThemeOverrides({
+        primary: this.primaryColor,
+        ...this.otherColor
+      })
     },
     naiveTheme(): BuiltInGlobalTheme | undefined {
       return this.darkMode ? darkTheme : undefined
-    },
+    }
   },
   actions: {
     setIsMobile(isMobile: boolean) {
@@ -39,6 +42,6 @@ export const useThemeStore = defineStore('theme-store', {
     /** 设置主题色 */
     setPrimaryColor(color: string) {
       this.primaryColor = color
-    },
-  },
+    }
+  }
 })

@@ -8,7 +8,7 @@ export default {
   component: Layout,
   redirect: '/workbench',
   meta: {
-    order: 0,
+    order: 0
   },
   children: [
     {
@@ -17,8 +17,8 @@ export default {
       component: () => import('./index.vue'),
       meta: {
         title: '工作台',
-        icon: 'mdi:home',
-      },
-    },
-  ],
+        icon: 'mdi:home'
+      }
+    }
+  ]
 } as RouteType

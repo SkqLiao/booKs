@@ -38,7 +38,6 @@
 
 [https://zclzone.github.io/qs-admin](https://zclzone.github.io/qs-admin)
 
-
 ### Getting Started
 
 ```shell
@@ -104,5 +103,3 @@ pnpm cz
 <a href="https://blog.qszone.com/about/">
   <img src="https://assets.qszone.com/images/about.png" style="max-width: 400px" />
 </a>
-
-

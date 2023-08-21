@@ -6,7 +6,7 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-  showArrow: true,
+  showArrow: true
 })
 
 const translateX = ref(0)
@@ -15,12 +15,10 @@ const wrapper = ref<HTMLElement | null>(null)
 const isOverflow = ref(false)
 
 const resetTranslateX = useDebounceFn((wrapperWidth, contentWidth) => {
-  if (!isOverflow.value)
-    translateX.value = 0
+  if (!isOverflow.value) translateX.value = 0
   else if (-translateX.value > contentWidth - wrapperWidth)
     translateX.value = wrapperWidth - contentWidth
-  else if (translateX.value > 0)
-    translateX.value = 0
+  else if (translateX.value > 0) translateX.value = 0
 }, 200)
 
 const refreshIsOverflow = useDebounceFn(() => {
@@ -41,13 +39,14 @@ function handleMouseWheel(e: { wheelDelta: number }) {
    * @contentWidth 内容的宽度
    */
   if (wheelDelta < 0) {
-    if (wrapperWidth > contentWidth && translateX.value < -10)
-      return
-    if (wrapperWidth <= contentWidth && contentWidth + translateX.value - wrapperWidth < -10)
+    if (wrapperWidth > contentWidth && translateX.value < -10) return
+    if (
+      wrapperWidth <= contentWidth &&
+      contentWidth + translateX.value - wrapperWidth < -10
+    )
       return
   }
-  if (wheelDelta > 0 && translateX.value > 10)
-    return
+  if (wheelDelta > 0 && translateX.value > 10) return
 
   translateX.value += wheelDelta
   resetTranslateX(wrapperWidth, contentWidth)
@@ -83,7 +82,7 @@ onBeforeUnmount(() => {
       class="content"
       :class="{ overflow: isOverflow && showArrow }"
       :style="{
-        transform: `translateX(${translateX}px)`,
+        transform: `translateX(${translateX}px)`
       }"
     >
       <slot />

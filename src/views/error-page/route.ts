@@ -10,7 +10,7 @@ export default {
   meta: {
     title: 'ErrorPage',
     order: 99,
-    icon: 'mdi:alert-circle-outline',
+    icon: 'mdi:alert-circle-outline'
   },
   children: [
     {
@@ -19,8 +19,8 @@ export default {
       component: () => import('./404.vue'),
       meta: {
         title: '404',
-        icon: 'tabler:error-404',
-      },
-    },
-  ],
+        icon: 'tabler:error-404'
+      }
+    }
+  ]
 } as RouteType

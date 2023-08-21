@@ -19,24 +19,27 @@ const customIconPath = resolve(getSrcPath(), 'assets/svg')
 export default [
   AutoImport({
     imports: ['vue', 'vue-router'],
-    dts: 'types/auto-imports.d.ts',
+    dts: 'types/auto-imports.d.ts'
   }),
   Icons({
     compiler: 'vue3',
     customCollections: {
-      custom: FileSystemIconLoader(customIconPath),
+      custom: FileSystemIconLoader(customIconPath)
     },
     scale: 1,
-    defaultClass: 'inline-block',
+    defaultClass: 'inline-block'
   }),
   Components({
-    resolvers: [NaiveUiResolver(), IconsResolver({ customCollections: ['custom'], componentPrefix: 'icon' })],
-    dts: 'types/components.d.ts',
+    resolvers: [
+      NaiveUiResolver(),
+      IconsResolver({ customCollections: ['custom'], componentPrefix: 'icon' })
+    ],
+    dts: 'types/components.d.ts'
   }),
   createSvgIconsPlugin({
     iconDirs: [customIconPath],
     symbolId: 'icon-custom-[dir]-[name]',
     inject: 'body-last',
-    customDomId: '__CUSTOM_SVG_ICON__',
-  }),
+    customDomId: '__CUSTOM_SVG_ICON__'
+  })
 ]

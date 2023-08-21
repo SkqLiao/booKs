@@ -16,7 +16,11 @@ interface ColorAction {
 export function initThemeSettings(): Theme.Setting {
   const isMobile = themeSetting.isMobile || false
   const darkMode = themeSetting.darkMode || false
-  const sider = themeSetting.sider || { width: 220, collapsedWidth: 64, collapsed: false }
+  const sider = themeSetting.sider || {
+    width: 220,
+    collapsedWidth: 64,
+    collapsed: false
+  }
   const header = themeSetting.header || { visible: true, height: 60 }
   const tab = themeSetting.tab || { visible: true, height: 50 }
   const primaryColor = themeSetting.primaryColor || '#316C72'
@@ -24,13 +28,15 @@ export function initThemeSettings(): Theme.Setting {
     info: '#0099ad',
     success: '#52c41a',
     warning: '#faad14',
-    error: '#f5222d',
+    error: '#f5222d'
   }
   return { isMobile, darkMode, sider, header, tab, primaryColor, otherColor }
 }
 
 /** 获取naive的主题颜色 */
-export function getNaiveThemeOverrides(colors: Record<ColorType, string>): GlobalThemeOverrides {
+export function getNaiveThemeOverrides(
+  colors: Record<ColorType, string>
+): GlobalThemeOverrides {
   const { primary, info, success, warning, error } = colors
 
   const themeColors = getThemeColors([
@@ -38,29 +44,29 @@ export function getNaiveThemeOverrides(colors: Record<ColorType, string>): Globa
     ['info', info],
     ['success', success],
     ['warning', warning],
-    ['error', error],
+    ['error', error]
   ])
 
   const colorLoading = primary
 
   return {
     common: {
-      ...themeColors,
+      ...themeColors
     },
     LoadingBar: {
-      colorLoading,
-    },
+      colorLoading
+    }
   }
 }
 
 /** 获取主题颜色的各种场景对应的颜色 */
 function getThemeColors(colors: [ColorType, string][]) {
   const colorActions: ColorAction[] = [
-    { scene: '', handler: color => color },
-    { scene: 'Suppl', handler: color => color },
-    { scene: 'Hover', handler: color => getColorPalette(color, 5) },
-    { scene: 'Pressed', handler: color => getColorPalette(color, 7) },
-    { scene: 'Active', handler: color => addColorAlpha(color, 0.1) },
+    { scene: '', handler: (color) => color },
+    { scene: 'Suppl', handler: (color) => color },
+    { scene: 'Hover', handler: (color) => getColorPalette(color, 5) },
+    { scene: 'Pressed', handler: (color) => getColorPalette(color, 7) },
+    { scene: 'Active', handler: (color) => addColorAlpha(color, 0.1) }
   ]
 
   const themeColor: ThemeColor = {}

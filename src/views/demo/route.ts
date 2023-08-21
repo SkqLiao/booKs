@@ -12,7 +12,7 @@ export default {
     customIcon: 'logo',
     role: ['admin'],
     requireAuth: true,
-    order: 1,
+    order: 1
   },
   children: [
     {
@@ -23,8 +23,8 @@ export default {
         title: 'unocss',
         icon: 'logos:unocss',
         role: ['admin'],
-        requireAuth: true,
-      },
+        requireAuth: true
+      }
     },
     {
       name: 'Animation',
@@ -34,8 +34,8 @@ export default {
         title: 'animation',
         icon: 'clarity:animation-line',
         role: ['admin'],
-        requireAuth: true,
-      },
+        requireAuth: true
+      }
     },
     {
       name: 'Table',
@@ -45,8 +45,19 @@ export default {
         title: '表格',
         icon: 'mdi:table',
         role: ['admin'],
-        requireAuth: true,
-      },
+        requireAuth: true
+      }
     },
-  ],
+    {
+      name: 'Book',
+      path: 'book',
+      component: () => import('@/views/demo/book/index.vue'),
+      meta: {
+        title: '书籍',
+        icon: 'mdi:book',
+        role: ['admin'],
+        requireAuth: true
+      }
+    }
+  ]
 } as RouteType

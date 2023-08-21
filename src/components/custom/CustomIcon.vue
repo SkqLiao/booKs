@@ -8,7 +8,7 @@ interface Props {
   size?: number
 }
 const props = withDefaults(defineProps<Props>(), {
-  size: 14,
+  size: 14
 })
 
 const iconCom = computed(() => renderCustomIcon(props.icon, props))
