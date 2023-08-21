@@ -15,7 +15,7 @@ const route = useRoute()
 
 <template>
   <AppPage :show-footer="showFooter">
-    <header
+    <!--<header
       v-if="showHeader"
       px-15
       mb-15
@@ -24,14 +24,14 @@ const route = useRoute()
       justify-between
       items-center
     >
-      <slot v-if="$slots.header" name="header" />
+       <slot v-if="$slots.header" name="header" />
       <template v-else>
         <h2 text-22 font-normal>
           {{ title || route.meta?.title }}
         </h2>
         <slot name="action" />
-      </template>
-    </header>
+      </template> 
+    </header>-->
 
     <n-card rounded-10 flex-1>
       <slot />
