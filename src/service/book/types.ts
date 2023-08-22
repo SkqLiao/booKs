@@ -2,6 +2,7 @@ export interface Ibook {
   title: string
   subtitle: string
   original_title: string
+  douban_id: number
   isbn: string
   author: [string]
   translator: [string]
@@ -44,4 +45,5 @@ export interface DoubanAPI {
   success: boolean
   data: Ibook
   is_cache: boolean
+  message: object
 }

@@ -48,7 +48,7 @@ class HYRequest {
         if (err.response.status === 404) {
           console.log('404的错误~')
         }
-        return err
+        throw err
       }
     )
   }
@@ -73,8 +73,8 @@ class HYRequest {
           resolve(res)
         })
         .catch((err) => {
+          // 通过 reject 将错误传递给外部的 Promise 链
           reject(err)
-          return err
         })
     })
   }

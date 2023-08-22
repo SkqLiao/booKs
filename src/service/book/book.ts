@@ -46,3 +46,10 @@ export function bookDoubanRequest(isbn: string) {
     url: '/isbn/' + isbn
   })
 }
+
+export function bookAddRequest(params: Ibook) {
+  return hyRequest.post<IDataType<string>>({
+    url: '/book/add.php',
+    data: params
+  })
+}

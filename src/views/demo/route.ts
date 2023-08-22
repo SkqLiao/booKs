@@ -53,8 +53,19 @@ export default {
       path: 'book',
       component: () => import('@/views/demo/book/index.vue'),
       meta: {
-        title: '书籍',
+        title: '书库',
         icon: 'mdi:book',
+        role: ['admin'],
+        requireAuth: true
+      }
+    },
+    {
+      name: 'Add Book',
+      path: 'addBook',
+      component: () => import('@/views/demo/addBook/index.vue'),
+      meta: {
+        title: '增加书籍',
+        icon: 'mdi:book-plus',
         role: ['admin'],
         requireAuth: true
       }
