@@ -1,8 +1,6 @@
 <?php
-// 连接数据库
+
 require_once('config.php');
-
-
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("连接失败: " . $conn->connect_error);
@@ -24,7 +22,7 @@ function getCondition($key) {
     return $condition;
 }
 
-$keys = array('isbn', 'publish', 'buy_pos', 'series', 'producer', 'author');
+$keys = array('isbn', 'publish', 'buy_pos', 'series', 'producer');
 
 $where_conditions = array();
 
@@ -32,6 +30,12 @@ foreach ($keys as $key) {
     $condition = getCondition($key);
     if ($condition) {
         $where_conditions[] = $condition;
+    }
+}
+
+if (isset($_GET['author'])) {
+    foreach ($_GET['author'] as $author) {
+        $where_conditions[] = "author LIKE '%" . $author . "%'";
     }
 }
 
@@ -54,7 +58,7 @@ if (isset($_GET['buy_price_to'])) {
 }
 
 $sql = "SELECT COUNT(*) as total FROM basic_info WHERE 1=1";
-// 判断是否有查询条件
+
 if (!empty($where_conditions)) {
     $sql .= " AND " . implode(" AND ", $where_conditions);
 }
@@ -72,6 +76,5 @@ $response["response"] = "查询成功";
 $response["code"] = 200;
 echo json_encode($response);
 
-// 关闭数据库连接
 $conn->close();
 ?>

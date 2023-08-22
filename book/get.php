@@ -42,6 +42,12 @@ foreach ($keys as $key) {
     }
 }
 
+if (isset($_GET['author'])) {
+    foreach ($_GET['author'] as $author) {
+        $where_conditions[] = "author LIKE '%" . $author . "%'";
+    }
+}
+
 if (isset($_GET['buy_date_from'])) {
     $buy_date_from = $_GET['buy_date_from'];
     $where_conditions[] = "buy_date >= '$buy_date_from'";
