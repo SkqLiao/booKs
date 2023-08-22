@@ -14,6 +14,7 @@ export default defineConfig((configEnv: ConfigEnv) => {
 
   const { VITE_PORT, VITE_PUBLIC_PATH, VITE_USE_PROXY, VITE_PROXY_TYPE } =
     viteEnv
+
   return {
     base: VITE_PUBLIC_PATH,
     resolve: {
@@ -29,13 +30,6 @@ export default defineConfig((configEnv: ConfigEnv) => {
       port: VITE_PORT,
       open: false,
       proxy: createViteProxy(VITE_USE_PROXY, VITE_PROXY_TYPE as ProxyType)
-    },
-    proxy: {
-      '/api': {
-        target: 'http://localhost/',
-        changeOrigin: true,
-        rewrite: (path: string) => path.replace(/^\/api/, '')
-      }
     },
     build: {
       reportCompressedSize: false,
