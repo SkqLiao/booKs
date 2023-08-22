@@ -24,7 +24,7 @@ function getCondition($key) {
     return $condition;
 }
 
-$keys = array('isbn', 'publish', 'buy_pos', 'series', 'producer');
+$keys = array('isbn', 'publish', 'buy_pos', 'series', 'producer', 'author');
 
 $where_conditions = array();
 
