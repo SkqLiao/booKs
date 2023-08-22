@@ -4,8 +4,8 @@ export interface Ibook {
   original_title: string
   douban_id: number
   isbn: string
-  author: [string]
-  translator: [string]
+  author: string[]
+  translator: string[]
   publish: string
   producer: string
   pages: number
@@ -15,12 +15,12 @@ export interface Ibook {
   book_intro: string
   cover_url: string
   url: string
-  catalog: [string]
+  catalog: string[]
   rating: IbookRating
   cover_base64: string
   buy_date: Date
   buy_pos: string
-  real_price: string
+  real_price: number
   publishDate: string
 }
 
@@ -43,7 +43,7 @@ export interface IDataType<T = any> {
 
 export interface DoubanAPI {
   success: boolean
-  data: Ibook
+  data: any
   is_cache: boolean
   message: object
 }
