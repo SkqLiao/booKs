@@ -1,8 +1,7 @@
 <template>
   <CommonPage :show-footer="true">
-    <h2>增加书籍</h2>
     <n-form ref="formRef" :model="bookInfo" :rules="rules">
-      <n-grid x-gap="20" cols="3">
+      <n-grid x-gap="30" cols="3">
         <n-gi>
           <!-- 左侧封面图片 -->
           <div class="cover-container">
@@ -38,10 +37,10 @@
         </n-gi>
         <n-gi>
           <n-form-item label="作者">
-            <n-input v-model:value="bookInfo.author" />
+            <n-input v-model:value="authors" />
           </n-form-item>
           <n-form-item label="译者">
-            <n-input v-model:value="bookInfo.translator" />
+            <n-input v-model:value="translators" />
           </n-form-item>
           <n-form-item label="系列">
             <n-input v-model:value="bookInfo.series" />
@@ -83,9 +82,10 @@ import { bookDoubanRequest, bookAddRequest } from '@/service/book/book'
 import defaultCoverImage from '@/assets/images/default_cover.jpg'
 import { FormInst, FormItemRule } from 'naive-ui'
 
-const bookInfo = ref<Ibook>({})
+const bookInfo = ref<Ibook>({} as Ibook)
 const isbn = ref('')
 const decodedCover = ref(defaultCoverImage)
+const authors = ref(''), translators = ref('')
 
 const queryBook = async () => {
   try {
@@ -97,17 +97,20 @@ const queryBook = async () => {
     } as Ibook
     bookInfo.value.douban_id = response.data.id
     bookInfo.value.rating = {
-      count: response.data.rating.count,
-      value: response.data.rating.value,
+      count: response.data.rating.count as number,
+      value: response.data.rating.value as number,
       percent: [
-        response.data.rating.one_star_per,
-        response.data.rating.two_star_per,
-        response.data.rating.three_star_per,
-        response.data.rating.four_star_per,
-        response.data.rating.five_star_per
-      ]
+        response.data.rating.one_star_per as number,
+        response.data.rating.two_star_per as number,
+        response.data.rating.three_star_per as number,
+        response.data.rating.four_star_per as number,
+        response.data.rating.five_star_per as number
+      ] as number[]
     } as IbookRating
-    decodedCover.value = response.data?.cover_url ?? defaultCoverImage
+    decodedCover.value = (response.data?.cover) ?? defaultCoverImage
+    bookInfo.value.cover_base64 = decodedCover.value
+    authors.value = bookInfo.value.author.join(',')
+    translators.value = bookInfo.value.translator.join(',')
   } catch (error) {
     window.$message?.warning('查询失败')
   }
@@ -119,7 +122,6 @@ const rules = {
     validator(rule: FormItemRule, x: string) {
       if (x == '') return true
       const num = parseInt(x)
-      console.log(num)
       return !isNaN(num) && num > 0 && Number.isInteger(num)
     }
   },
@@ -151,6 +153,8 @@ const buy_pos_options = buy_pos.map((item) => {
 
 const addBook = async () => {
   try {
+    bookInfo.value.author = authors.value.split(',')
+    bookInfo.value.translator = translators.value.split(',')
     console.log(bookInfo.value)
     await formRef.value?.validate(async (errors) => {
       if (errors) {
@@ -160,7 +164,7 @@ const addBook = async () => {
       window.$message?.success('验证通过')
       try {
         const response = await bookAddRequest(bookInfo.value)
-        if (response.code == 500) {
+        if (response.code == 200) {
           window.$message?.success('增加成功 ')
         } else {
           window.$message?.warning('增加失败：' + response.response)
@@ -178,9 +182,8 @@ const addBook = async () => {
 
 <style scoped>
 .cover-container {
-  width: 80%;
+  width: 70%;
   text-align: center;
-  max-height: 400px;
   overflow: hidden;
   display: flex;
   justify-content: center;
