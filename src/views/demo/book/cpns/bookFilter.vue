@@ -105,9 +105,10 @@ const selectedSeries: Ref<string[]> = ref([])
 const selectedProduce: Ref<string[]> = ref([])
 const selectedDateRange = ref<[number, number]>([
   Date.parse(bookStore.getParams?.buy_date_from ?? '2000-01-01'),
-  Date.parse(bookStore.getParams?.buy_date_to ?? new Date(Date.now())
-      .toISOString()
-      .slice(0, 10),)
+  Date.parse(
+    bookStore.getParams?.buy_date_to ??
+      new Date(Date.now()).toISOString().slice(0, 10)
+  )
 ])
 const priceRange = ref<[number, number]>([
   bookStore.getParams?.buy_price_from ?? 0,

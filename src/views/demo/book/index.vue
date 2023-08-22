@@ -4,7 +4,7 @@ import bookCard from './cpns/bookCard.vue'
 import bookFilter from './cpns/bookFilter.vue'
 import { ref, onMounted } from 'vue'
 import eventBus from '@/eventbus/index'
-import {useBookStore} from '@/store'
+import { useBookStore } from '@/store'
 
 const bookStore = useBookStore()
 

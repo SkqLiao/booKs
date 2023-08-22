@@ -22,15 +22,34 @@
                   </span>
                 </p>
                 <p>
-                  出版社：<n-button text quaterary round type="info" @click="selectFilter('publish', bookInfo.publish)">{{
-                    bookInfo.publish
-                  }}</n-button>
+                  出版社：<n-button
+                    text
+                    quaterary
+                    round
+                    type="info"
+                    @click="selectFilter('publish', bookInfo.publish)"
+                    >{{ bookInfo.publish }}</n-button
+                  >
                 </p>
                 <p v-if="bookInfo.producer">
-                  出版方：<n-button text quaterary round type="primary" @click="selectFilter('producer', bookInfo.producer)">{{ bookInfo.producer }}</n-button>
+                  出版方：<n-button
+                    text
+                    quaterary
+                    round
+                    type="primary"
+                    @click="selectFilter('producer', bookInfo.producer)"
+                    >{{ bookInfo.producer }}</n-button
+                  >
                 </p>
                 <p v-if="bookInfo.series">
-                  丛书：<n-button text quaterary round type="primary" @click="selectFilter('series', bookInfo.series)">{{ formattedSeries }}</n-button>
+                  丛书：<n-button
+                    text
+                    quaterary
+                    round
+                    type="primary"
+                    @click="selectFilter('series', bookInfo.series)"
+                    >{{ formattedSeries }}</n-button
+                  >
                 </p>
               </div>
             </div>
@@ -65,7 +84,7 @@ import { Ibook } from '@/service/book/types'
 import { bookInfoRequest } from '@/service/book/book'
 import bookDetail from './bookDetail.vue'
 import eventBus from '@/eventbus/index'
-import {useBookStore} from '@/store'
+import { useBookStore } from '@/store'
 
 const bookStore = useBookStore()
 
@@ -91,7 +110,6 @@ function updateDetailVisible(id: Number) {
     showDetailModal.value = false
   }
 }
-
 
 eventBus.on('updateFilter', async () => {
   await fetchBookInfo()
@@ -127,8 +145,7 @@ const fetchBookInfo = async () => {
       n: props.id,
       ...bookStore.getParams
     })
-    if (response.code != 200)
-      return 
+    if (response.code != 200) return
     if (response['data'].length === 0) {
       bookInfo.value = null
       return
