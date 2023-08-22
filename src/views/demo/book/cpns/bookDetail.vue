@@ -1,7 +1,7 @@
 <template>
   <div>
     <n-modal
-      v-model:show="showDetailModal"
+      v-model:show="showModal"
       class="custom-card"
       preset="card"
       style="width: 75%"
@@ -75,6 +75,7 @@
             <div
               v-for="(percent, index) in props.bookInfo.rating.percent"
               class="star-progress-container"
+              :key="index"
             >
               <div class="star-rating">
                 <span>{{ index + 1 }}星</span>
@@ -124,13 +125,13 @@ const props = defineProps({
 
 defineEmits(['updateDetailVisible'])
 
-const showDetailModal = ref(false)
+const showModal = ref(false)
 
 watch(
   () => props.showDetailModal,
   (newVal, oldVal) => {
     if (newVal !== oldVal) {
-      showDetailModal.value = newVal
+      showModal.value = newVal
     }
   }
 )
