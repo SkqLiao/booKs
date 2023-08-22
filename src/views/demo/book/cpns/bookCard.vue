@@ -10,15 +10,22 @@
           </n-col>
           <n-col :span="18">
             <div class="content">
-              <h3>
-                <div @click="showDetailModal = true" class="title-button">
-                  {{ bookInfo.title }}
-                </div>
-              </h3>
+              <n-button text tertiary @click="showDetailModal = true"
+                ><h3>{{ bookInfo.title }}</h3></n-button
+              >
               <div class="info">
                 <p>
-                  作者：<span class="author-list">
-                    {{ formattedAuthors }}
+                  作者：<span>
+                    <n-button
+                      v-for="author in formattedAuthors"
+                      :key="author"
+                      text
+                      quaterary
+                      round
+                      @click="selectFilter('author', author)"
+                    >
+                      {{ author }}
+                    </n-button>
                   </span>
                 </p>
                 <p>
@@ -104,7 +111,7 @@ const selectFilter = (key: string, value: string) => {
 
 const showDetailModal = ref(false)
 
-function updateDetailVisible(id: Number) {
+function updateDetailVisible(id: number) {
   console.log('update-detail-visible', id)
   if (props.id === id) {
     showDetailModal.value = false
@@ -119,12 +126,21 @@ const bookInfo = ref<Ibook | null>(null)
 const decodedCover = ref<string | undefined>(undefined)
 
 const formattedAuthors = computed(() => {
-  const MAX_LENGTH = 16
+  const MAX_LENGTH = 12
   const authors = bookInfo.value?.author || []
-  let displayAuthors = authors.join(', ')
-  if (displayAuthors.length > MAX_LENGTH) {
-    displayAuthors = displayAuthors.slice(0, MAX_LENGTH) + '...'
+
+  let displayAuthors = []
+  let currentLength = 0
+
+  for (const author of authors) {
+    if (currentLength + author.length <= MAX_LENGTH) {
+      displayAuthors.push(author)
+      currentLength += author.length + 1
+    } else {
+      break
+    }
   }
+
   return displayAuthors
 })
 
@@ -214,9 +230,5 @@ onMounted(async () => {
 .time {
   font-size: 12px;
   color: #999;
-}
-.card-footer {
-  padding: 10px;
-  text-align: center;
 }
 </style>
