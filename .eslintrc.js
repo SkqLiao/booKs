@@ -28,6 +28,7 @@ module.exports = {
   },
   plugins: ['@typescript-eslint', 'vue'],
   rules: {
-    'no-console': 'off'
+    'no-console': 'off',
+    'vue/multi-word-component-names': 'off'
   }
 }
