@@ -10,7 +10,7 @@
           </n-col>
           <n-col :span="18">
             <div class="content">
-              <n-button text tertiary @click="showDetailModal = true"
+              <n-button text @click="showDetailModal = true"
                 ><h3>{{ bookInfo.title }}</h3></n-button
               >
               <div class="info">
