@@ -58,6 +58,7 @@ if (isset($input_data['cover_base64'])) {
 }
 
 // 构建 SQL 更新语句
+
 $sql = "UPDATE basic_info SET ";
 $update_fields = array();
 
