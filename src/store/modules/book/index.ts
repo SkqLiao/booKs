@@ -2,9 +2,10 @@ import { defineStore } from 'pinia'
 
 interface BookParams {
   isbn?: string
-  publish?: string[] // Change the type to string[]
-  producer?: string[] // Change the type to string[]
-  series?: string[] // Change the type to string[]
+  author?: string[]
+  publish?: string[]
+  producer?: string[]
+  series?: string[]
   buy_date_from?: string
   buy_date_to?: string
   buy_price_from?: number
