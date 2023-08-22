@@ -2,8 +2,6 @@ import axios from 'axios'
 import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios'
 import type { HYRequestInterceptors, HYRequestConfig } from './type'
 
-const DEAFULT_LOADING = true
-
 class HYRequest {
   instance: AxiosInstance
   interceptors: HYRequestInterceptors

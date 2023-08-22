@@ -39,3 +39,9 @@ export interface IDataType<T = any> {
   code: number
   data: T
 }
+
+export interface DoubanAPI {
+  success: boolean
+  data: Ibook
+  is_cache: boolean
+}

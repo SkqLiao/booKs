@@ -1,15 +1,15 @@
-import hyRequest from '../index'
+import { hyRequest, hyRequest2 } from '../index'
 
-import { IDataType, Ibook, IbookParams } from './types'
+import { IDataType, Ibook, IbookParams, DoubanAPI } from './types'
 
-export function bookInfoRequest(params: Object) {
+export function bookInfoRequest(params: object) {
   return hyRequest.get<IDataType<Ibook[]>>({
     url: '/book/get.php',
     params: params
   })
 }
 
-export function bookNumberRequest(params: Object) {
+export function bookNumberRequest(params: object) {
   return hyRequest.get<IDataType<number>>({
     url: '/book/getCount.php',
     params: params
@@ -38,5 +38,11 @@ export function bookParamRequest(param: string) {
     params: {
       query: param
     }
+  })
+}
+
+export function bookDoubanRequest(isbn: string) {
+  return hyRequest2.get<DoubanAPI>({
+    url: '/isbn/' + isbn
   })
 }
