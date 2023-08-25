@@ -10,6 +10,7 @@ export interface BookParams {
   buy_date_to?: string
   buy_price_from?: number
   buy_price_to?: number
+  buy_pos?: string[]
   [key: string]: string | string[] | number | undefined
 }
 

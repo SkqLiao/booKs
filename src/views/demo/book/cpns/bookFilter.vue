@@ -74,6 +74,17 @@
         </div>
       </n-form-item>
 
+      <n-form-item label="购买平台">
+        <n-select
+          v-model:value="selectedBuyPos"
+          :options="buyPosOptions"
+          multiple
+          filterable
+          clearable
+        >
+        </n-select>
+      </n-form-item>
+
       <n-button type="primary" @click="applyFilter">确定</n-button>
       <n-button @click="clearFilter">重置</n-button>
     </n-form>
@@ -111,11 +122,13 @@ watch(
 const selectedPublish: Ref<string[]> = ref([])
 const selectedSeries: Ref<string[]> = ref([])
 const selectedProduce: Ref<string[]> = ref([])
+const selectedBuyPos: Ref<string[]> = ref([])
 const selectedDateRange: Ref<[string, string] | undefined> = ref(undefined)
 const priceRange = ref<number[]>([])
 const seriesOptions = ref<{ label: string; value: string }[]>([])
 const publishOptions = ref<{ label: string; value: string }[]>([])
 const produceOptions = ref<{ label: string; value: string }[]>([])
+const buyPosOptions = ref<{ label: string; value: string }[]>([])
 
 const getInfo = async (params: string) => {
   try {
@@ -155,6 +168,9 @@ const applyFilter = () => {
     filters.buy_price_from = priceRange.value[0]
     filters.buy_price_to = priceRange.value[1]
   }
+  if (selectedBuyPos.value.length > 0) {
+    filters.buy_pos = selectedBuyPos.value
+  }
   bookStore.setParams(filters)
   eventBus.emit('updateFilter')
   emits('updateFilterVisible')
@@ -166,12 +182,14 @@ const clearFilter = () => {
   selectedProduce.value = []
   selectedDateRange.value = undefined
   priceRange.value = []
+  selectedBuyPos.value = []
 }
 
 onMounted(async () => {
   publishOptions.value = await getInfo('publish')
   produceOptions.value = await getInfo('producer')
   seriesOptions.value = await getInfo('series')
+  buyPosOptions.value = await getInfo('buy_pos')
   selectedPublish.value = bookStore.getParams?.publish ?? []
   selectedSeries.value = bookStore.getParams?.series ?? []
   selectedProduce.value = bookStore.getParams?.producer ?? []
@@ -184,6 +202,7 @@ onMounted(async () => {
   priceRange.value = bookStore.getParams?.buy_price_from && bookStore.getParams?.buy_price_to
     ? [bookStore.getParams.buy_price_from, bookStore.getParams.buy_price_to]
     : []
+  selectedBuyPos.value = bookStore.getParams?.buy_pos ?? []
 })
 </script>
 
