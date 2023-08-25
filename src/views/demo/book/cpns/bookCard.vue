@@ -10,12 +10,13 @@
           </n-col>
           <n-col :span="18">
             <div class="content">
-              <n-button text @click="showDetailModal = true"
-                ><h3>{{ bookInfo.title }}</h3></n-button
-              >
+              <n-button text @click="showDetailModal = true" style="white-space: normal;">
+                <h3>{{ bookInfo.title }}</h3>
+              </n-button>
               <div class="info">
                 <p>
-                  作者：<span>
+                  作者：
+                  <span class="field-container">
                     <n-button
                       v-for="author in formattedAuthors"
                       :key="author"
@@ -29,34 +30,47 @@
                   </span>
                 </p>
                 <p>
-                  出版社：<n-button
-                    text
-                    quaterary
-                    round
-                    type="info"
-                    @click="selectFilter('publish', bookInfo.publish)"
-                    >{{ bookInfo.publish }}</n-button
-                  >
+                  出版社：
+                  <span class="field-container">
+                    <n-button
+                      text
+                      quaterary
+                      round
+                      type="info"
+                      @click="selectFilter('publish', bookInfo.publish)"
+                    >
+                      {{ bookInfo.publish }}
+                    </n-button>
+                  </span>
                 </p>
                 <p v-if="bookInfo.producer">
-                  出版方：<n-button
-                    text
-                    quaterary
-                    round
-                    type="primary"
-                    @click="selectFilter('producer', bookInfo.producer)"
-                    >{{ bookInfo.producer }}</n-button
-                  >
+                  出版方：
+                  <span class="field-container">
+                    <n-button
+                      text
+                      quaterary
+                      round
+                      type="primary"
+                      @click="selectFilter('producer', bookInfo.producer)"
+                    >
+                      {{ bookInfo.producer }}
+                    </n-button>
+                  </span>
                 </p>
                 <p v-if="bookInfo.series">
-                  丛书：<n-button
-                    text
-                    quaterary
-                    round
-                    type="primary"
-                    @click="selectFilter('series', bookInfo.series)"
-                    >{{ formattedSeries }}</n-button
-                  >
+                  丛书：
+                  <span class="field-container">
+                    <n-button
+                      text
+                      quaterary
+                      round
+                      type="primary"
+                      @click="selectFilter('series', bookInfo.series)"
+                      style="white-space: normal;"
+                    >
+                      {{ formattedSeries }}
+                    </n-button>
+                  </span>
                 </p>
               </div>
             </div>
@@ -112,7 +126,6 @@ const selectFilter = (key: string, value: string) => {
 const showDetailModal = ref(false)
 
 function updateDetailVisible(id: number) {
-  console.log('update-detail-visible', id)
   if (props.id === id) {
     showDetailModal.value = false
   }
@@ -126,7 +139,7 @@ const bookInfo = ref<Ibook | null>(null)
 const decodedCover = ref<string | undefined>(undefined)
 
 const formattedAuthors = computed(() => {
-  const MAX_LENGTH = 12
+  const MAX_LENGTH = 12000
   const authors = bookInfo.value?.author || []
 
   let displayAuthors = []
@@ -145,7 +158,7 @@ const formattedAuthors = computed(() => {
 })
 
 const formattedSeries = computed(() => {
-  const MAX_LENGTH = 10
+  const MAX_LENGTH = 10000
   const series = bookInfo.value?.series || ''
   let displaySeries = series
   if (displaySeries.length > MAX_LENGTH) {
@@ -230,5 +243,11 @@ onMounted(async () => {
 .time {
   font-size: 12px;
   color: #999;
+}
+.field-container {
+  max-height: 1.5em; /* Adjust this value as needed */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 </style>
