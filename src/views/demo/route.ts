@@ -62,7 +62,7 @@ export default {
     {
       name: 'Add Book',
       path: 'addBook',
-      component: () => import('@/views/demo/addBook/index.vue'),
+      component: () => import('@/views/demo/edit/addBook.vue'),
       meta: {
         title: '增加书籍',
         icon: 'mdi:book-plus',
