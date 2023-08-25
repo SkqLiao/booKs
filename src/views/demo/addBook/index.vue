@@ -107,8 +107,10 @@ const queryBook = async () => {
         response.data.rating.five_star_per as number
       ] as number[]
     } as IbookRating
-    decodedCover.value = (response.data?.cover) ?? defaultCoverImage
-    bookInfo.value.cover_base64 = decodedCover.value
+    if (response.data.cover) {
+      decodedCover.value = response.data.cover
+      bookInfo.value.cover_base64 = decodedCover.value
+    }
     authors.value = bookInfo.value.author.join(',')
     translators.value = bookInfo.value.translator.join(',')
   } catch (error) {
