@@ -38,7 +38,7 @@ const getFilterInfo = () => {
   const params = bookStore.getParams
   const info: string[] = []
   const translate: Record<string, string> = {
-    series: '系列',
+    series: '丛书',
     publish: '出版社',
     producer: '出品方'
   }
@@ -71,7 +71,7 @@ const removeFilter = (info: string) => {
   const type = info.split(':')[0].trim()
   const bookStore = useBookStore()
   const translate: Record<string, string[]> = {
-    系列: ['series'],
+    丛书: ['series'],
     出版社: ['publish'],
     出品方: ['producer'],
     购买日期: ['buy_date_from', 'buy_date_to'],
