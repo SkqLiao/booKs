@@ -55,7 +55,7 @@
         />
       </n-form-item>
 
-      <n-form-item label="购买价格区间">
+      <n-form-item label="购买价格">
         <div class="price-range">
           <n-input-number v-model:value="priceRange[0]">
             <template #prefix> ￥ </template>
