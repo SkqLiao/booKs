@@ -10,7 +10,7 @@ withDefaults(defineProps<Props>(), {
   title: undefined
 })
 
-const route = useRoute()
+//const route = useRoute()
 </script>
 
 <template>
