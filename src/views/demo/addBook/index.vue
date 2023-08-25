@@ -50,10 +50,10 @@
           </n-form-item>
           <n-card>
             <n-form-item label="购买日期" path="buy_date" required>
-              <n-date-picker v-model:formatted-value="bookInfo.buy_date" />
+              <n-date-picker v-model:formatted-value="bookInfo.buy_date" style="width: 100%"/>
             </n-form-item>
             <n-form-item label="购买价格" path="real_price">
-              <n-input-number v-model:value="bookInfo.real_price">
+              <n-input-number v-model:value="bookInfo.real_price" style="width: 100%">
                 <template #prefix> ￥ </template>
               </n-input-number>
             </n-form-item>
