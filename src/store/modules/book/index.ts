@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-interface BookParams {
+export interface BookParams {
   isbn?: string
   author?: string[]
   publish?: string[]
