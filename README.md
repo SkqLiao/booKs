@@ -34,7 +34,7 @@ Based on [qs admin](https://github.com/zclzone/qs-admin).
 - [x] 新增了删除书籍时的警告弹窗
 - [x] 组件分离，将书籍详情和编辑书籍的dialog分离成单独的组件
 - [x] 组件间通信，处理了删除书籍时中的各种情况
-- [ ] bug：author/translator的[String]类型可能需要处理
+- [x] bug：author/translator的[String]类型可能需要处理
 
 ### 2023/08/17
 
@@ -46,10 +46,18 @@ Based on [qs admin](https://github.com/zclzone/qs-admin).
 
 ### 2023-08-18
 
-- 筛选书籍面板及后端接口
-- bug：关闭modal时的回调函数（fixed：2023/08/21）
+- [x] 筛选书籍面板及后端接口
+- [x] bug：关闭modal时的回调函数（fixed：2023/08/21）
 
 ### 2023-08-21
 
 - [x] 解决关闭modal时的回调函数的bug
 - [x] 增加BookParams的本地存储，用于实时刷新当前筛选书籍
+
+## 2023-08-22
+
+- [x] 增加书籍增加页面
+
+### 2023-08-25
+
+- [x] 增加书籍编辑功能
