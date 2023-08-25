@@ -41,7 +41,8 @@ const getFilterInfo = () => {
     series: '丛书',
     publish: '出版社',
     producer: '出品方',
-    buy_pos: '来源'
+    buy_pos: '来源',
+    author: '作者'
   }
   for (const key in params) {
     if (Array.isArray(params[key]) && (params[key] as string[]).length > 0) {
@@ -78,7 +79,8 @@ const removeFilter = (info: string) => {
     出品方: ['producer'],
     购买日期: ['buy_date_from', 'buy_date_to'],
     价格: ['buy_price_from', 'buy_price_to'],
-    来源: ['buy_pos']
+    来源: ['buy_pos'],
+    作者: ['author']
   }
   for (const key of translate[type]) {
     bookStore.removeParams(key)
