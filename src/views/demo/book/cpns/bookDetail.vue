@@ -61,7 +61,7 @@
             <n-tag type="info" round> {{ props.bookInfo.buy_pos }}</n-tag>
             <n-tag type="success" round> {{ props.bookInfo.buy_date }}</n-tag>
             <n-tag type="warning" round>
-              {{ parseInt(props.bookInfo.real_price) }} 元</n-tag
+              {{ props.bookInfo.real_price }} 元</n-tag
             >
           </n-card>
           <n-card title="阅读状态" size="small" hoverable>
