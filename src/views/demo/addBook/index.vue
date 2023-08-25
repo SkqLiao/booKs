@@ -32,7 +32,7 @@
             <n-input v-model:value="bookInfo.binding" />
           </n-form-item>
           <n-form-item label="定价" path="price">
-            <n-input v-model:value="bookInfo.price" />
+            <n-input v-model:number="bookInfo.price" />
           </n-form-item>
         </n-gi>
         <n-gi>
@@ -46,7 +46,7 @@
             <n-input v-model:value="bookInfo.series" />
           </n-form-item>
           <n-form-item label="页数" path="pages">
-            <n-input v-model:value="bookInfo.pages" />
+            <n-input v-model:number="bookInfo.pages" />
           </n-form-item>
           <n-card>
             <n-form-item label="购买日期" path="buy_date" required>
