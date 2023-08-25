@@ -7,19 +7,20 @@ import eventBus from '@/eventbus/index'
 import { useBookStore } from '@/store'
 
 const bookStore = useBookStore()
+const filters: Ref<string[]> = ref([])
 
 eventBus.on('updateFilter', async () => {
+  currentPage.value = 1
   await fetchBooks(currentPage.value)
+  filters.value = getFilterInfo()
 })
 
 const showFilterModal = ref(false)
 const pageSize = 12
 const totalBooks = ref(0)
 const currentPage = ref(1)
-const dataLoaded = ref(false)
 const bookIds = ref<number[]>([])
 const fetchBooks = async (page: number) => {
-  dataLoaded.value = false
   try {
     const response = await bookNumberRequest(bookStore.params)
     totalBooks.value = response.data
@@ -28,10 +29,33 @@ const fetchBooks = async (page: number) => {
       { length: Math.min(pageSize, totalBooks.value - startIndex + 1) },
       (_, index) => startIndex + index
     )
-    dataLoaded.value = true
   } catch (error) {
     console.error('获取图书信息失败:', error)
   }
+}
+
+const getFilterInfo = () => {
+  const params = bookStore.getParams
+  const info: string[] = []
+  const translate: Record<string, string> = {
+    series: '系列',
+    publish: '出版社',
+    producer: '出品方'
+  }
+  for (const key in params) {
+    if (Array.isArray(params[key]) && (params[key] as string[]).length > 0) {
+      info.push(`${translate[key]}: ${(params[key] as string[]).join('、')}`)
+    }
+  }
+
+  if ('buy_date_to' in params && 'buy_date_from' in params) {
+    info.push(`购买日期: ${params.buy_date_from}~${params.buy_date_to}`)
+  }
+
+  if ('buy_price_to' in params && 'buy_price_from' in params) {
+    info.push(`价格: [${params.buy_price_from},${params.buy_price_to}]`)
+  }
+  return info
 }
 
 const handlePageChange = async (page: number) => {
@@ -40,8 +64,24 @@ const handlePageChange = async (page: number) => {
 }
 
 onMounted(async () => {
-  await fetchBooks(currentPage.value)
+  eventBus.emit('updateFilter')
 })
+
+const removeFilter = (info: string) => {
+  const type = info.split(':')[0].trim()
+  const bookStore = useBookStore()
+  const translate: Record<string, string[]> = {
+    系列: ['series'],
+    出版社: ['publish'],
+    出品方: ['producer'],
+    购买日期: ['buy_date_from', 'buy_date_to'],
+    价格: ['buy_price_from', 'buy_price_to']
+  }
+  for (const key of translate[type]) {
+    bookStore.removeParams(key)
+  }
+  eventBus.emit('updateFilter')
+}
 </script>
 
 <style scoped>
@@ -54,6 +94,16 @@ onMounted(async () => {
 
 <template>
   <CommonPage :show-footer="true">
+    <span v-if="filters.length > 0">
+      <n-tag
+        v-for="(key, index) in filters"
+        :key="index"
+        type="info"
+        closable
+        @close="removeFilter(key)"
+        >{{ key }}</n-tag
+      >
+    </span>
     <n-grid :x-gap="8" :y-gap="5" :cols="4">
       <n-grid-item v-for="id in bookIds" :key="id">
         <book-card :id="id" />
