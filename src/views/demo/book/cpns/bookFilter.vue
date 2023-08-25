@@ -15,6 +15,7 @@
           v-model:value="selectedPublish"
           :options="publishOptions"
           multiple
+          filterable
           clearable
         >
         </n-select>
@@ -25,6 +26,7 @@
           v-model:value="selectedProduce"
           :options="produceOptions"
           multiple
+          filterable
           clearable
         >
         </n-select>
@@ -35,6 +37,7 @@
           v-model:value="selectedSeries"
           :options="seriesOptions"
           multiple
+          filterable
           clearable
         >
         </n-select>
@@ -42,27 +45,32 @@
 
       <n-form-item label="购买日期">
         <n-date-picker
-          v-model:value="selectedDateRange"
+          v-model:formatted-value="selectedDateRange"
           type="daterange"
           format="yyyy-MM-dd"
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
+          style="width: 100%"
         />
       </n-form-item>
 
       <n-form-item label="购买价格区间">
         <div class="price-range">
-          <n-input-number v-model:value="priceRange[0]" />
-          <span> - </span>
+          <n-input-number v-model:value="priceRange[0]">
+            <template #prefix> ￥ </template>
+          </n-input-number>
+          <span> — </span>
+
           <n-input-number
             v-model:value="priceRange[1]"
             :validator="
               (x: number) => {
-                return x >= priceRange[0]
+                return priceRange.length > 0 && x >= priceRange[0]
               }
             "
-          />
+            ><template #prefix> ￥ </template>
+          </n-input-number>
         </div>
       </n-form-item>
 
@@ -77,7 +85,7 @@ import { ref, Ref, watch, onMounted } from 'vue'
 import { bookParamRequest } from '@/service/book/book'
 import { IbookParams } from '@/service/book/types'
 import eventBus from '@/eventbus/index'
-import { useBookStore } from '@/store'
+import { useBookStore, BookParams } from '@/store'
 
 const bookStore = useBookStore()
 
@@ -103,17 +111,8 @@ watch(
 const selectedPublish: Ref<string[]> = ref([])
 const selectedSeries: Ref<string[]> = ref([])
 const selectedProduce: Ref<string[]> = ref([])
-const selectedDateRange = ref<[number, number]>([
-  Date.parse(bookStore.getParams?.buy_date_from ?? '2000-01-01'),
-  Date.parse(
-    bookStore.getParams?.buy_date_to ??
-      new Date(Date.now()).toISOString().slice(0, 10)
-  )
-])
-const priceRange = ref<[number, number]>([
-  bookStore.getParams?.buy_price_from ?? 0,
-  bookStore.getParams?.buy_price_to ?? 10000
-])
+const selectedDateRange: Ref<[string, string] | undefined> = ref(undefined)
+const priceRange = ref<number[]>([])
 const seriesOptions = ref<{ label: string; value: string }[]>([])
 const publishOptions = ref<{ label: string; value: string }[]>([])
 const produceOptions = ref<{ label: string; value: string }[]>([])
@@ -138,18 +137,23 @@ const getInfo = async (params: string) => {
 }
 
 const applyFilter = () => {
-  const filters = {
-    publish: selectedPublish.value,
-    series: selectedSeries.value,
-    producer: selectedProduce.value,
-    buy_date_from: new Date(selectedDateRange.value[0])
-      .toISOString()
-      .slice(0, 10),
-    buy_date_to: new Date(selectedDateRange.value[1])
-      .toISOString()
-      .slice(0, 10),
-    buy_price_from: priceRange.value[0],
-    buy_price_to: priceRange.value[1]
+  const filters = {} as BookParams
+  if (selectedPublish.value.length > 0) {
+    filters.publish = selectedPublish.value
+  }
+  if (selectedSeries.value.length > 0) {
+    filters.series = selectedSeries.value
+  }
+  if (selectedProduce.value.length > 0) {
+    filters.producer = selectedProduce.value
+  }
+  if (selectedDateRange.value) {
+    filters.buy_date_from = selectedDateRange.value[0]
+    filters.buy_date_to = selectedDateRange.value[1]
+  }
+  if (priceRange.value.length == 2) {
+    filters.buy_price_from = priceRange.value[0]
+    filters.buy_price_to = priceRange.value[1]
   }
   bookStore.setParams(filters)
   eventBus.emit('updateFilter')
@@ -160,20 +164,26 @@ const clearFilter = () => {
   selectedPublish.value = []
   selectedSeries.value = []
   selectedProduce.value = []
-  selectedDateRange.value = [Date.parse('2000-01-01'), Date.now()]
-  priceRange.value = [0, 10000]
+  selectedDateRange.value = undefined
+  priceRange.value = []
 }
-
-eventBus.on('updateFilter', async () => {
-  selectedPublish.value = bookStore.getParams?.publish ?? []
-  selectedSeries.value = bookStore.getParams?.series ?? []
-  selectedProduce.value = bookStore.getParams?.producer ?? []
-})
 
 onMounted(async () => {
   publishOptions.value = await getInfo('publish')
   produceOptions.value = await getInfo('producer')
   seriesOptions.value = await getInfo('series')
+  selectedPublish.value = bookStore.getParams?.publish ?? []
+  selectedSeries.value = bookStore.getParams?.series ?? []
+  selectedProduce.value = bookStore.getParams?.producer ?? []
+  selectedDateRange.value = bookStore.getParams?.buy_date_from
+    ? [
+        bookStore.getParams.buy_date_from,
+        bookStore.getParams.buy_date_to ?? ''
+      ]
+    : undefined
+  priceRange.value = bookStore.getParams?.buy_price_from && bookStore.getParams?.buy_price_to
+    ? [bookStore.getParams.buy_price_from, bookStore.getParams.buy_price_to]
+    : []
 })
 </script>
 
@@ -181,5 +191,7 @@ onMounted(async () => {
 .price-range {
   display: flex;
   align-items: center;
+  width: 100%;
+  justify-content: space-between;
 }
 </style>
