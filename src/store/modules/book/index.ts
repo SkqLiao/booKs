@@ -10,6 +10,7 @@ export interface BookParams {
   buy_date_to?: string
   buy_price_from?: number
   buy_price_to?: number
+  [key: string]: string | string[] | number | undefined
 }
 
 export const useBookStore = defineStore('book', {
@@ -24,6 +25,9 @@ export const useBookStore = defineStore('book', {
   actions: {
     setParams(params: BookParams) {
       this.params = params
+    },
+    removeParams(param: string) {
+      if (this.params[param]) delete this.params[param]
     }
   }
 })
