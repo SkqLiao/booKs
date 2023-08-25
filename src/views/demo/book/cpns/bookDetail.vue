@@ -94,8 +94,21 @@
           </n-card>
         </n-gi>
       </n-grid>
-      <template #footer> 尾部 </template>
+      <template #footer>
+        <n-button
+          type="info"
+          @click="showEditModal = true"
+          >编辑</n-button
+        >
+      </template>
     </n-modal>
+    <book-edit
+      :bookInfo="bookInfo"
+      :showEditModal="showEditModal"
+      :decodedCover="decodedCover"
+      :id="id"
+      @update-edit-visible="updateEditVisible"
+    />
   </div>
 </template>
 
@@ -103,6 +116,7 @@
 import { ref, watch } from 'vue'
 import { Ibook } from '@/service/book/types'
 import { ExternalLinkAlt as LinkIcon } from '@vicons/fa'
+import BookEdit from '@/views/demo/edit/editBook.vue'
 
 const props = defineProps({
   bookInfo: {
@@ -135,6 +149,14 @@ watch(
     }
   }
 )
+
+const showEditModal = ref(false)
+
+function updateEditVisible(id: number) {
+  if (props.id === id) {
+    showEditModal.value = false
+  }
+}
 </script>
 
 <style scoped>
