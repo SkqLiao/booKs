@@ -21,6 +21,33 @@ import { readingInfoRequest, bookInfoRequest } from '@/service/read/read'
 const lastYear = ref(0)
 const attributes = ref()
 
+interface DateInterval {
+  start: Date
+  end: Date
+}
+
+function getIntervals(dates: Date[]): DateInterval[] {
+  if (dates.length === 0) {
+    return []
+  }
+  const sortedDates = dates.sort((a, b) => a.getTime() - b.getTime())
+  const intervals: DateInterval[] = [
+    { start: sortedDates[0], end: sortedDates[0] }
+  ]
+
+  for (let i = 1; i < sortedDates.length; i++) {
+    const currentInterval = intervals[intervals.length - 1]
+    const currentDate = sortedDates[i]
+    if (currentDate.getTime() - currentInterval.end.getTime() <= 86400000) {
+      intervals[intervals.length - 1].end = currentDate
+    } else {
+      intervals.push({ start: currentDate, end: currentDate })
+    }
+  }
+
+  return intervals
+}
+
 const updateView = async (pages: { month: number; year: number }[]) => {
   const year = pages[0].year
   if (year === lastYear.value) {
@@ -42,9 +69,31 @@ const updateView = async (pages: { month: number; year: number }[]) => {
   const titleInfo = readingInfo.map((info) => {
     return titles.get(info.book_id) as string
   })
+
+  const dates = readingInfo.map((item) => new Date(item.start_time))
+  const intervals = getIntervals(dates)
+  
+  const colors = [
+    'red',
+    'orange',
+    'yellow',
+    'green',
+    'teal',
+    'blue',
+    'indigo',
+    'purple',
+    'pink'
+  ]
+
+  const getColor = (id: number) => {
+    const len = [1, 3, 7, 14, 30, 60, 90, 180, 365]
+    const index = len.findIndex((item) => item >= id)
+    return colors[index]
+  }
+
   attributes.value = readingInfo.map((item: IRecord, index: number) => {
     return {
-      bar: numberToColor(item.book_id),
+      dot: colors[item.book_id % 9],
       dates: [new Date(item.start_time)],
       popover: {
         label:
@@ -57,6 +106,14 @@ const updateView = async (pages: { month: number; year: number }[]) => {
         visibility: 'hover'
       }
     }
+  })
+  intervals.forEach((element) => {
+    attributes.value.push({
+      highlight: getColor(
+        (element.end.getTime() - element.start.getTime()) / 86400000
+      ),
+      dates: [[element.start, element.end]]
+    })
   })
 }
 
@@ -76,22 +133,6 @@ async function getInfo(
     console.log(error)
     throw new Error(error as string)
   }
-}
-
-const numberToColor = (id: number) => {
-  const colors = [
-    'gray',
-    'red',
-    'orange',
-    'yellow',
-    'green',
-    'teal',
-    'blue',
-    'indigo',
-    'purple',
-    'pink'
-  ]
-  return colors[id % colors.length]
 }
 </script>
 
