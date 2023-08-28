@@ -95,11 +95,7 @@
         </n-gi>
       </n-grid>
       <template #footer>
-        <n-button
-          type="info"
-          @click="showEditModal = true"
-          >编辑</n-button
-        >
+        <n-button type="info" @click="showEditModal = true">编辑</n-button>
       </template>
     </n-modal>
     <book-edit

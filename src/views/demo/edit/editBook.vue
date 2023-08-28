@@ -1,5 +1,5 @@
 <template>
-    <div>
+  <div>
     <n-modal
       v-model:show="showModal"
       class="custom-card"
@@ -9,20 +9,21 @@
       :bordered="false"
       :on-after-leave="() => $emit('updateEditVisible', props.id)"
     >
-    <template #header>
-    编辑书籍：{{ props.bookInfo?.isbn }}
-    </template>
-    <edit-form :bookInfo="props.bookInfo" ref="child" :disabled="true" :isbn="props.bookInfo.isbn"></edit-form>
-    <div class="centered-button">
-    <n-button type="success" @click="updateBook">提交</n-button>
-    </div>
+      <template #header> 编辑书籍：{{ props.bookInfo?.isbn }} </template>
+      <edit-form
+        :bookInfo="props.bookInfo"
+        ref="child"
+        :disabled="true"
+        :isbn="props.bookInfo.isbn"
+      ></edit-form>
+      <div class="centered-button">
+        <n-button type="success" @click="updateBook">提交</n-button>
+      </div>
     </n-modal>
-    </div>
+  </div>
 </template>
 
-
 <script setup lang="ts">
-
 import { Ibook } from '@/service/book/types'
 import EditForm from './cpns/editForm.vue'
 import { bookInfoUpdate } from '@/service/book/book'
@@ -88,7 +89,6 @@ const updateBook = async () => {
     console.log('验证失败', error)
   }
 }
-
 </script>
 
 <style scoped>

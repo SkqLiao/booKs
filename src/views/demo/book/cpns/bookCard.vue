@@ -10,7 +10,11 @@
           </n-col>
           <n-col :span="18">
             <div class="content">
-              <n-button text @click="showDetailModal = true" style="white-space: normal;">
+              <n-button
+                text
+                @click="showDetailModal = true"
+                style="white-space: normal"
+              >
                 <h3>{{ bookInfo.title }}</h3>
               </n-button>
               <div class="info">
@@ -66,7 +70,7 @@
                       round
                       type="primary"
                       @click="selectFilter('series', bookInfo.series)"
-                      style="white-space: normal;"
+                      style="white-space: normal"
                     >
                       {{ formattedSeries }}
                     </n-button>
