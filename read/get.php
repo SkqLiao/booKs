@@ -23,6 +23,7 @@ if (!isset($_GET['year'])) {
 $year = $_GET['year'];
 $sql = "SELECT * FROM reading_record WHERE YEAR(start_time) = $year";
 $result = $conn->query($sql);
+$response['data'] = array();
 while ($row = $result->fetch_assoc()) {
     $response['data'][] = $row;
 }
