@@ -69,6 +69,17 @@ export default {
         role: ['admin'],
         requireAuth: true
       }
+    },
+    {
+      name: 'Reading Status',
+      path: 'read',
+      component: () => import('@/views/demo/read/index.vue'),
+      meta: {
+        title: '阅读记录',
+        icon: 'mdi:book-open-page-variant',
+        role: ['admin'],
+        requireAuth: true
+      }
     }
   ]
 } as RouteType
