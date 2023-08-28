@@ -61,3 +61,7 @@ Based on [qs admin](https://github.com/zclzone/qs-admin).
 ### 2023-08-25
 
 - [x] 增加书籍编辑功能
+
+### 2023-08-28
+
+- [x] 增加阅读日历页面
