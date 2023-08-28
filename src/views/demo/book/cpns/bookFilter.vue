@@ -10,6 +10,9 @@
     :on-after-leave="() => $emit('updateFilterVisible')"
   >
     <n-form>
+      <n-form-item label="标题">
+        <n-input v-model:value="inputTitle" placeholder="请输出标题" />
+      </n-form-item>
       <n-form-item label="出版社">
         <n-select
           v-model:value="selectedPublish"
@@ -17,17 +20,19 @@
           multiple
           filterable
           clearable
+          placeholder="请选择出版社"
         >
         </n-select>
       </n-form-item>
 
-      <n-form-item label="出版方">
+      <n-form-item label="出品方">
         <n-select
           v-model:value="selectedProduce"
           :options="produceOptions"
           multiple
           filterable
           clearable
+          placeholder="请选择出品方"
         >
         </n-select>
       </n-form-item>
@@ -39,6 +44,7 @@
           multiple
           filterable
           clearable
+          placeholder="请选择丛书"
         >
         </n-select>
       </n-form-item>
@@ -57,7 +63,7 @@
 
       <n-form-item label="购买价格">
         <div class="price-range">
-          <n-input-number v-model:value="priceRange[0]">
+          <n-input-number v-model:value="priceRange[0]" placeholder="价格下限">
             <template #prefix> ￥ </template>
           </n-input-number>
           <span> — </span>
@@ -69,6 +75,7 @@
                 return priceRange.length > 0 && x >= priceRange[0]
               }
             "
+            placeholder="价格上限"
             ><template #prefix> ￥ </template>
           </n-input-number>
         </div>
@@ -81,6 +88,7 @@
           multiple
           filterable
           clearable
+          placeholder="请选择购买平台"
         >
         </n-select>
       </n-form-item>
@@ -129,6 +137,7 @@ const seriesOptions = ref<{ label: string; value: string }[]>([])
 const publishOptions = ref<{ label: string; value: string }[]>([])
 const produceOptions = ref<{ label: string; value: string }[]>([])
 const buyPosOptions = ref<{ label: string; value: string }[]>([])
+const inputTitle = ref('')
 
 const getInfo = async (params: string) => {
   try {
@@ -171,6 +180,9 @@ const applyFilter = () => {
   if (selectedBuyPos.value.length > 0) {
     filters.buy_pos = selectedBuyPos.value
   }
+  if (inputTitle.value.length > 0) {
+    filters.title = inputTitle.value
+  }
   bookStore.setParams(filters)
   eventBus.emit('updateFilter')
   emits('updateFilterVisible')
@@ -194,15 +206,14 @@ onMounted(async () => {
   selectedSeries.value = bookStore.getParams?.series ?? []
   selectedProduce.value = bookStore.getParams?.producer ?? []
   selectedDateRange.value = bookStore.getParams?.buy_date_from
-    ? [
-        bookStore.getParams.buy_date_from,
-        bookStore.getParams.buy_date_to ?? ''
-      ]
+    ? [bookStore.getParams.buy_date_from, bookStore.getParams.buy_date_to ?? '']
     : undefined
-  priceRange.value = bookStore.getParams?.buy_price_from && bookStore.getParams?.buy_price_to
-    ? [bookStore.getParams.buy_price_from, bookStore.getParams.buy_price_to]
-    : []
+  priceRange.value =
+    bookStore.getParams?.buy_price_from && bookStore.getParams?.buy_price_to
+      ? [bookStore.getParams.buy_price_from, bookStore.getParams.buy_price_to]
+      : []
   selectedBuyPos.value = bookStore.getParams?.buy_pos ?? []
+  inputTitle.value = bookStore.getParams?.title ?? ''
 })
 </script>
 

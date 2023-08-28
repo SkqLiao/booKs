@@ -2,7 +2,7 @@
 import { bookNumberRequest } from '@/service/book/book'
 import bookCard from './cpns/bookCard.vue'
 import bookFilter from './cpns/bookFilter.vue'
-import { ref, onMounted } from 'vue'
+import { ref, Ref, onMounted } from 'vue'
 import eventBus from '@/eventbus/index'
 import { useBookStore } from '@/store'
 
@@ -42,7 +42,8 @@ const getFilterInfo = () => {
     publish: '出版社',
     producer: '出品方',
     buy_pos: '来源',
-    author: '作者'
+    author: '作者',
+    title: '标题'
   }
   for (const key in params) {
     if (Array.isArray(params[key]) && (params[key] as string[]).length > 0) {
@@ -56,6 +57,10 @@ const getFilterInfo = () => {
 
   if ('buy_price_to' in params && 'buy_price_from' in params) {
     info.push(`价格: [${params.buy_price_from},${params.buy_price_to}]`)
+  }
+
+  if ('title' in params) {
+    info.push(`标题: ${params.title}`)
   }
 
   return info
@@ -80,7 +85,8 @@ const removeFilter = (info: string) => {
     购买日期: ['buy_date_from', 'buy_date_to'],
     价格: ['buy_price_from', 'buy_price_to'],
     来源: ['buy_pos'],
-    作者: ['author']
+    作者: ['author'],
+    标题: ['title']
   }
   for (const key of translate[type]) {
     bookStore.removeParams(key)
