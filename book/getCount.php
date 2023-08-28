@@ -33,6 +33,10 @@ foreach ($keys as $key) {
     }
 }
 
+if (isset($_GET['title'])) {
+    $where_conditions[] = "CONCAT(title, subtitle, original_title) LIKE '%" . $_GET['title'] . "%'";
+}
+
 if (isset($_GET['author'])) {
     foreach ($_GET['author'] as $author) {
         $where_conditions[] = "author LIKE '%" . $author . "%'";
