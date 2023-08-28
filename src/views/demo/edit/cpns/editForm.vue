@@ -6,7 +6,7 @@
           <img :src="decodedCover" alt="封面图像" class="cover-image" />
         </div>
         <n-form-item label="ISBN" required>
-          <n-input v-model:value="props.isbn" :disabled="props.disabled"/>
+          <n-input v-model:value="isbn" :disabled="props.disabled" />
         </n-form-item>
       </n-gi>
       <n-gi>
@@ -100,11 +100,14 @@ const authors = ref('')
 const translators = ref('')
 const bookInfo = ref({} as Ibook)
 
-watch(() => props.bookInfo, (newValue) => {
-  bookInfo.value = newValue;
-  authors.value = bookInfo.value.author.join(',')
-  translators.value = bookInfo.value.translator.join(',')
-});
+watch(
+  () => props.bookInfo,
+  (newValue) => {
+    bookInfo.value = newValue
+    authors.value = bookInfo.value.author.join(',')
+    translators.value = bookInfo.value.translator.join(',')
+  }
+)
 
 const base64ToUrl = (base64Data: string): string => {
   const byteCharacters = atob(base64Data)
@@ -119,6 +122,7 @@ const base64ToUrl = (base64Data: string): string => {
 }
 
 onMounted(() => {
+  isbn.value = props.isbn
   bookInfo.value = props.bookInfo
   authors.value = bookInfo.value?.author?.join(',') ?? ''
   translators.value = bookInfo.value?.translator?.join(',') ?? ''
