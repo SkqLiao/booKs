@@ -94,6 +94,7 @@
           </n-card>
         </n-gi>
       </n-grid>
+      <read-status :bookid="bookInfo.id" />
       <template #footer>
         <n-button type="info" @click="showEditModal = true">编辑</n-button>
       </template>
@@ -113,6 +114,7 @@ import { ref, watch } from 'vue'
 import { Ibook } from '@/service/book/types'
 import { ExternalLinkAlt as LinkIcon } from '@vicons/fa'
 import BookEdit from '@/views/demo/edit/editBook.vue'
+import ReadStatus from './readStatus.vue'
 
 const props = defineProps({
   bookInfo: {

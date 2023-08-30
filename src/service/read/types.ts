@@ -1,6 +1,6 @@
 export interface IRecord {
   book_id: number
-  start_time: string
+  date: Date
   time_length: number
   start_page: number
   end_page: number

@@ -1,4 +1,5 @@
 export interface Ibook {
+  id: number
   title: string
   subtitle: string
   original_title: string

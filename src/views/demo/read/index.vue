@@ -15,8 +15,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { IRecord, IDataType } from '@/service/read/types'
-import { readingInfoRequest, bookInfoRequest } from '@/service/read/read'
+import { IRecord } from '@/service/read/types'
+import {
+  readingInfoRequest,
+  bookInfoRequest,
+  getInfo
+} from '@/service/read/read'
 
 const lastYear = ref(0)
 const attributes = ref()
@@ -69,10 +73,9 @@ const updateView = async (pages: { month: number; year: number }[]) => {
   const titleInfo = readingInfo.map((info) => {
     return titles.get(info.book_id) as string
   })
-
-  const dates = readingInfo.map((item) => new Date(item.start_time))
+  const dates = readingInfo.map((item) => new Date(item.date))
   const intervals = getIntervals(dates)
-  
+
   const colors = [
     'red',
     'orange',
@@ -94,7 +97,7 @@ const updateView = async (pages: { month: number; year: number }[]) => {
   attributes.value = readingInfo.map((item: IRecord, index: number) => {
     return {
       dot: colors[item.book_id % 9],
-      dates: [new Date(item.start_time)],
+      dates: [new Date(item.date)],
       popover: {
         label:
           titleInfo[index] +
@@ -115,24 +118,6 @@ const updateView = async (pages: { month: number; year: number }[]) => {
       dates: [[element.start, element.end]]
     })
   })
-}
-
-async function getInfo(
-  func: (params: object) => Promise<IDataType>,
-  params: object
-) {
-  try {
-    const response = await func(params)
-    if (response.code !== 200) {
-      console.log(response.response)
-      throw new Error(response.response)
-    }
-    //console.log(response.data)
-    return response.data
-  } catch (error) {
-    console.log(error)
-    throw new Error(error as string)
-  }
 }
 </script>
 
