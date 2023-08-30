@@ -23,6 +23,9 @@ dependencies:
   dayjs:
     specifier: ^1.11.8
     version: 1.11.8
+  echarts:
+    specifier: ^5.4.3
+    version: 5.4.3
   eslint-config-prettier:
     specifier: ^9.0.0
     version: registry.npmmirror.com/eslint-config-prettier@9.0.0(eslint@8.47.0)
@@ -41,6 +44,9 @@ dependencies:
   pinia:
     specifier: ^2.1.4
     version: 2.1.4(typescript@4.8.4)(vue@3.3.4)
+  pnpm:
+    specifier: ^8.7.0
+    version: 8.7.0
   prettier:
     specifier: ^3.0.2
     version: registry.npmmirror.com/prettier@3.0.2
@@ -2592,7 +2598,7 @@ packages:
       }
     dependencies:
       pascal-case: 3.1.2
-      tslib: registry.npmmirror.com/tslib@2.4.1
+      tslib: 2.6.2
     dev: true
 
   /camelcase-keys@6.2.2:
@@ -3681,7 +3687,7 @@ packages:
       }
     dependencies:
       no-case: 3.0.4
-      tslib: registry.npmmirror.com/tslib@2.4.1
+      tslib: 2.6.2
     dev: true
 
   /dot-prop@5.3.0:
@@ -3723,6 +3729,16 @@ packages:
         integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==
       }
     dev: true
+
+  /echarts@5.4.3:
+    resolution:
+      {
+        integrity: sha512-mYKxLxhzy6zyTi/FaEbJMOZU1ULGEQHaeIeuMR5L+JnJTpz+YR03mnnpBhbR4+UYJAgiXgpyTVLffPAjOTLkZA==
+      }
+    dependencies:
+      tslib: 2.3.0
+      zrender: 5.4.4
+    dev: false
 
   /editor@1.0.0:
     resolution:
@@ -6102,7 +6118,7 @@ packages:
         integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==
       }
     dependencies:
-      tslib: registry.npmmirror.com/tslib@2.4.1
+      tslib: 2.6.2
     dev: true
 
   /lru-cache@6.0.0:
@@ -6574,7 +6590,7 @@ packages:
       }
     dependencies:
       lower-case: 2.0.2
-      tslib: registry.npmmirror.com/tslib@2.4.1
+      tslib: 2.6.2
     dev: true
 
   /node-fetch-native@0.1.8:
@@ -6895,7 +6911,7 @@ packages:
       }
     dependencies:
       dot-case: 3.0.4
-      tslib: registry.npmmirror.com/tslib@2.4.1
+      tslib: 2.6.2
     dev: true
 
   /parse-entities@2.0.0:
@@ -6948,7 +6964,7 @@ packages:
       }
     dependencies:
       no-case: 3.0.4
-      tslib: registry.npmmirror.com/tslib@2.4.1
+      tslib: 2.6.2
     dev: true
 
   /pascalcase@0.1.1:
@@ -7093,6 +7109,15 @@ packages:
       }
     engines: { node: '>=4' }
     dev: true
+
+  /pnpm@8.7.0:
+    resolution:
+      {
+        integrity: sha512-HWH4wQ6KWl2/vd6g8fXvt9vVF3IjBzrslTzyMKpGQWiEuUJ6ZCHbp48orQ+T++3ji6VwgyN7NQJD3mseOoznHQ==
+      }
+    engines: { node: '>=16.14' }
+    hasBin: true
+    dev: false
 
   /posix-character-classes@0.1.1:
     resolution:
@@ -7579,7 +7604,7 @@ packages:
       }
     engines: { npm: '>=2.0.0' }
     dependencies:
-      tslib: registry.npmmirror.com/tslib@1.14.1
+      tslib: 1.14.1
     dev: true
 
   /rxjs@7.5.7:
@@ -7588,7 +7613,7 @@ packages:
         integrity: sha512-z9MzKh/UcOqB3i20H6rtrlaE/CgjLOvheWK/9ILrbhROGTweAi1BaFsTT9FbwZi5Trr1qNRs+MXkhmR06awzQA==
       }
     dependencies:
-      tslib: registry.npmmirror.com/tslib@2.4.1
+      tslib: 2.6.2
     dev: true
 
   /safe-buffer@5.2.1:
@@ -8485,6 +8510,26 @@ packages:
       strip-bom: 3.0.0
     dev: true
 
+  /tslib@1.14.1:
+    resolution:
+      {
+        integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
+      }
+    dev: true
+
+  /tslib@2.3.0:
+    resolution:
+      {
+        integrity: sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==
+      }
+    dev: false
+
+  /tslib@2.6.2:
+    resolution:
+      {
+        integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==
+      }
+
   /tsutils@3.21.0(typescript@4.8.4):
     resolution:
       {
@@ -8494,7 +8539,7 @@ packages:
     peerDependencies:
       typescript: '>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta'
     dependencies:
-      tslib: registry.npmmirror.com/tslib@1.14.1
+      tslib: 1.14.1
       typescript: 4.8.4
     dev: true
 
@@ -9293,6 +9338,15 @@ packages:
       }
     engines: { node: '>=10' }
 
+  /zrender@5.4.4:
+    resolution:
+      {
+        integrity: sha512-0VxCNJ7AGOMCWeHVyTrGzUgrK4asT4ml9PEkeGirAkKNYXYzoPJCLvmyfdoOXcjTHPs10OZVMfD1Rwg16AZyYw==
+      }
+    dependencies:
+      tslib: 2.3.0
+    dev: false
+
   registry.npmmirror.com/@aashutoshrathi/word-wrap@1.2.6:
     resolution:
       {
@@ -9516,7 +9570,7 @@ packages:
       is-glob: registry.npmmirror.com/is-glob@4.0.3
       open: registry.npmmirror.com/open@9.1.0
       picocolors: registry.npmmirror.com/picocolors@1.0.0
-      tslib: registry.npmmirror.com/tslib@2.6.2
+      tslib: 2.6.2
     dev: false
 
   registry.npmmirror.com/@popperjs/core@2.11.8:
@@ -11228,7 +11282,7 @@ packages:
     engines: { node: ^14.18.0 || >=16.0.0 }
     dependencies:
       '@pkgr/utils': registry.npmmirror.com/@pkgr/utils@2.4.2
-      tslib: registry.npmmirror.com/tslib@2.6.2
+      tslib: 2.6.2
     dev: false
 
   registry.npmmirror.com/titleize@3.0.0:
@@ -11270,39 +11324,6 @@ packages:
     engines: { node: '>=8.0' }
     dependencies:
       is-number: registry.npmmirror.com/is-number@7.0.0
-
-  registry.npmmirror.com/tslib@1.14.1:
-    resolution:
-      {
-        integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==,
-        registry: https://registry.npmjs.org/,
-        tarball: https://registry.npmmirror.com/tslib/-/tslib-1.14.1.tgz
-      }
-    name: tslib
-    version: 1.14.1
-    dev: true
-
-  registry.npmmirror.com/tslib@2.4.1:
-    resolution:
-      {
-        integrity: sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==,
-        registry: https://registry.npmjs.org/,
-        tarball: https://registry.npmmirror.com/tslib/-/tslib-2.4.1.tgz
-      }
-    name: tslib
-    version: 2.4.1
-    dev: true
-
-  registry.npmmirror.com/tslib@2.6.2:
-    resolution:
-      {
-        integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==,
-        registry: https://registry.npmjs.org/,
-        tarball: https://registry.npmmirror.com/tslib/-/tslib-2.6.2.tgz
-      }
-    name: tslib
-    version: 2.6.2
-    dev: false
 
   registry.npmmirror.com/type-check@0.4.0:
     resolution:
