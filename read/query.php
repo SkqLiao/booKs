@@ -1,6 +1,4 @@
 <?php
-
-// 读取数据库连接配置信息
 require_once('config.php');
 
 // 创建数据库连接
@@ -13,25 +11,39 @@ if ($conn->connect_error) {
 
 // 设置 JSON 格式响应
 header('Content-Type: application/json');
-$response = array();
-if (!isset($_GET['year'])) {
-    $response['response'] = "必须传入 年份 参数。";
-    $response['code'] = 404;
+
+if (!isset($_GET['bookid'])) {
+    $response = array(
+        'code' => 404,
+        'response' => '缺少图书 id',
+    );
     echo json_encode($response);
     exit;
 }
-$year = $_GET['year'];
-$sql = "SELECT * FROM reading_record WHERE YEAR(date) = $year";
-$result = $conn->query($sql);
-$response['data'] = array();
 
+$sql = 'SELECT * FROM reading_record WHERE book_id = ' . $_GET['bookid'];
+
+$result = $conn->query($sql);
+
+if ($conn->error) {
+    $response = array(
+        'code' => 500,
+        'response' => '数据库查询失败: ' . $conn->error,
+    );
+    echo json_encode($response);
+    exit;
+}
+
+$response = array(
+    'code' => 200,
+    'response' => '查询成功',
+    'data' => array(),
+);
 
 $fieldTypes = [];
 while ($fieldInfo = $result->fetch_field()) {
     $fieldTypes[$fieldInfo->name] = $fieldInfo->type;
 }
-
-$response = ['data' => []];
 
 while ($row = $result->fetch_assoc()) {
     foreach ($row as $fieldName => &$fieldValue) {
@@ -60,6 +72,8 @@ while ($row = $result->fetch_assoc()) {
     }
     $response['data'][] = $row;
 }
-$response['code'] = 200;
+
 echo json_encode($response);
+
+
 ?>

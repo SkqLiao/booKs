@@ -24,6 +24,8 @@ if ($queryParam === 'publish') {
     $sql .= "producer, COUNT(*) as count";
 } elseif ($queryParam === 'series') {
     $sql .= "series, COUNT(*) as count";
+} elseif ($queryParam === 'buy_pos') {
+    $sql .= "buy_pos, COUNT(*) as count";
 } else {
     $sql .= "*" . $sql .= ", COUNT(*) as count";
 }

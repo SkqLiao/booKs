@@ -117,7 +117,7 @@ if ($result->num_rows > 0) {
             $imageBase64 = base64_encode($imageData);
             $row['cover_base64'] = $imageBase64;
         }
-
+        $row['id'] = intval($row['id']);
         $row['author'] = str2List($row['author']);
         $row['translator'] = str2List($row['translator']);
         $row['catalog'] = str2List($row['catalog']);
@@ -128,6 +128,7 @@ if ($result->num_rows > 0) {
         $row['rating']['percent'][] = floatval($row['rating_three_star_per']);
         $row['rating']['percent'][] = floatval($row['rating_four_star_per']);
         $row['rating']['percent'][] = floatval($row['rating_five_star_per']);
+        $row['real_price'] = floatval($row['real_price']);
         // erase old values
         unset($row['rating_count']);
         unset($row['rating_value']);

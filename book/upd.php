@@ -63,7 +63,7 @@ $sql = "UPDATE basic_info SET ";
 $update_fields = array();
 
 $allowed_fields = array(
-    'title', 'subtitle', 'original_title', 'author', 'translator', 'publish',
+    'title', 'subtitle', 'original_title', 'publish',
     'producer', 'publishDate', 'price', 'binding', 'series', 'buy_pos', 'real_price'
 );
 
@@ -89,6 +89,14 @@ foreach ($allowed_fields as $field) {
     }
 }
 
+$list_fields = array('author', 'translator');
+
+foreach ($list_fields as $field) {
+    if (isset($input_data[$field])) {
+        $update_fields[] = "$field = '[" . $conn->real_escape_string(implode(", ", $input_data[$field])) . "]'";
+    }
+}
+
 if (empty($update_fields)) {
     $response['response'] = "没有提供需要更新的字段。";
     echo json_encode($response);
@@ -97,6 +105,7 @@ if (empty($update_fields)) {
 
 $sql .= implode(", ", $update_fields);
 $sql .= " WHERE isbn = '$isbn'";
+$response = array();
 
 // 执行更新操作
 if ($conn->query($sql) === TRUE) {

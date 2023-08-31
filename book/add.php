@@ -43,8 +43,7 @@ if ($check_result->num_rows > 0) {
 
 // 初始化允许添加的字段列表
 $allowed_fields = array(
-    'title', 'subtitle', 'original_title', 'douban_id', 'isbn', 'author',
-    'translator', 'publish', 'producer', 'publishDate', 'pages', 'price',
+    'title', 'subtitle', 'original_title', 'douban_id', 'isbn', 'publish', 'producer', 'publishDate', 'pages', 'price',
     'binding', 'series', 'book_intro', 'cover_url', 'url', 'rating_count',
     'rating_value', 'catalog', 'real_price', 'buy_date', 'buy_pos'
 );
@@ -82,6 +81,15 @@ foreach ($allowed_fields as $field) {
             $insert_fields[] = $field;
             $insert_values[] = "'" . $conn->real_escape_string($input_data[$field]) . "'";
         }
+    }
+}
+
+$list_fields = array('author', 'translator');
+
+foreach ($list_fields as $field) {
+    if (isset($input_data[$field])) {
+        $insert_fields[] = $field;
+        $insert_values[] = "'[" . $conn->real_escape_string(implode(',', $input_data[$field])) . "]'";
     }
 }
 
