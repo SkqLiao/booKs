@@ -9,7 +9,7 @@ export interface Ibook {
   translator: string[]
   publish: string
   producer: string
-  pages: number
+  pages: string
   price: number
   binding: string
   series: string
