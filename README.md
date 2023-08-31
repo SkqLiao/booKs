@@ -54,7 +54,7 @@ Based on [qs admin](https://github.com/zclzone/qs-admin).
 - [x] 解决关闭modal时的回调函数的bug
 - [x] 增加BookParams的本地存储，用于实时刷新当前筛选书籍
 
-## 2023-08-22
+### 2023-08-22
 
 - [x] 增加书籍增加页面
 
