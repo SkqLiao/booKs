@@ -1,10 +1,62 @@
 <template>
-  <div id="main" style="width: 70%px; height: 400px"></div>
+  <n-grid cols="5" :x-gap="12">
+    <n-grid-item :style="{ marginTop: '50px' }">
+      <n-card>
+        <p class="book-info-p"><strong>页数：</strong> {{ total_page }} 页</p>
+        <p class="book-info-p"><strong>天数：</strong> {{ total_day }} 天</p>
+        <p class="book-info-p">
+          <strong>时间：</strong> {{ Math.floor(total_time / 60) }} 小时
+          {{ total_time % 60 }} 分钟
+        </p>
+        <p class="book-info-p">
+          <strong>摘录：</strong> {{ total_excerpt }} 条
+        </p>
+        <template #footer>
+          <n-button
+            class="full-width-button"
+            type="info"
+            strong
+            tertiary
+            @click="
+              () => {
+                showAddModel = true
+                addType = 1
+              }
+            "
+            >增加记录</n-button
+          >
+          <n-button
+            class="full-width-button"
+            type="success"
+            strong
+            tertiary
+            @click="
+              () => {
+                showAddModel = true
+                addType = 2
+              }
+            "
+            >增加摘录</n-button
+          >
+        </template>
+      </n-card>
+    </n-grid-item>
+    <n-grid-item :span="4">
+      <div id="main" style="width: 100%; height: 375px"></div>
+    </n-grid-item>
+  </n-grid>
+  <addRecord
+    :type="addType"
+    :show-modal="showAddModel"
+    :id="props.bookid"
+    @update-add-visible="reload"
+  />
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { readingDetailRequest, getInfo } from '@/service/read/read'
+import addRecord from './addRecord.vue'
 import { IRecord } from '@/service/read/types'
 import * as echarts from 'echarts'
 
@@ -16,20 +68,31 @@ const props = defineProps({
 })
 
 const records = ref<IRecord[]>()
+const total_page = ref(0)
+const total_time = ref(0)
+const total_day = ref(0)
+const total_excerpt = ref(0)
 
-onMounted(async () => {
-  console.log(props.bookid)
+const emits = defineEmits(['updatePagePercent'])
+
+const load = async () => {
   records.value = (await getInfo(readingDetailRequest, {
     bookid: props.bookid
   })) as IRecord[]
+  if (records.value.length === 0) return
   const length: number[] = []
   let sum = 0
   records.value?.forEach((item) => {
     sum += item.time_length
     length.push(sum)
   })
+  total_page.value = records.value?.[records.value.length - 1].end_page
+  total_time.value = sum
+  total_day.value = new Set(records.value?.map((item) => item.date)).size
+  emits('updatePagePercent', total_page.value)
   const chartDom = document.getElementById('main')!
   const myChart = echarts.init(chartDom)
+  
   const option = {
     tooltip: {
       trigger: 'axis',
@@ -88,7 +151,27 @@ onMounted(async () => {
   } as echarts.EChartsOption
 
   option && myChart.setOption(option)
+}
+
+onMounted(async () => {
+  load()
 })
+
+const reload = () => {
+  showAddModel.value = false
+  load()
+}
+
+const showAddModel = ref(false)
+const addType = ref(1)
 </script>
 
-<style scoped></style>
+<style scoped>
+.book-info-p {
+  font-size: 15px;
+  padding-bottom: 10px;
+}
+.full-width-button {
+  width: 100%; /* 让按钮宽度占满父元素 */
+}
+</style>

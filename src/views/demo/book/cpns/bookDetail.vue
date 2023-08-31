@@ -24,13 +24,16 @@
           </a>
         </div>
       </template>
-      <n-grid x-gap="12" cols="10" item-responsive responsive="screen">
-        <n-gi span="0 m:3 l:3">
+      <n-grid x-gap="12" cols="8" item-responsive responsive="screen">
+        <n-gi span="0 m:2 l:2">
           <div class="cover-container">
             <img :src="decodedCover" alt="封面图像" class="cover-image" />
           </div>
         </n-gi>
         <n-gi span="0 m:4 l:4">
+          <p class="book-info-p" v-if="props.bookInfo.original_title">
+            <strong>原作名：</strong>{{ props.bookInfo.original_title }}
+          </p>
           <p class="book-info-p">
             <strong>作者：</strong>{{ props.bookInfo.author.join(', ') }}
           </p>
@@ -55,17 +58,18 @@
           <p class="book-info-p">
             <strong>ISBN：</strong>{{ props.bookInfo.isbn }}
           </p>
+          <n-button type="info" @click="showEditModal = true" secondary>编辑</n-button>
         </n-gi>
-        <n-gi span="0 m:3 l:3">
+        <n-gi span="0 m:2 l:2">
           <n-card title="购买记录" size="small" hoverable>
             <n-tag type="info" round> {{ props.bookInfo.buy_pos }}</n-tag>
             <n-tag type="success" round> {{ props.bookInfo.buy_date }}</n-tag>
             <n-tag type="warning" round>
-              {{ props.bookInfo.real_price }} 元</n-tag
+              {{ Math.round(props.bookInfo.real_price) }} 元</n-tag
             >
           </n-card>
           <n-card title="阅读状态" size="small" hoverable>
-            <n-progress type="line" :percentage="80" :height="15" processing />
+            <n-progress type="line" :percentage="pagePercent" :height="15" processing :indicator-placement="'inside'"/>
           </n-card>
           <n-card
             :title="'评分 ' + props.bookInfo.rating.value"
@@ -91,12 +95,16 @@
                 />
               </div>
             </div>
+            <p class="right-align-text">
+              共 {{ props.bookInfo.rating.count }} 人评分
+            </p>
           </n-card>
         </n-gi>
       </n-grid>
-      <read-status :bookid="bookInfo.id" />
+      
       <template #footer>
-        <n-button type="info" @click="showEditModal = true">编辑</n-button>
+        
+        <read-status :bookid="bookInfo.id" @update-page-percent="updateReadPercent"/>
       </template>
     </n-modal>
     <book-edit
@@ -155,11 +163,21 @@ function updateEditVisible(id: number) {
     showEditModal.value = false
   }
 }
+
+const pagePercent = ref(0)
+
+function updateReadPercent(page: number) {
+  if (parseInt(props.bookInfo.pages) === 0) {
+    pagePercent.value = 0
+  } else {
+    pagePercent.value = Math.round(page / parseInt(props.bookInfo.pages) * 100)
+  }
+}
 </script>
 
 <style scoped>
 .cover-container {
-  width: 80%;
+  width: 70%;
   text-align: center;
 }
 .cover-container {
@@ -197,5 +215,11 @@ function updateEditVisible(id: number) {
 }
 .book-info-p {
   font-size: 18px;
+}
+
+.right-align-text {
+  text-align: right; /* 将文本靠右对齐 */
+  margin: 0;
+  padding: 5px 0;
 }
 </style>
