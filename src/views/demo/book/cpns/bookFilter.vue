@@ -143,7 +143,7 @@ const getInfo = async (params: string) => {
   try {
     const response = await bookParamRequest(params)
     if (response.code != 200) {
-      console.log('Error fetching publish options')
+      console.log(params, 'Error fetching options')
     } else {
       let info = response.data.map((item: IbookParams) => ({
         label: item.value + '(' + item.count + ')',
@@ -153,7 +153,7 @@ const getInfo = async (params: string) => {
       return info
     }
   } catch (error) {
-    console.error('Error fetching publish options', error)
+    console.error(params, 'Error fetching options', error)
   }
   return []
 }
