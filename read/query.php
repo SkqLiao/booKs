@@ -1,8 +1,6 @@
 <?php
-require_once('config.php');
-
 // 创建数据库连接
-$conn = new mysqli($servername, $username, $password, $dbname);
+$conn = new mysqli("mysql", "root", "123456", "book");
 
 // 检查连接是否成功
 if ($conn->connect_error) {
