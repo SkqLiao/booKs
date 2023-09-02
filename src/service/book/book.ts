@@ -1,24 +1,24 @@
 import { hyRequest, hyRequest2 } from '../index'
 
-import { IDataType, Ibook, IbookParams, DoubanAPI } from './types'
+import { IDataType, Ibook, DoubanAPI, IQueryParams } from './types'
 
-export function bookInfoRequest(params: object) {
-  return hyRequest.get<IDataType<Ibook[]>>({
-    url: '/book/get.php',
+export function getRequest(params: IQueryParams) {
+  return hyRequest.get<IDataType<any[]>>({
+    url: '/get.php',
     params: params
   })
 }
 
-export function bookNumberRequest(params: object) {
-  return hyRequest.get<IDataType<number>>({
-    url: '/book/getCount.php',
+export function bookCoverRequest(params: { isbn: string }) {
+  return hyRequest.get<IDataType<string>>({
+    url: '/book/getImage.php',
     params: params
   })
 }
 
 export function bookInfoUpdate(params: Ibook) {
   return hyRequest.post<IDataType<string>>({
-    url: '/book/upd.php',
+    url: '/book/update.php',
     data: params
   })
 }
@@ -28,15 +28,6 @@ export function bookInfoDel(isbn: string) {
     url: '/book/del.php',
     params: {
       isbn: isbn
-    }
-  })
-}
-
-export function bookParamRequest(param: string) {
-  return hyRequest.get<IDataType<[IbookParams]>>({
-    url: '/book/getInfo.php',
-    params: {
-      query: param
     }
   })
 }

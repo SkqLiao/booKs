@@ -8,6 +8,9 @@ export interface IRecord {
 
 export interface IDataType<T = any> {
   response: string
+  message: string
+  sql?: string
+  error?: string
   code: number
   data: T
 }

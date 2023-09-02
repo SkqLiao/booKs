@@ -22,7 +22,7 @@
                   作者：
                   <span class="field-container">
                     <n-button
-                      v-for="author in formattedAuthors"
+                      v-for="author in bookInfo.author"
                       :key="author"
                       text
                       quaterary
@@ -72,7 +72,7 @@
                       @click="selectFilter('series', bookInfo.series)"
                       style="white-space: normal"
                     >
-                      {{ formattedSeries }}
+                      {{ bookInfo.series }}
                     </n-button>
                   </span>
                 </p>
@@ -104,13 +104,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import { Ibook } from '@/service/book/types'
-import { bookInfoRequest } from '@/service/book/book'
+import { getRequest } from '@/service/book/book'
+import { ref } from 'vue'
+import { Ibook, IDataType } from '@/service/book/types'
 import bookDetail from './bookDetail.vue'
 import eventBus from '@/eventbus/index'
 import { useBookStore } from '@/store'
-
+import { bookCoverRequest } from '@/service/book/book'
+import defaultCoverImage from '@/assets/images/default_cover.jpg'
 const bookStore = useBookStore()
 
 const props = defineProps({
@@ -135,62 +136,8 @@ function updateDetailVisible(id: number) {
   }
 }
 
-eventBus.on('updateFilter', async () => {
-  await fetchBookInfo()
-})
-
-const bookInfo = ref<Ibook | null>(null)
-const decodedCover = ref<string | undefined>(undefined)
-
-const formattedAuthors = computed(() => {
-  const MAX_LENGTH = 12000
-  const authors = bookInfo.value?.author || []
-
-  let displayAuthors = []
-  let currentLength = 0
-
-  for (const author of authors) {
-    if (currentLength + author.length <= MAX_LENGTH) {
-      displayAuthors.push(author)
-      currentLength += author.length + 1
-    } else {
-      break
-    }
-  }
-
-  return displayAuthors
-})
-
-const formattedSeries = computed(() => {
-  const MAX_LENGTH = 10000
-  const series = bookInfo.value?.series || ''
-  let displaySeries = series
-  if (displaySeries.length > MAX_LENGTH) {
-    displaySeries = displaySeries.slice(0, MAX_LENGTH) + '...'
-  }
-  return displaySeries
-})
-
-// 获取图书信息函数
-const fetchBookInfo = async () => {
-  try {
-    const response = await bookInfoRequest({
-      n: props.id,
-      ...bookStore.getParams
-    })
-    if (response.code != 200) return
-    if (response['data'].length === 0) {
-      bookInfo.value = null
-      return
-    }
-    bookInfo.value = response['data'][0]
-    if (bookInfo.value.cover_base64) {
-      decodedCover.value = base64ToUrl(bookInfo.value.cover_base64)
-    }
-  } catch (error) {
-    console.error('获取图书信息失败:', error)
-  }
-}
+const bookInfo = ref<Ibook>()
+const decodedCover = ref<string>(defaultCoverImage)
 
 // base64 转 URL 函数
 const base64ToUrl = (base64Data: string): string => {
@@ -204,6 +151,36 @@ const base64ToUrl = (base64Data: string): string => {
   const blob = new Blob([byteNumbers], { type: 'image/jpeg' })
   return URL.createObjectURL(blob)
 }
+
+const fetchBookInfo = async () => {
+  try {
+    const response = await getRequest({
+      table: 'basic_info',
+      fields: ['*'],
+      conditions: bookStore.buildQueryConditions(),
+      offset: props.id,
+      limit: 1,
+      order_by: 'buy_date DESC, id DESC'
+    }) as IDataType<Ibook[]>
+    if (response.code != 200) {
+      window.$message?.warning(response.message)
+      return
+    }
+    bookInfo.value = response.data[0]
+    const response2 = await bookCoverRequest({
+      isbn: bookInfo.value?.isbn
+    })
+    if (response2.data?.length > 0) {
+      decodedCover.value = base64ToUrl(response2.data)
+    }
+  } catch (error) {
+    console.error('获取图书信息失败:', error)
+  }
+}
+
+eventBus.on('updateFilter', async() => {
+  await fetchBookInfo()
+})
 
 onMounted(async () => {
   await fetchBookInfo()

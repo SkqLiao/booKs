@@ -96,7 +96,7 @@ const addRecord = async () => {
       })
       console.log(response)
       if (response.code !== 200) {
-        window.$message?.warning('增加失败 ' + response.response)
+        window.$message?.warning('增加失败 ' + response.message)
       } else {
         window.$message?.success('增加成功')
         localShowModal.value = false

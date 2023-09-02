@@ -101,8 +101,7 @@
 
 <script setup lang="ts">
 import { ref, Ref, watch, onMounted } from 'vue'
-import { bookParamRequest } from '@/service/book/book'
-import { IbookParams } from '@/service/book/types'
+import { getRequest } from '@/service/book/book'
 import eventBus from '@/eventbus/index'
 import { useBookStore, BookParams } from '@/store'
 
@@ -139,21 +138,28 @@ const produceOptions = ref<{ label: string; value: string }[]>([])
 const buyPosOptions = ref<{ label: string; value: string }[]>([])
 const inputTitle = ref('')
 
-const getInfo = async (params: string) => {
+const getInfo = async (group_by: string) => {
   try {
-    const response = await bookParamRequest(params)
+    const response = await getRequest({
+      table: 'basic_info',
+      fields: [group_by + " AS field", 'COUNT(*) AS count'],
+      group_by: group_by
+    })
     if (response.code != 200) {
-      console.log(params, 'Error fetching options')
+      console.log(group_by, 'Error fetching options')
+      console.log(response?.error)
+      console.log(response?.sql)
     } else {
-      let info = response.data.map((item: IbookParams) => ({
-        label: item.value + '(' + item.count + ')',
-        value: item.value
+      let info = response.data.filter(item => item.field != '')
+      .map((item) => ({
+        label: item.field + '(' + item.count + ')',
+        value: item.field
       }))
       info.sort((a, b) => a.value.localeCompare(b.value))
       return info
     }
   } catch (error) {
-    console.error(params, 'Error fetching options', error)
+    console.error(group_by, 'Error fetching options', error)
   }
   return []
 }

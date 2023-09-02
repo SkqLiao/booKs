@@ -55,7 +55,8 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { readingDetailRequest, getInfo } from '@/service/read/read'
+import { getRequest } from '@/service/book/book'
+import { getInfo } from '@/service/read/read'
 import addRecord from './addRecord.vue'
 import { IRecord } from '@/service/read/types'
 import * as echarts from 'echarts'
@@ -76,8 +77,10 @@ const total_excerpt = ref(0)
 const emits = defineEmits(['updatePagePercent'])
 
 const load = async () => {
-  records.value = (await getInfo(readingDetailRequest, {
-    bookid: props.bookid
+  records.value = (await getInfo(getRequest, {
+    table: 'reading_record',
+    fields: ['*'],
+    conditions: ['book_id = ' + props.bookid]
   })) as IRecord[]
   if (records.value.length === 0) return
   const length: number[] = []

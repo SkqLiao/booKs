@@ -11,7 +11,7 @@
 <script setup lang="ts">
 import EditBook from './cpns/editForm.vue'
 import { ref } from 'vue'
-import { Ibook, DoubanAPI, IbookRating } from '@/service/book/types'
+import { Ibook, DoubanAPI } from '@/service/book/types'
 import { bookDoubanRequest, bookAddRequest } from '@/service/book/book'
 
 const child = ref()
@@ -27,17 +27,15 @@ const queryBook = async () => {
       ...response.data
     } as Ibook
     bookInfo.value.douban_id = response.data.id
-    bookInfo.value.rating = {
-      count: response.data.rating.count as number,
-      value: response.data.rating.value as number,
-      percent: [
-        response.data.rating.one_star_per as number,
-        response.data.rating.two_star_per as number,
-        response.data.rating.three_star_per as number,
-        response.data.rating.four_star_per as number,
-        response.data.rating.five_star_per as number
-      ] as number[]
-    } as IbookRating
+    bookInfo.value.rating_count = response.data.rating.count as number
+    bookInfo.value.rating_value = response.data.rating.value as number
+    bookInfo.value.rating_percent = [
+      response.data.rating.one_star_per as number,
+      response.data.rating.two_star_per as number,
+      response.data.rating.three_star_per as number,
+      response.data.rating.four_star_per as number,
+      response.data.rating.five_star_per as number
+    ] as number[]
     if (response.data.cover) {
       bookInfo.value.cover_base64 = response.data.cover
     }
@@ -52,8 +50,8 @@ const addBook = async () => {
   const translators = child.value?.translators
   const formRef = child.value?.formRef
   try {
-    bookInfo.author = authors.split(',')
-    bookInfo.translator = translators.split(',')
+    bookInfo.author = authors.split(',') ?? []
+    bookInfo.translator = translators.split(',') ?? []
     await formRef?.validate(async (errors: any) => {
       if (errors) {
         window.$message?.warning('验证失败')
@@ -63,9 +61,15 @@ const addBook = async () => {
       try {
         const response = await bookAddRequest(bookInfo)
         if (response.code == 200) {
-          window.$message?.success('增加成功！')
+          window.$message?.success(response.message)
         } else {
-          window.$message?.warning('增加失败：' + response.response)
+          window.$message?.warning('增加失败：' + response.message)
+          if (response?.sql) {
+            console.log('SQL:', response?.sql)
+          }
+          if (response?.error) {
+            console.log('ERROR:', response?.error)
+          }
         }
       } catch (error) {
         window.$message?.warning('增加失败')

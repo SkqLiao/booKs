@@ -72,12 +72,12 @@
             <n-progress type="line" :percentage="pagePercent" :height="15" processing :indicator-placement="'inside'"/>
           </n-card>
           <n-card
-            :title="'评分 ' + props.bookInfo.rating.value"
+            :title="'评分 ' + props.bookInfo.rating_value"
             size="small"
             hoverable
           >
             <div
-              v-for="(percent, index) in props.bookInfo.rating.percent"
+              v-for="(percent, index) in props.bookInfo.rating_percent"
               class="star-progress-container"
               :key="index"
             >
@@ -96,7 +96,7 @@
               </div>
             </div>
             <p class="right-align-text">
-              共 {{ props.bookInfo.rating.count }} 人评分
+              共 {{ props.bookInfo.rating_count }} 人评分
             </p>
           </n-card>
         </n-gi>

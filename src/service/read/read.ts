@@ -9,20 +9,6 @@ export function readingInfoRequest(params: object) {
   })
 }
 
-export function bookInfoRequest(params: object) {
-  return hyRequest.get<IDataType<any>>({
-    url: '/book/query.php',
-    params: params
-  })
-}
-
-export function readingDetailRequest(params: object) {
-  return hyRequest.get<IDataType<IRecord[]>>({
-    url: '/read/query.php',
-    params: params
-  })
-}
-
 export function addReadingRecord(params: object) {
   return hyRequest.post<IDataType<IRecord>>({
     url: '/read/add.php',
@@ -31,19 +17,20 @@ export function addReadingRecord(params: object) {
 }
 
 export async function getInfo(
-  func: (params: object) => Promise<IDataType>,
+  func: (params: any) => Promise<IDataType>,
   params: object
 ) {
   try {
     const response = await func(params)
     if (response.code !== 200) {
-      console.log(response.response)
-      throw new Error(response.response)
+      console.log(response.message)
+      console.log(response?.error)
+      console.log(response?.sql)
+      throw new Error(response.message)
     }
     //console.log(response.data)
     return response.data
   } catch (error) {
     console.log(error)
-    throw new Error(error as string)
   }
 }

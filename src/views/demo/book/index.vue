@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { bookNumberRequest } from '@/service/book/book'
+import { getRequest } from '@/service/book/book'
 import bookCard from './cpns/bookCard.vue'
 import bookFilter from './cpns/bookFilter.vue'
 import { ref, Ref, onMounted } from 'vue'
@@ -11,7 +11,7 @@ const filters: Ref<string[]> = ref([])
 
 eventBus.on('updateFilter', async () => {
   currentPage.value = 1
-  await fetchBooks(currentPage.value)
+  await fetchBookNumber(currentPage.value)
   filters.value = getFilterInfo()
 })
 
@@ -20,13 +20,17 @@ const pageSize = 12
 const totalBooks = ref(0)
 const currentPage = ref(1)
 const bookIds = ref<number[]>([])
-const fetchBooks = async (page: number) => {
+const fetchBookNumber = async (page: number) => {
   try {
-    const response = await bookNumberRequest(bookStore.params)
-    totalBooks.value = response.data
-    const startIndex = (page - 1) * pageSize + 1
+    const response = await getRequest({
+      table: 'basic_info',
+      fields: ['COUNT(*) as count'],
+      conditions: bookStore.buildQueryConditions()
+    })
+    totalBooks.value = response.data[0].count
+    const startIndex = (page - 1) * pageSize
     bookIds.value = Array.from(
-      { length: Math.min(pageSize, totalBooks.value - startIndex + 1) },
+      { length: Math.min(pageSize, totalBooks.value - startIndex) },
       (_, index) => startIndex + index
     )
   } catch (error) {
@@ -68,7 +72,7 @@ const getFilterInfo = () => {
 
 const handlePageChange = async (page: number) => {
   currentPage.value = page
-  await fetchBooks(page)
+  await fetchBookNumber(page)
 }
 
 onMounted(async () => {

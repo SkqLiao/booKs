@@ -17,27 +17,32 @@ export interface Ibook {
   cover_url: string
   url: string
   catalog: string[]
-  rating: IbookRating
   cover_base64: string
   buy_date: Date
   buy_pos: string
   real_price: number
   publishDate: string
+  rating_count: number
+  rating_value: number
+  rating_percent: number[]
 }
 
-export interface IbookRating {
-  count: number
-  value: number
-  percent: [number]
-}
 
-export interface IbookParams {
-  count: number
-  value: string
+export interface IQueryParams {
+  table: string
+  fields: string[]
+  conditions?: string[]
+  order_by?: string
+  limit?: number
+  offset?: number
+  group_by?: string
 }
 
 export interface IDataType<T = any> {
   response: string
+  message: string
+  sql?: string
+  error?: string
   code: number
   data: T
 }

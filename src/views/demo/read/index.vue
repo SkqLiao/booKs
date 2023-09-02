@@ -16,11 +16,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { IRecord } from '@/service/read/types'
-import {
-  readingInfoRequest,
-  bookInfoRequest,
-  getInfo
-} from '@/service/read/read'
+import { getRequest } from '@/service/book/book'
+import { getInfo } from '@/service/read/read'
 
 const lastYear = ref(0)
 const attributes = ref()
@@ -58,17 +55,20 @@ const updateView = async (pages: { month: number; year: number }[]) => {
     return
   }
   lastYear.value = year
-  const readingInfo = (await getInfo(readingInfoRequest, {
-    year: year
+  const readingInfo = (await getInfo(getRequest, {
+    table: 'reading_record',
+    fields: ['*'],
+    conditions: ['YEAR(date) = ' + year]
   })) as IRecord[]
   const ids = new Set(readingInfo.map((item) => item.book_id))
   const titles = new Map<number, string>()
   for (const id of ids) {
-    const title = (await getInfo(bookInfoRequest, {
-      id: id,
-      columns: ['title']
-    })) as { title: string }
-    titles.set(id, title['title'])
+    const response = await getRequest({
+      table: 'basic_info',
+      fields: ['title'],
+      conditions: ['id=' + id]
+    })
+    titles.set(id, response.data[0]!.title)
   }
   const titleInfo = readingInfo.map((info) => {
     return titles.get(info.book_id) as string
