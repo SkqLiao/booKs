@@ -71,3 +71,7 @@ Based on [qs admin](https://github.com/zclzone/qs-admin).
 - [x] 增加图书阅读记录模块
 - [x] 增加图书增加阅读记录面板
 - [x] 修复增加图书/更新图书信息时，作者和译者被更新为空串的bug
+
+### 2023-09-02
+
+- [x] 重构后端API
