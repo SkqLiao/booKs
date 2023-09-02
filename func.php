@@ -23,7 +23,7 @@ $host = "mysql";
 $username = "root";
 $password = "123456";
 $database = "book";
-$conn = new mysqli($host, $username, $password, $database);
+$conn = new mysqli('p:'.$host, $username, $password, $database);
 
 if ($conn->connect_error) {
     printMessage([
