@@ -38,7 +38,6 @@ export interface IQueryParams {
 }
 
 export interface IDataType<T = any> {
-  response: string
   message: string
   sql?: string
   error?: string
