@@ -1,7 +1,7 @@
 <?php
 $errorMessages = [
-    "db_connection_error" => ["code" => 501, "message" => "数据库连接失败：%s"],
-    "db_query_error" => ["code" => 500, "message" => "数据库查询失败：%s"],
+    "db_connection_error" => ["code" => 501, "message" => "数据库连接失败"],
+    "db_query_error" => ["code" => 500, "message" => "数据库查询失败"],
     "db_insert_error" => ["code" => 501, "message" => "数据库插入失败"],
     "db_update_error" => ["code" => 502, "message" => "数据库更新失败"],
     "db_delete_error" => ["code" => 503, "message" => "数据库删除失败"],
@@ -28,7 +28,8 @@ $conn = new mysqli('p:'.$host, $username, $password, $database);
 if ($conn->connect_error) {
     printMessage([
         "code" => $errorMessages["db_connection_error"]["code"],
-        "message" => sprintf($errorMessages["db_connection_error"]["message"],    $conn->connect_error)
+        "message" => $errorMessages["db_connection_error"]["message"],
+        "error" => $conn->connect_error
     ]);
 }
 
@@ -95,7 +96,8 @@ function queryRawData($sql) {
     if ($result === FALSE) {
         printMessage([
             "code" => $errorMessages["db_query_error"]["code"],
-            "message" => sprintf($errorMessages["db_query_error"]["message"], $conn->error)
+            "message" => $errorMessages["db_query_error"]["message"],
+            "error" => $conn->error
         ]);
     }
     return $result;
@@ -173,4 +175,24 @@ function updateData($tableName, $input_data, $condition) {
         ]);
     }
 }
+
+function deleteData($tableName, $condition) {
+    global $conn, $errorMessages;
+    $sql = "DELETE FROM $tableName WHERE $condition";
+    if ($conn->query($sql) === TRUE) {
+        printMessage([
+            "code" => 200,
+            "message" => "删除成功！",
+            "sql" => $sql
+        ]);
+    } else {
+        printMessage([
+            "code" => $errorMessages["db_delete_error"]["code"],
+            "message" => $errorMessages["db_delete_error"]["message"],
+            "sql" => $sql,
+            "error" => $conn->error
+        ]);
+    }
+}
+
 ?>
