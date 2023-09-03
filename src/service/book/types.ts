@@ -27,7 +27,6 @@ export interface Ibook {
   rating_percent: number[]
 }
 
-
 export interface IQueryParams {
   table: string
   fields: string[]

@@ -80,31 +80,30 @@ const readDate = ref(new Date().toISOString().split('T')[0])
 const emits = defineEmits(['updateAddVisible'])
 
 const addRecord = async () => {
-
-    try {
-      if (startPage.value > endPage.value) {
-        window.$message?.warning('起始页码不能大于结束页码')
-        return
-      }
-      const response = await addReadingRecord({
-        book_id: props.id,
-        start_page: startPage.value,
-        end_page: endPage.value,
-        read_date: readDate.value,
-        time_length: time_length.value,
-        date: readDate.value
-      })
-      console.log(response)
-      if (response.code !== 200) {
-        window.$message?.warning('增加失败 ' + response.message)
-      } else {
-        window.$message?.success('增加成功')
-        localShowModal.value = false
-        emits('updateAddVisible')
-      }
-    } catch (error) {
-      window.$message?.warning('增加失败 ')
+  try {
+    if (startPage.value > endPage.value) {
+      window.$message?.warning('起始页码不能大于结束页码')
+      return
     }
+    const response = await addReadingRecord({
+      book_id: props.id,
+      start_page: startPage.value,
+      end_page: endPage.value,
+      read_date: readDate.value,
+      time_length: time_length.value,
+      date: readDate.value
+    })
+    console.log(response)
+    if (response.code !== 200) {
+      window.$message?.warning('增加失败 ' + response.message)
+    } else {
+      window.$message?.success('增加成功')
+      localShowModal.value = false
+      emits('updateAddVisible')
+    }
+  } catch (error) {
+    window.$message?.warning('增加失败 ')
+  }
 }
 </script>
 

@@ -142,7 +142,7 @@ const getInfo = async (group_by: string) => {
   try {
     const response = await getRequest({
       table: 'basic_info',
-      fields: [group_by + " AS field", 'COUNT(*) AS count'],
+      fields: [group_by + ' AS field', 'COUNT(*) AS count'],
       group_by: group_by
     })
     if (response.code != 200) {
@@ -150,11 +150,12 @@ const getInfo = async (group_by: string) => {
       console.log(response?.error)
       console.log(response?.sql)
     } else {
-      let info = response.data.filter(item => item.field != '')
-      .map((item) => ({
-        label: item.field + '(' + item.count + ')',
-        value: item.field
-      }))
+      let info = response.data
+        .filter((item) => item.field != '')
+        .map((item) => ({
+          label: item.field + '(' + item.count + ')',
+          value: item.field
+        }))
       info.sort((a, b) => a.value.localeCompare(b.value))
       return info
     }

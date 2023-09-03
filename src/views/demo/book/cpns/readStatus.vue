@@ -95,7 +95,7 @@ const load = async () => {
   emits('updatePagePercent', total_page.value)
   const chartDom = document.getElementById('main')!
   const myChart = echarts.init(chartDom)
-  
+
   const option = {
     tooltip: {
       trigger: 'axis',

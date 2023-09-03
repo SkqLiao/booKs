@@ -154,14 +154,14 @@ const base64ToUrl = (base64Data: string): string => {
 
 const fetchBookInfo = async () => {
   try {
-    const response = await getRequest({
+    const response = (await getRequest({
       table: 'basic_info',
       fields: ['*'],
       conditions: bookStore.buildQueryConditions(),
       offset: props.id,
       limit: 1,
       order_by: 'buy_date DESC, id DESC'
-    }) as IDataType<Ibook[]>
+    })) as IDataType<Ibook[]>
     if (response.code != 200) {
       window.$message?.warning(response.message)
       return
@@ -178,7 +178,7 @@ const fetchBookInfo = async () => {
   }
 }
 
-eventBus.on('updateFilter', async() => {
+eventBus.on('updateFilter', async () => {
   await fetchBookInfo()
 })
 
