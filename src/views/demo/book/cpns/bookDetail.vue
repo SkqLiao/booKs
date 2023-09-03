@@ -37,6 +37,9 @@
           <p class="book-info-p">
             <strong>作者：</strong>{{ props.bookInfo.author.join(', ') }}
           </p>
+          <p class="book-info-p" v-if="props.bookInfo.translator.length > 0">
+            <strong>译者：</strong>{{ props.bookInfo.translator.join(', ') }}
+          </p>
           <p class="book-info-p">
             <strong>出版社：</strong>{{ props.bookInfo.publish }}
           </p>
