@@ -18,6 +18,16 @@
       ></edit-form>
       <div class="centered-button">
         <n-button type="success" @click="updateBook">提交</n-button>
+        <n-popconfirm
+          @positive-click="deleteBook"
+          positive-text="确定"
+          negative-text="取消"
+        >
+          <template #trigger>
+            <n-button type="error">删除</n-button>
+          </template>
+          你确定删除这本书吗？
+        </n-popconfirm>
       </div>
     </n-modal>
   </div>
@@ -26,7 +36,8 @@
 <script setup lang="ts">
 import { Ibook } from '@/service/book/types'
 import EditForm from './cpns/editForm.vue'
-import { bookInfoUpdate } from '@/service/book/book'
+import eventBus from '@/eventbus/index'
+import { bookInfoUpdate, bookInfoDelete } from '@/service/book/book'
 
 const props = defineProps({
   bookInfo: {
@@ -74,19 +85,37 @@ const updateBook = async () => {
       window.$message?.success('验证通过！')
       try {
         const response = await bookInfoUpdate(bookInfo)
-        if (response.code == 200) {
+        if (response.code === 200) {
           window.$message?.success('修改成功！')
           emits('updateEditVisible', props.id)
         } else {
-          window.$message?.warning('修改失败：' + response.response)
+          window.$message?.error('修改失败：' + response.message)
         }
       } catch (error) {
-        window.$message?.warning('修改失败')
+        window.$message?.error('修改失败')
         console.log('修改失败', error)
       }
     })
   } catch (error) {
     console.log('验证失败', error)
+  }
+}
+
+const deleteBook = async () => {
+  try {
+    const response = await bookInfoDelete({
+      isbn: props.bookInfo.isbn
+    })
+    if (response.code === 200) {
+      window.$message?.success('删除成功！')
+      emits('updateEditVisible', props.id)
+      eventBus.emit('deleteBook', props.id)
+    } else {
+      window.$message?.error('删除失败：' + response.message)
+    }
+  } catch (error) {
+    window.$message?.error('删除失败')
+    console.log('删除失败', error)
   }
 }
 </script>

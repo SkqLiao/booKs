@@ -23,12 +23,10 @@ export function bookInfoUpdate(params: Ibook) {
   })
 }
 
-export function bookInfoDel(isbn: string) {
+export function bookInfoDelete(params: { isbn: string }) {
   return hyRequest.delete<IDataType<string>>({
-    url: '/book/del.php',
-    params: {
-      isbn: isbn
-    }
+    url: '/book/delete.php',
+    params: params
   })
 }
 

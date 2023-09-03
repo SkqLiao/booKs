@@ -136,6 +136,13 @@ function updateDetailVisible(id: number) {
   }
 }
 
+eventBus.on('deleteBook', async (id: number) => {
+  updateDetailVisible(id)
+  if (props.id >= id) {
+    await fetchBookInfo()
+  }
+})
+
 const bookInfo = ref<Ibook>()
 const decodedCover = ref<string>(defaultCoverImage)
 

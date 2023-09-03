@@ -9,6 +9,10 @@ import { useBookStore } from '@/store'
 const bookStore = useBookStore()
 const filters: Ref<string[]> = ref([])
 
+eventBus.on('deleteBook', async (id: number) => {
+  await fetchBookNumber(currentPage.value)
+})
+
 eventBus.on('updateFilter', async () => {
   currentPage.value = 1
   await fetchBookNumber(currentPage.value)
