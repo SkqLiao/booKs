@@ -37,7 +37,13 @@
           <p class="book-info-p">
             <strong>作者：</strong>{{ props.bookInfo.author.join(', ') }}
           </p>
-          <p class="book-info-p" v-if="props.bookInfo.translator.length > 0">
+          <p
+            class="book-info-p"
+            v-if="
+              props.bookInfo.translator.length > 0 &&
+              !props.bookInfo.translator.every((str) => str.trim() === '')
+            "
+          >
             <strong>译者：</strong>{{ props.bookInfo.translator.join(', ') }}
           </p>
           <p class="book-info-p">
@@ -61,7 +67,9 @@
           <p class="book-info-p">
             <strong>ISBN：</strong>{{ props.bookInfo.isbn }}
           </p>
-          <n-button type="info" @click="showEditModal = true" secondary>编辑</n-button>
+          <n-button type="info" @click="showEditModal = true" secondary
+            >编辑</n-button
+          >
         </n-gi>
         <n-gi span="0 m:2 l:2">
           <n-card title="购买记录" size="small" hoverable>
@@ -72,7 +80,13 @@
             >
           </n-card>
           <n-card title="阅读状态" size="small" hoverable>
-            <n-progress type="line" :percentage="pagePercent" :height="15" processing :indicator-placement="'inside'"/>
+            <n-progress
+              type="line"
+              :percentage="pagePercent"
+              :height="15"
+              processing
+              :indicator-placement="'inside'"
+            />
           </n-card>
           <n-card
             :title="'评分 ' + props.bookInfo.rating_value"
@@ -104,10 +118,12 @@
           </n-card>
         </n-gi>
       </n-grid>
-      
+
       <template #footer>
-        
-        <read-status :bookid="bookInfo.id" @update-page-percent="updateReadPercent"/>
+        <read-status
+          :bookid="bookInfo.id"
+          @update-page-percent="updateReadPercent"
+        />
       </template>
     </n-modal>
     <book-edit
@@ -173,7 +189,9 @@ function updateReadPercent(page: number) {
   if (parseInt(props.bookInfo.pages) === 0) {
     pagePercent.value = 0
   } else {
-    pagePercent.value = Math.round(page / parseInt(props.bookInfo.pages) * 100)
+    pagePercent.value = Math.round(
+      (page / parseInt(props.bookInfo.pages)) * 100
+    )
   }
 }
 </script>
