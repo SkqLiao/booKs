@@ -1,4 +1,5 @@
 export interface IRecord {
+  id: number
   book_id: number
   date: Date
   time_length: number

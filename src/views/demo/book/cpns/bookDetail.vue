@@ -4,7 +4,7 @@
       v-model:show="showModal"
       class="custom-card"
       preset="card"
-      style="width: 75%"
+      style="width: 70%"
       size="huge"
       :bordered="false"
       :on-after-leave="() => $emit('updateDetailVisible', props.id)"
