@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { NButton, NSwitch } from 'naive-ui'
+import { NButton } from 'naive-ui'
 import { CrudModal, CrudTable, QueryBarItem, useCRUD } from '@zclzone/crud'
 import api from './api'
-import { formatDateTime, isNullOrUndef, renderIcon } from '@/utils'
+import { h, ref, onMounted } from 'vue'
+import { formatDate, isNullOrUndef, renderIcon } from '@/utils'
 
 const $table = ref<any>(null)
 /** QueryBar筛选参数（可选） */
@@ -34,38 +35,35 @@ const {
 const columns: any = [
   { type: 'selection', fixed: 'left' },
   {
-    title: '发布',
-    key: 'isPublish',
-    width: 60,
-    align: 'center',
-    fixed: 'left',
-    render(row: any) {
-      return h(NSwitch, {
-        size: 'small',
-        rubberBand: false,
-        value: row.isPublish,
-        loading: !!row.publishing,
-        onUpdateValue: () => handlePublish(row)
-      })
-    }
-  },
-  { title: '标题', key: 'title', width: 150, ellipsis: { tooltip: true } },
-  { title: '分类', key: 'category', width: 80, ellipsis: { tooltip: true } },
-  { title: '创建人', key: 'author', width: 80 },
-  {
-    title: '创建时间',
-    key: 'createDate',
+    title: '日期',
+    key: 'date',
     width: 150,
     render(row: any) {
-      return h('span', formatDateTime(row.createDate))
+      return h('span', formatDate(row.date))
     }
   },
   {
-    title: '最后更新时间',
-    key: 'updateDate',
+    title: '时长（分钟）',
+    key: 'timeLength',
     width: 150,
     render(row: any) {
-      return h('span', formatDateTime(row.updateDate))
+      return h('span', row.time_length)
+    }
+  },
+  {
+    title: '开始页数',
+    key: 'startPage',
+    width: 150,
+    render(row: any) {
+      return h('span', row.start_page)
+    }
+  },
+  {
+    title: '截止页数',
+    key: 'endPage',
+    width: 150,
+    render(row: any) {
+      return h('span', row.end_page)
     }
   },
   {
@@ -127,21 +125,16 @@ function onChecked(rowKeys: string[]) {
   if (rowKeys.length) window.$message?.info(`选中${rowKeys.join(' ')}`)
 }
 
-// 发布
-function handlePublish(row: any) {
-  if (isNullOrUndef(row.id)) return
-
-  row.publishing = true
-  setTimeout(() => {
-    row.isPublish = !row.isPublish
-    row.publishing = false
-    window.$message?.success(row.isPublish ? '已发布' : '已取消发布')
-  }, 1000)
-}
-
 onMounted(() => {
   $table.value?.handleSearch()
 })
+
+const params = {
+  table: 'reading_record',
+  fields: ['*'],
+  conditions: ['book_id=168'],
+  order_by: 'date DESC'
+}
 </script>
 
 <template>
@@ -164,8 +157,13 @@ onMounted(() => {
       :extra-params="extraParams"
       :scroll-x="1200"
       :columns="columns"
-      :get-data="api.getPosts"
+      :get-data="
+        () => {
+          return api.getPosts(params)
+        }
+      "
       @on-checked="onChecked"
+      :isPagination="false"
     >
       <template #queryBar>
         <QueryBarItem label="标题" :label-width="50">
@@ -194,40 +192,49 @@ onMounted(() => {
         :model="modalForm"
         :disabled="modalAction === 'view'"
       >
-        <n-form-item label="作者" path="author">
-          <n-input v-model:value="modalForm.author" disabled />
+        <n-form-item label="日期" path="date">
+          <n-input v-model:value="modalForm.date" disabled />
         </n-form-item>
         <n-form-item
-          label="文章标题"
-          path="title"
+          label="时长（分钟）"
+          path="timeLength"
           :rule="{
             required: true,
-            message: '请输入文章标题',
+            message: '请输入时长',
             trigger: ['input', 'blur']
           }"
         >
           <n-input
-            v-model:value="modalForm.title"
+            v-model:value="modalForm.time_length"
             placeholder="请输入文章标题"
           />
         </n-form-item>
         <n-form-item
-          label="文章内容"
-          path="content"
+          label="开始页数"
+          path="startPage"
           :rule="{
             required: true,
-            message: '请输入文章内容',
+            message: '请输入开始页数',
             trigger: ['input', 'blur']
           }"
         >
-          <n-input
-            v-model:value="modalForm.content"
-            placeholder="请输入文章内容"
-            type="textarea"
-            :autosize="{
-              minRows: 3,
-              maxRows: 5
-            }"
+          <n-input-number
+            v-model:value="modalForm.start_page"
+            placeholder="请输入开始页数"
+          />
+        </n-form-item>
+        <n-form-item
+          label="结束页数"
+          path="endPage"
+          :rule="{
+            required: true,
+            message: '请输入结束页数',
+            trigger: ['input', 'blur']
+          }"
+        >
+          <n-input-number
+            v-model:value="modalForm.end_page"
+            placeholder="请输入结束页数"
           />
         </n-form-item>
       </n-form>
