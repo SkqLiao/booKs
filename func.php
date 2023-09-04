@@ -14,6 +14,8 @@ $errorMessages = [
     // 在这里添加其他错误情况...
 ];
 
+header('Content-Type: application/json; charset=utf-8');
+
 function printMessage($error) {
     echo json_encode($error);
     exit;
