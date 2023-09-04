@@ -38,17 +38,6 @@ export default {
       }
     },
     {
-      name: 'Table',
-      path: 'table',
-      component: () => import('@/views/demo/table/index.vue'),
-      meta: {
-        title: '表格',
-        icon: 'mdi:table',
-        role: ['admin'],
-        requireAuth: true
-      }
-    },
-    {
       name: 'Book',
       path: 'book',
       component: () => import('@/views/demo/book/index.vue'),
