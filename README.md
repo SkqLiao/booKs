@@ -75,3 +75,7 @@ Based on [qs admin](https://github.com/zclzone/qs-admin).
 ### 2023-09-02
 
 - [x] 重构后端API
+
+### 2023-09-04
+
+- [x] CRUD 阅读记录表格
