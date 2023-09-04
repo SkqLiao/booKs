@@ -1,16 +1,9 @@
 import { hyRequest } from '../index'
 
-import { IDataType, IRecord } from './types'
-
-export function readingInfoRequest(params: object) {
-  return hyRequest.get<IDataType<IRecord[]>>({
-    url: '/read/get.php',
-    params: params
-  })
-}
+import { IDataType } from './types'
 
 export function addReadingRecord(params: object) {
-  return hyRequest.post<IDataType<IRecord>>({
+  return hyRequest.post<IDataType<string>>({
     url: '/read/add.php',
     data: params
   })
