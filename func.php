@@ -16,8 +16,8 @@ $errorMessages = [
 
 header('Content-Type: application/json; charset=utf-8');
 
-function printMessage($error) {
-    echo json_encode($error);
+function printMessage($message) {
+    echo json_encode($message);
     exit;
 }
 

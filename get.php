@@ -8,7 +8,6 @@ checkRequiredFields($_GET, ["table", "fields"]);
 $tableName = $_GET["table"];
 $query_fields = $_GET["fields"];
 
-
 // 构建查询语句
 $selectFields = implode(", ", $query_fields);
 $sql = "SELECT $selectFields FROM $tableName";
