@@ -51,64 +51,19 @@
     :id="props.bookid"
     @update-add-visible="reload"
   />
-  <CrudTable
-    ref="$table"
-    v-model:query-items="queryItems"
-    :extra-params="extraParams"
-    :scroll-x="1200"
-    :columns="columns"
-    :get-data="api.getPosts"
-    @on-checked="onChecked"
-    :isPagination="false"
-  >
-  </CrudTable>
-  <!-- 新增/编辑/查看 -->
-  <CrudModal
-    v-model:visible="modalVisible"
-    :title="modalTitle"
-    :loading="modalLoading"
-    :show-footer="modalAction !== 'view'"
-    @on-save="handleSave"
-    style="width: 400px"
-  >
-    <n-form
-      ref="modalFormRef"
-      label-placement="left"
-      label-align="left"
-      :label-width="120"
-      :model="modalForm"
-      :disabled="modalAction === 'view'"
-    >
-      <n-form-item label="日期" path="date">
-        <n-date-picker type="date" v-model:formatted-value="modalForm.date" />
-      </n-form-item>
-      <n-form-item label="时长（分钟）" path="timeLength">
-        <n-input-number
-          v-model:value="modalForm.time_length"
-          placeholder="请输入时长"
-        />
-      </n-form-item>
-      <n-form-item label="开始页数" path="startPage">
-        <n-input-number
-          v-model:value="modalForm.start_page"
-          placeholder="请输入开始页数"
-        />
-      </n-form-item>
-      <n-form-item label="结束页数" path="endPage">
-        <n-input-number
-          v-model:value="modalForm.end_page"
-          placeholder="请输入结束页数"
-        />
-      </n-form-item>
-    </n-form>
-  </CrudModal>
+  <readingRecord
+    :bookid="props.bookid"
+    @update-record="reload"
+    :reload="updateRecord"
+  />
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, h } from 'vue'
+import { onMounted, ref } from 'vue'
 import { getRequest } from '@/service/book/book'
 import { getInfo } from '@/service/read/read'
 import addRecord from './addRecord.vue'
+import readingRecord from './readingRecord.vue'
 import { IRecord } from '@/service/read/types'
 import * as echarts from 'echarts'
 
@@ -126,6 +81,7 @@ const total_day = ref(0)
 const total_excerpt = ref(0)
 const myChart = ref<any>()
 const emits = defineEmits(['updatePagePercent'])
+const updateRecord = ref(false)
 
 const load = async () => {
   const response = (await getInfo(getRequest, {
@@ -157,17 +113,6 @@ const load = async () => {
   myChart.value = echarts.init(chartDom)
 
   const option = {
-    // tooltip: {
-    //   trigger: 'axis',
-    //   // formatter: function (params: any[]) {
-    //   //   var dataIndex = params[0].dataIndex
-    //   //   var timeValue = records.value![dataIndex].time_length
-    //   //   var pageValue =
-    //   //     records.value![dataIndex].end_page -
-    //   //     records.value![dataIndex].start_page
-    //   //   return timeValue + '分钟：' + pageValue + '页'
-    //   // }
-    // },
     xAxis: {
       type: 'category',
       data: records.value?.map((item) => item.date)
@@ -229,150 +174,14 @@ onMounted(async () => {
 })
 
 const reload = async () => {
+  updateRecord.value = false
   showAddModel.value = false
-  $table.value?.handleSearch()
   await load()
+  updateRecord.value = true
 }
 
 const showAddModel = ref(false)
 const addType = ref(1)
-
-import { NButton } from 'naive-ui'
-import { CrudModal, CrudTable, useCRUD } from '@zclzone/crud'
-import api from './api'
-import { formatDate, renderIcon } from '@/utils'
-
-const $table = ref<any>(null)
-
-const queryItems = ref<any>({
-  table: 'reading_record',
-  fields: ['*'],
-  conditions: ['book_id=' + props.bookid]
-})
-
-const extraParams = ref<any>({
-  order_by: 'date DESC'
-})
-
-const {
-  modalVisible,
-  modalAction,
-  modalTitle,
-  modalLoading,
-  handleDelete,
-  handleEdit,
-  handleView,
-  handleSave,
-  modalForm,
-  modalFormRef
-} = useCRUD({
-  name: '阅读记录',
-  doCreate: api.addPost,
-  doDelete: api.deletePost,
-  doUpdate: api.updatePost,
-  refresh: async () => await reload()
-})
-
-const columns: any = [
-  { type: 'selection', fixed: 'left' },
-  {
-    title: '#',
-    key: 'id',
-    width: 80,
-    render(row: any) {
-      return h('span', row.id)
-    }
-  },
-  {
-    title: '阅读日期',
-    key: 'date',
-    width: 150,
-    render(row: any) {
-      return h('span', formatDate(row.date))
-    }
-  },
-  {
-    title: '时长（分钟）',
-    key: 'timeLength',
-    width: 150,
-    render(row: any) {
-      return h('span', row.time_length)
-    }
-  },
-  {
-    title: '结束页码',
-    key: 'startPage',
-    width: 150,
-    render(row: any) {
-      return h('span', row.start_page)
-    }
-  },
-  {
-    title: '结束页码',
-    key: 'endPage',
-    width: 150,
-    render(row: any) {
-      return h('span', row.end_page)
-    }
-  },
-  {
-    title: '操作',
-    key: 'actions',
-    width: 240,
-    align: 'center',
-    fixed: 'right',
-    hideInExcel: true,
-    render(row: any) {
-      return [
-        h(
-          NButton,
-          {
-            size: 'small',
-            type: 'primary',
-            secondary: true,
-            onClick: () => handleView(row)
-          },
-          {
-            default: () => '查看',
-            icon: renderIcon('majesticons:eye-line', { size: 14 })
-          }
-        ),
-        h(
-          NButton,
-          {
-            size: 'small',
-            type: 'primary',
-            style: 'margin-left: 15px;',
-            onClick: () => handleEdit(row)
-          },
-          {
-            default: () => '编辑',
-            icon: renderIcon('material-symbols:edit-outline', { size: 14 })
-          }
-        ),
-
-        h(
-          NButton,
-          {
-            size: 'small',
-            type: 'error',
-            style: 'margin-left: 15px;',
-            onClick: async () => handleDelete(row.id)
-          },
-          {
-            default: () => '删除',
-            icon: renderIcon('material-symbols:delete-outline', { size: 14 })
-          }
-        )
-      ]
-    }
-  }
-]
-
-// 选中事件
-function onChecked(rowKeys: string[]) {
-  if (rowKeys.length) window.$message?.info(`选中${rowKeys.join(' ')}`)
-}
 </script>
 
 <style scoped>
