@@ -202,7 +202,7 @@ onMounted(async () => {
   justify-content: space-between;
 }
 .card-content {
-  height: 130px;
+  height: 160px;
 }
 .cover-container {
   width: 100%;
@@ -217,7 +217,7 @@ onMounted(async () => {
 }
 .cover-container {
   max-width: 100%;
-  max-height: 400px;
+  height: 150px;
   overflow: hidden;
   display: flex;
   justify-content: center;
