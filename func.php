@@ -11,6 +11,7 @@ $errorMessages = [
     "missing_required_fields" => ["code" => 507, "message" => "缺少必填字段 %s"],
     "book_exists" => ["code" => 508, "message" => "图书 %s 已存在"],
     "book_not_exists" => ["code" => 509, "message" => "图书 %s 不存在"],
+    "record_not_exists" => ["code" => 510, "message" => "阅读记录 %s 不存在"],
     // 在这里添加其他错误情况...
 ];
 

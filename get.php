@@ -39,8 +39,9 @@ $result = $conn->query($sql);
 if (!$result) {
     printMessage([
         "code" => $errorMessages["db_query_error"]["code"],
-        "message" => sprintf($errorMessages["db_query_error"]["message"], $conn->error),
-        "sql" => $sql
+        "message" => sprintf($errorMessages["db_query_error"]["message"]),
+        "sql" => $sql,
+        "error" => $conn->error
     ]);
 }
 
@@ -56,12 +57,12 @@ foreach ($fieldInfo as $field) {
 while ($row = $result->fetch_assoc()) {
     foreach ($fieldInfo as $field_) {
         $field = $field_->name;
-        if (!isset($row[$field])) {
-            printMessage([
-                "code" => $errorMessages["unknown_field"]["code"],
-                "message" => sprintf($errorMessages["unknown_field"]["message"], $field)
-            ]);
-        }
+        // if (!isset($row[$field])) {
+        //     printMessage([
+        //         "code" => $errorMessages["unknown_field"]["code"],
+        //         "message" => sprintf($errorMessages["unknown_field"]["message"], $field)
+        //     ]);
+        // }
         $row[$field] = convertToDataType($tableName, $filed, $row[$field], $dataTypes[$field]);
     }
     $data[] = $row;
