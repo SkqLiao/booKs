@@ -11,8 +11,8 @@ if ($result->num_rows > 0) {
     updateData("basic_info", $input_data, "isbn = '$isbn'");
 } else {
     printMessage([
-        "code" => $errorMessage["book_not_exists"]["code"],
-        "message" => sprintf($errorMessages["book_not_exists"]["message"], $isbn)
+        "code" => $errorMessage["not_exists"]["code"],
+        "message" => sprintf($errorMessages["not_exists"]["message"], $isbn)
     ]);
 }
 ?>

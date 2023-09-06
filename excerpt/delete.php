@@ -7,6 +7,6 @@ checkRequiredFields($input_data, ["id"]);
 
 $id = $input_data["id"];
 
-deleteData("reading_record", "id = $id");
+deleteData("reading_excerpt", "id = $id");
 
 ?>

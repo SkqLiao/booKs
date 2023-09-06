@@ -11,8 +11,8 @@ if ($result->num_rows > 0) {
     updateData("reading_record", $input_data, "id = $id");
 } else {
     printMessage([
-        "code" => $errorMessage["record_not_exists"]["code"],
-        "message" => sprintf($errorMessages["record_not_exists"]["message"], $id)
+        "code" => $errorMessage["not_exists"]["code"],
+        "message" => sprintf($errorMessages["not_exists"]["message"], $id)
     ]);
 }
 ?>
