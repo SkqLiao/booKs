@@ -43,7 +43,7 @@
           <n-input v-model:value="bookInfo.series" />
         </n-form-item>
         <n-form-item label="页数" path="pages">
-          <n-input v-model:number="bookInfo.pages" />
+          <n-input v-model:value="bookInfo.pages" />
         </n-form-item>
         <n-card>
           <n-form-item label="购买日期" path="buy_date" required>
@@ -136,7 +136,7 @@ const rules = {
     validator(rule: FormItemRule, x: string) {
       if (x == '') return true
       const num = parseInt(x)
-      return !isNaN(num) && num > 0 && Number.isInteger(num)
+      return !isNaN(num) && num > 0
     }
   },
   price: {
