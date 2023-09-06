@@ -51,11 +51,18 @@
     :id="props.bookid"
     @update-add-visible="reload"
   />
-  <readingRecord
-    :bookid="props.bookid"
-    @update-record="reload"
-    :reload="updateRecord"
-  />
+  <n-tabs class="card-tabs" default-value="record" size="large" animated>
+    <n-tab-pane name="record" tab="阅读记录">
+      <readingRecord
+        :bookid="props.bookid"
+        @update-record="reload"
+        :reload="updateRecord"
+      />
+    </n-tab-pane>
+    <n-tab-pane name="excerpt" tab="摘录心得">
+      <readingExcerpt :bookid="props.bookid" :reload="updateExcerpt" />
+    </n-tab-pane>
+  </n-tabs>
 </template>
 
 <script setup lang="ts">
@@ -64,6 +71,7 @@ import { getRequest } from '@/service/book/book'
 import { getInfo } from '@/service/read/read'
 import addRecord from './addRecord.vue'
 import readingRecord from './readingRecord.vue'
+import readingExcerpt from './readingExcerpt.vue'
 import { IRecord } from '@/service/read/types'
 import * as echarts from 'echarts'
 
@@ -82,6 +90,7 @@ const total_excerpt = ref(0)
 const myChart = ref<any>()
 const emits = defineEmits(['updatePagePercent'])
 const updateRecord = ref(false)
+const updateExcerpt = ref(false)
 
 const load = async () => {
   const response = (await getInfo(getRequest, {
@@ -149,7 +158,7 @@ const load = async () => {
         yAxisIndex: 0,
         label: {
           show: true,
-          formatter: '{c} 页',
+          formatter: '{c} 页'
         }
       },
       {
@@ -160,7 +169,7 @@ const load = async () => {
         yAxisIndex: 1,
         label: {
           show: true,
-          formatter: '{c} 分钟',
+          formatter: '{c} 分钟'
         }
       }
     ]
@@ -175,9 +184,10 @@ onMounted(async () => {
 
 const reload = async () => {
   updateRecord.value = false
-  showAddModel.value = false
+  updateExcerpt.value = false
   await load()
   updateRecord.value = true
+  updateExcerpt.value = true
 }
 
 const showAddModel = ref(false)
