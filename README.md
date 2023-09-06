@@ -79,3 +79,7 @@ Based on [qs admin](https://github.com/zclzone/qs-admin).
 ### 2023-09-04
 
 - [x] CRUD 阅读记录表格
+
+### 2023-09-06
+
+- [x] 增加书摘面板，CRUD 书摘表格
