@@ -82,6 +82,8 @@ const extraParams = ref<any>({
   order_by: 'date DESC'
 })
 
+const emits = defineEmits(['updateExcerpt'])
+
 import { request2 } from '@/utils'
 
 const getPosts = (params = {}) => request2.get('/get.php', { params })
@@ -108,6 +110,7 @@ const {
 
 function refresh() {
   $table.value?.handleSearch()
+  emits('updateExcerpt')
 }
 
 const columns: any = [

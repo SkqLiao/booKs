@@ -60,7 +60,7 @@
       />
     </n-tab-pane>
     <n-tab-pane name="excerpt" tab="摘录心得">
-      <readingExcerpt :bookid="props.bookid" :reload="updateExcerpt" />
+      <readingExcerpt :bookid="props.bookid" @update-excerpt="reload" :reload="updateExcerpt" />
     </n-tab-pane>
   </n-tabs>
 </template>
@@ -91,6 +91,24 @@ const myChart = ref<any>()
 const emits = defineEmits(['updatePagePercent'])
 const updateRecord = ref(false)
 const updateExcerpt = ref(false)
+
+const getTime = async () => {
+  const response = await getInfo(getRequest, {
+    table: 'reading_record',
+    fields: ['SUM(time_length)'],
+    conditions: ['book_id = ' + props.bookid]
+  })
+  total_time.value = response[0]['SUM(time_length)']
+}
+
+const getExcerpt = async () => {
+  const response = await getInfo(getRequest, {
+    table: 'reading_excerpt',
+    fields: ['COUNT(*) as count'],
+    conditions: ['book_id = ' + props.bookid]
+  })
+  total_excerpt.value = response[0]['count']
+}
 
 const load = async () => {
   const response = (await getInfo(getRequest, {
@@ -183,6 +201,9 @@ onMounted(async () => {
 })
 
 const reload = async () => {
+  await getTime()
+  await getExcerpt()
+  showAddModel.value = false
   updateRecord.value = false
   updateExcerpt.value = false
   await load()

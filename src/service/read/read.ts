@@ -9,6 +9,13 @@ export function addReadingRecord(params: object) {
   })
 }
 
+export function addReadingExcerpt(params: object) {
+  return hyRequest.post<IDataType<string>>({
+    url: '/excerpt/add.php',
+    data: params
+  })
+}
+
 export async function getInfo(
   func: (params: any) => Promise<IDataType>,
   params: object

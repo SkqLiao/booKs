@@ -3,6 +3,7 @@
     v-model:show="localShowModal"
     preset="card"
     style="width: 18%"
+    :style="getStyle"
     :on-after-leave="() => $emit('updateAddVisible')"
   >
     <template #header>
@@ -42,12 +43,49 @@
         <n-button type="success" @click="addRecord">提交</n-button>
       </div>
     </div>
-    <div v-else-if="props.type === 2">增加摘录</div>
+    <div v-else-if="props.type === 2">
+      <n-form>
+      <n-grid :cols="24" :x-gap="24">
+        <n-form-item-gi :span="8" label="页码" path="excerpt_page" required>
+          <n-input-number
+            v-model:value="excerpt_page"
+            clearable
+          >
+          <template #suffix> 页 </template>
+          </n-input-number>
+        </n-form-item-gi>
+        <n-form-item-gi :span="16" label="摘录" path="excerpt">
+          <n-input
+            v-model:value="excerpt"
+            clearable
+            style="width: 100%"
+            type="textarea"
+            :rows="10"
+          />
+        </n-form-item-gi>
+        <n-form-item-gi :span="8" label="阅读日期" path="read_date" required>
+          <n-date-picker panel v-model:formatted-value="readDate" />
+        </n-form-item-gi>
+        <n-form-item-gi :span="16" label="心得" path="thoughts">
+          <n-input
+            v-model:value="thoughts"
+            clearable
+            style="width: 100%"
+            type="textarea"
+            :rows="10"
+          />
+        </n-form-item-gi>
+        </n-grid>
+      </n-form>
+      <div class="centered-button">
+        <n-button type="success" @click="addExcerpt">提交</n-button>
+      </div>
+    </div>
   </n-modal>
 </template>
 
 <script setup lang="ts">
-import { addReadingRecord } from '@/service/read/read'
+import { addReadingRecord, addReadingExcerpt } from '@/service/read/read'
 
 const props = defineProps({
   type: {
@@ -61,6 +99,18 @@ const props = defineProps({
   id: {
     type: Number,
     required: true
+  }
+})
+
+const getStyle = computed(() => {
+  if (props.type === 1) {
+    return {
+      width: '18%'
+    }
+  } else if (props.type === 2) {
+    return {
+      width: '50%'
+    }
   }
 })
 
@@ -81,6 +131,7 @@ const emits = defineEmits(['updateAddVisible'])
 
 const addRecord = async () => {
   try {
+    console.log('record')
     if (startPage.value > endPage.value) {
       window.$message?.warning('起始页码不能大于结束页码')
       return
@@ -93,16 +144,50 @@ const addRecord = async () => {
       time_length: time_length.value,
       date: readDate.value
     })
-    console.log(response)
     if (response.code !== 200) {
-      window.$message?.warning('增加失败 ' + response.message)
+      window.$message?.warning('增加失败：' + response.message)
     } else {
-      window.$message?.success('增加成功')
+      window.$message?.success('增加成功！')
       localShowModal.value = false
       emits('updateAddVisible')
     }
   } catch (error) {
-    window.$message?.warning('增加失败 ')
+    window.$message?.warning('增加失败')
+  }
+}
+
+const excerpt_page = ref(0)
+const excerpt = ref('')
+const thoughts = ref('')
+
+const addExcerpt = async () => {
+  try {
+    console.log('excerpt')
+    if (excerpt_page.value < 0) {
+      window.$message?.warning('页码不能为负数')
+      return
+    }
+    if (excerpt.value.length == 0 && thoughts.value.length == 0) {
+      window.$message?.warning('摘录和心得不能同时为空')
+      return
+    }
+    const response = await addReadingExcerpt({
+      book_id: props.id,
+      page: excerpt_page.value,
+      excerpt: excerpt.value,
+      thoughts: thoughts.value,
+      date: readDate.value
+    })
+    console.log(response)
+    if (response.code !== 200) {
+      window.$message?.warning('增加失败：' + response.message)
+    } else {
+      window.$message?.success('增加成功！')
+      localShowModal.value = false
+      emits('updateAddVisible')
+    }
+  } catch (error) {
+    window.$message?.warning('增加失败')
   }
 }
 </script>
