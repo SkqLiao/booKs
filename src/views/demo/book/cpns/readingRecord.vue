@@ -138,7 +138,7 @@ const columns: any = [
     }
   },
   {
-    title: '结束页码',
+    title: '开始页码',
     key: 'startPage',
     width: 150,
     render(row: any) {
