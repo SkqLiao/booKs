@@ -60,7 +60,11 @@
       />
     </n-tab-pane>
     <n-tab-pane name="excerpt" tab="摘录心得">
-      <readingExcerpt :bookid="props.bookid" @update-excerpt="reload" :reload="updateExcerpt" />
+      <readingExcerpt
+        :bookid="props.bookid"
+        @update-excerpt="reload"
+        :reload="updateExcerpt"
+      />
     </n-tab-pane>
   </n-tabs>
 </template>

@@ -45,36 +45,33 @@
     </div>
     <div v-else-if="props.type === 2">
       <n-form>
-      <n-grid :cols="24" :x-gap="24">
-        <n-form-item-gi :span="8" label="页码" path="excerpt_page" required>
-          <n-input-number
-            v-model:value="excerpt_page"
-            clearable
-          >
-          <template #suffix> 页 </template>
-          </n-input-number>
-        </n-form-item-gi>
-        <n-form-item-gi :span="16" label="摘录" path="excerpt">
-          <n-input
-            v-model:value="excerpt"
-            clearable
-            style="width: 100%"
-            type="textarea"
-            :rows="10"
-          />
-        </n-form-item-gi>
-        <n-form-item-gi :span="8" label="阅读日期" path="read_date" required>
-          <n-date-picker panel v-model:formatted-value="readDate" />
-        </n-form-item-gi>
-        <n-form-item-gi :span="16" label="心得" path="thoughts">
-          <n-input
-            v-model:value="thoughts"
-            clearable
-            style="width: 100%"
-            type="textarea"
-            :rows="10"
-          />
-        </n-form-item-gi>
+        <n-grid :cols="24" :x-gap="24">
+          <n-form-item-gi :span="8" label="页码" path="excerpt_page" required>
+            <n-input-number v-model:value="excerpt_page" clearable>
+              <template #suffix> 页 </template>
+            </n-input-number>
+          </n-form-item-gi>
+          <n-form-item-gi :span="16" label="摘录" path="excerpt">
+            <n-input
+              v-model:value="excerpt"
+              clearable
+              style="width: 100%"
+              type="textarea"
+              :rows="10"
+            />
+          </n-form-item-gi>
+          <n-form-item-gi :span="8" label="阅读日期" path="read_date" required>
+            <n-date-picker panel v-model:formatted-value="readDate" />
+          </n-form-item-gi>
+          <n-form-item-gi :span="16" label="心得" path="thoughts">
+            <n-input
+              v-model:value="thoughts"
+              clearable
+              style="width: 100%"
+              type="textarea"
+              :rows="10"
+            />
+          </n-form-item-gi>
         </n-grid>
       </n-form>
       <div class="centered-button">

@@ -86,7 +86,7 @@ import { request2 } from '@/utils'
 
 const getPosts = (params = {}) => request2.get('/get.php', { params })
 const updatePost = (data: any) => request2.post(`/read/update.php`, data)
-const deletePost = (id: any) => request2.post(`/read/delete.php`, {id : id})
+const deletePost = (id: any) => request2.post(`/read/delete.php`, { id: id })
 
 const {
   modalVisible,
