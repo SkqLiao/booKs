@@ -61,7 +61,7 @@
           <p class="book-info-p">
             <strong>装帧：</strong>{{ props.bookInfo.binding }}
           </p>
-          <p class="book-info-p">
+          <p class="book-info-p" v-if="props.bookInfo.series.length > 0">
             <strong>丛书：</strong>{{ props.bookInfo.series }}
           </p>
           <p class="book-info-p">
