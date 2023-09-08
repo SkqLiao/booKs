@@ -104,13 +104,12 @@
 </template>
 
 <script setup lang="ts">
-import { getRequest } from '@/service/book/book'
+import { getRequest, getInfo, bookCoverRequest } from '@/service/book/book'
 import { ref } from 'vue'
 import { Ibook, IDataType } from '@/service/book/types'
 import bookDetail from './bookDetail.vue'
 import eventBus from '@/eventbus/index'
 import { useBookStore } from '@/store'
-import { bookCoverRequest } from '@/service/book/book'
 import defaultCoverImage from '@/assets/images/default_cover.jpg'
 const bookStore = useBookStore()
 
@@ -160,6 +159,22 @@ const base64ToUrl = (base64Data: string): string => {
 }
 
 const fetchBookInfo = async () => {
+  const data = (await getInfo(getRequest, {
+    table: 'basic_info',
+    fields: ['*'],
+    conditions: ['id=' + props.id]
+  })) as Ibook[]
+  bookInfo.value = data[0]
+  const response2 = await bookCoverRequest({
+    isbn: bookInfo.value?.isbn
+  })
+  if (response2.data?.length > 0) {
+    decodedCover.value = base64ToUrl(response2.data)
+    bookInfo.value.cover_base64 = response2.data
+  }
+}
+
+const fetchBookInfo1 = async () => {
   try {
     const response = (await getRequest({
       table: 'basic_info',

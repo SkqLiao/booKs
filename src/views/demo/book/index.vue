@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getRequest } from '@/service/book/book'
+import { getRequest, getInfo } from '@/service/book/book'
 import bookCard from './cpns/bookCard.vue'
 import bookFilter from './cpns/bookFilter.vue'
 import { ref, Ref, onMounted } from 'vue'
@@ -24,22 +24,24 @@ const pageSize = 12
 const totalBooks = ref(0)
 const currentPage = ref(1)
 const bookIds = ref<number[]>([])
+
 const fetchBookNumber = async (page: number) => {
-  try {
-    const response = await getRequest({
-      table: 'basic_info',
-      fields: ['COUNT(*) as count'],
-      conditions: bookStore.buildQueryConditions()
-    })
-    totalBooks.value = response.data[0].count
-    const startIndex = (page - 1) * pageSize
-    bookIds.value = Array.from(
-      { length: Math.min(pageSize, totalBooks.value - startIndex) },
-      (_, index) => startIndex + index
-    )
-  } catch (error) {
-    console.error('获取图书信息失败:', error)
-  }
+  const data = (await getInfo(getRequest, {
+    table: 'basic_info',
+    fields: ['COUNT(*) as count'],
+    conditions: bookStore.buildQueryConditions()
+  })) as { count: number }[]
+  totalBooks.value = data[0].count
+  const startIndex = (page - 1) * pageSize
+  const data2 = (await getInfo(getRequest, {
+    table: 'basic_info',
+    fields: ['id'],
+    conditions: bookStore.buildQueryConditions(),
+    limit: Math.min(pageSize, totalBooks.value - startIndex),
+    offset: startIndex,
+    order_by: 'buy_date DESC, id DESC'
+  })) as [{ id: number }]
+  bookIds.value = data2.map((item) => item.id)
 }
 
 const getFilterInfo = () => {
