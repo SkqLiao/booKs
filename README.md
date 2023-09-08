@@ -83,3 +83,7 @@ Based on [qs admin](https://github.com/zclzone/qs-admin).
 ### 2023-09-06
 
 - [x] 增加书摘面板，CRUD 书摘表格
+
+### 2023-09-07
+
+- [x] 修复/增加书籍封面上传更新的功能
