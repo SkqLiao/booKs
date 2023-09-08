@@ -87,3 +87,7 @@ Based on [qs admin](https://github.com/zclzone/qs-admin).
 ### 2023-09-07
 
 - [x] 修复/增加书籍封面上传更新的功能
+
+### 2023-09-08
+
+- [ ] 书籍阅读状态页面及数据库构建（未完成）
