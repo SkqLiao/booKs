@@ -179,6 +179,7 @@ const fetchBookInfo = async () => {
     })
     if (response2.data?.length > 0) {
       decodedCover.value = base64ToUrl(response2.data)
+      bookInfo.value.cover_base64 = response2.data
     }
   } catch (error) {
     console.error('获取图书信息失败:', error)

@@ -5,6 +5,16 @@
         <div class="cover-container">
           <img :src="decodedCover" alt="封面图像" class="cover-image" />
         </div>
+        <n-upload
+          accept="image/*"
+          show-upload-list="false"
+          :max="1"
+          :custom-request="handleCoverChange"
+          :on-remove="removeCover"
+        >
+          <n-button>选择图片</n-button>
+        </n-upload>
+
         <n-form-item label="ISBN" required>
           <n-input v-model:value="isbn" :disabled="props.disabled" />
         </n-form-item>
@@ -77,7 +87,7 @@
 import { ref, onMounted, PropType, watch } from 'vue'
 import { Ibook } from '@/service/book/types'
 import defaultCoverImage from '@/assets/images/default_cover.jpg'
-import { FormItemRule, FormInst } from 'naive-ui'
+import { FormItemRule, FormInst, UploadCustomRequestOptions } from 'naive-ui'
 
 const props = defineProps({
   bookInfo: {
@@ -99,6 +109,22 @@ const decodedCover = ref(defaultCoverImage)
 const authors = ref('')
 const translators = ref('')
 const bookInfo = ref({} as Ibook)
+const uploaded_cover = ref('')
+
+const handleCoverChange = ({ file }: UploadCustomRequestOptions) => {
+  const reader = new FileReader()
+  reader.readAsDataURL(file.file as File)
+  reader.onload = () => {
+    const base64Data = reader.result as string
+    decodedCover.value = base64Data
+    uploaded_cover.value = base64Data.split(",")[1]
+  }
+}
+
+const removeCover = () => {
+  decodedCover.value = base64ToUrl(bookInfo.value.cover_base64)
+  uploaded_cover.value = ''
+}
 
 watch(
   () => props.bookInfo,
@@ -126,8 +152,9 @@ onMounted(() => {
   bookInfo.value = props.bookInfo
   authors.value = bookInfo.value?.author?.join(',') ?? ''
   translators.value = bookInfo.value?.translator?.join(',') ?? ''
-  if (bookInfo.value.cover_base64)
+  if (bookInfo.value.cover_base64) {
     decodedCover.value = base64ToUrl(bookInfo.value.cover_base64)
+  }
 })
 
 const formRef = ref<FormInst | null>(null)
@@ -170,7 +197,8 @@ defineExpose({
   isbn,
   formRef,
   authors,
-  translators
+  translators,
+  uploaded_cover
 })
 </script>
 

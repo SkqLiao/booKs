@@ -74,6 +74,11 @@ const updateBook = async () => {
   const authors = child.value?.authors
   const translators = child.value?.translators
   const formRef = child.value?.formRef
+  const uploaded_cover = child.value?.uploaded_cover
+  if (uploaded_cover) {
+    bookInfo.cover_base64 = uploaded_cover
+  }
+  console.log(bookInfo)
   try {
     bookInfo.author = authors.split(',')
     bookInfo.translator = translators.split(',')
