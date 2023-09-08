@@ -11,6 +11,7 @@ $errorMessages = [
     "missing_required_fields" => ["code" => 507, "message" => "缺少必填字段 %s"],
     "exists" => ["code" => 508, "message" => "%s 已存在"],
     "not_exists" => ["code" => 509, "message" => "%s 不存在"],
+    "cover_save_failed" => ["code" => 510, "message" => "封面保存失败：%s"],
     // 在这里添加其他错误情况...
 ];
 
