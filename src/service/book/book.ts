@@ -42,3 +42,36 @@ export function bookAddRequest(params: Ibook) {
     data: params
   })
 }
+
+export function addReadingRecord(params: object) {
+  return hyRequest.post<IDataType<string>>({
+    url: '/read/add.php',
+    data: params
+  })
+}
+
+export function addReadingExcerpt(params: object) {
+  return hyRequest.post<IDataType<string>>({
+    url: '/excerpt/add.php',
+    data: params
+  })
+}
+
+export async function getInfo(
+  func: (params: IQueryParams) => Promise<IDataType<any[]>>,
+  params: IQueryParams
+) {
+  try {
+    const response = await func(params)
+    if (response.code !== 200) {
+      console.log(response.message)
+      console.log(response?.error)
+      console.log(response?.sql)
+      throw new Error(response.message)
+    }
+    //console.log(response.data)
+    return response.data
+  } catch (error) {
+    console.log(error)
+  }
+}

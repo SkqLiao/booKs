@@ -51,3 +51,12 @@ export interface DoubanAPI {
   is_cache: boolean
   message: object
 }
+
+export interface IRecord {
+  id: number
+  book_id: number
+  date: Date
+  time_length: number
+  start_page: number
+  end_page: number
+}

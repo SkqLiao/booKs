@@ -82,7 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { addReadingRecord, addReadingExcerpt } from '@/service/read/read'
+import { addReadingRecord, addReadingExcerpt } from '@/service/book/book'
 
 const props = defineProps({
   type: {

@@ -72,11 +72,11 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { getRequest } from '@/service/book/book'
-import { getInfo } from '@/service/read/read'
+import { getInfo } from '@/service/book/book'
 import addRecord from './addRecord.vue'
 import readingRecord from './readingRecord.vue'
 import readingExcerpt from './readingExcerpt.vue'
-import { IRecord } from '@/service/read/types'
+import { IRecord } from '@/service/book/types'
 import * as echarts from 'echarts'
 
 const props = defineProps({
