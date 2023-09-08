@@ -117,7 +117,7 @@ const handleCoverChange = ({ file }: UploadCustomRequestOptions) => {
   reader.onload = () => {
     const base64Data = reader.result as string
     decodedCover.value = base64Data
-    uploaded_cover.value = base64Data.split(",")[1]
+    uploaded_cover.value = base64Data.split(',')[1]
   }
 }
 
