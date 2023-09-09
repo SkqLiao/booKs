@@ -106,7 +106,7 @@
 <script setup lang="ts">
 import { getRequest, getInfo, bookCoverRequest } from '@/service/book/book'
 import { ref } from 'vue'
-import { Ibook, IDataType } from '@/service/book/types'
+import { Ibook } from '@/service/book/types'
 import bookDetail from './bookDetail.vue'
 import eventBus from '@/eventbus/index'
 import { useBookStore } from '@/store'
@@ -117,6 +117,10 @@ const props = defineProps({
   id: {
     type: Number,
     required: true
+  },
+  cardType: {
+    type: String,
+    default: 'default'
   }
 })
 
@@ -171,33 +175,6 @@ const fetchBookInfo = async () => {
   if (response2.data?.length > 0) {
     decodedCover.value = base64ToUrl(response2.data)
     bookInfo.value.cover_base64 = response2.data
-  }
-}
-
-const fetchBookInfo1 = async () => {
-  try {
-    const response = (await getRequest({
-      table: 'basic_info',
-      fields: ['*'],
-      conditions: bookStore.buildQueryConditions(),
-      offset: props.id,
-      limit: 1,
-      order_by: 'buy_date DESC, id DESC'
-    })) as IDataType<Ibook[]>
-    if (response.code != 200) {
-      window.$message?.warning(response.message)
-      return
-    }
-    bookInfo.value = response.data[0]
-    const response2 = await bookCoverRequest({
-      isbn: bookInfo.value?.isbn
-    })
-    if (response2.data?.length > 0) {
-      decodedCover.value = base64ToUrl(response2.data)
-      bookInfo.value.cover_base64 = response2.data
-    }
-  } catch (error) {
-    console.error('获取图书信息失败:', error)
   }
 }
 
