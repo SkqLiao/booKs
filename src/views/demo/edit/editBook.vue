@@ -34,6 +34,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref, watch } from 'vue'
 import { Ibook } from '@/service/book/types'
 import EditForm from './cpns/editForm.vue'
 import eventBus from '@/eventbus/index'
@@ -78,7 +79,6 @@ const updateBook = async () => {
   if (uploaded_cover) {
     bookInfo.cover_base64 = uploaded_cover
   }
-  console.log(bookInfo)
   try {
     bookInfo.author = authors.split(',')
     bookInfo.translator = translators.split(',')
