@@ -49,9 +49,11 @@ const fetchBookNumber = async (page: number) => {
     table: 'reading_status',
     fields: ['book_id'],
     limit: Math.min(pageSize, totalBooks.value - startIndex),
-    offset: startIndex
+    offset: startIndex,
+    conditions: ['finished = ' + props.status]
   })) as [{ book_id: number }]
   bookIds.value = data2.map((item) => item.book_id)
+  console.log(bookIds.value)
 }
 
 onMounted(() => {
@@ -65,6 +67,7 @@ const handlePageChange = async (page: number) => {
 </script>
 <style scoped>
 .container {
+  padding-top: 10px;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -38,6 +38,9 @@
         <n-form-item label="阅读日期" path="read_date" required>
           <n-date-picker panel v-model:formatted-value="readDate" />
         </n-form-item>
+        <n-form-item label="已读完" path="finished">
+          <n-switch v-model:value="finished" />
+        </n-form-item>
       </n-form>
       <div class="centered-button">
         <n-button type="success" @click="addRecord">提交</n-button>
@@ -82,6 +85,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed, watch } from 'vue'
 import { addReadingRecord, addReadingExcerpt } from '@/service/book/book'
 
 const props = defineProps({
@@ -104,10 +108,9 @@ const getStyle = computed(() => {
     return {
       width: '18%'
     }
-  } else if (props.type === 2) {
-    return {
-      width: '50%'
-    }
+  }
+  return {
+    width: '50%'
   }
 })
 
@@ -115,7 +118,7 @@ const localShowModal = ref(false)
 
 watch(
   () => props.showModal,
-  (newVal, oldVal) => {
+  (newVal) => {
     localShowModal.value = newVal
   }
 )
@@ -125,10 +128,10 @@ const endPage = ref(0)
 const time_length = ref(0)
 const readDate = ref(new Date().toISOString().split('T')[0])
 const emits = defineEmits(['updateAddVisible'])
+const finished = ref(false)
 
 const addRecord = async () => {
   try {
-    console.log('record')
     if (startPage.value > endPage.value) {
       window.$message?.warning('起始页码不能大于结束页码')
       return
@@ -139,7 +142,8 @@ const addRecord = async () => {
       end_page: endPage.value,
       read_date: readDate.value,
       time_length: time_length.value,
-      date: readDate.value
+      date: readDate.value,
+      finished: finished.value
     })
     if (response.code !== 200) {
       window.$message?.warning('增加失败：' + response.message)

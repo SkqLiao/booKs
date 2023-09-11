@@ -59,4 +59,5 @@ export interface IRecord {
   time_length: number
   start_page: number
   end_page: number
+  finished: boolean
 }
