@@ -1,18 +1,12 @@
 <template>
   <div v-if="bookInfo">
-    <n-card class="card" :hoverable="true">
+    <n-card class="card" :hoverable="true" v-if="props.cardType == 'default'">
       <template #header>
-        <n-button
-          text
-          @click="showDetailModal = true"
-          style="white-space: normal"
-        >
-          <h3>{{ bookInfo.title }}</h3>
-        </n-button>
+        <h4 @click="showDetailModal = true" style="cursor: pointer">
+          {{ bookInfo.title }}
+        </h4>
       </template>
-      <div
-        :style="props.cardType == 'default' ? 'height: 130px' : 'height: 120px'"
-      >
+      <div style="height: 130px">
         <n-row>
           <n-col :span="6">
             <div class="cover-container">
@@ -21,57 +15,56 @@
           </n-col>
           <n-col :span="18">
             <div class="content">
-              <div :id="'info' + props.id">
-                <p>
-                  作者：
-                  <span
-                    v-for="(author, index) in bookInfo.author"
-                    :key="author"
-                    @click="selectFilter('author', author)"
-                  >
-                    {{
-                      author + (index < bookInfo.author.length - 1 ? ' / ' : '')
-                    }}
-                  </span>
-                </p>
-                <p v-if="props.cardType == 'default'">
-                  出版社：
-                  <n-button
-                    text
-                    quaterary
-                    round
-                    type="info"
-                    @click="selectFilter('publish', bookInfo.publish)"
-                  >
-                    {{ bookInfo.publish }}
-                  </n-button>
-                </p>
-                <p v-if="bookInfo.producer && props.cardType == 'default'">
-                  出版方：
-                  <n-button
-                    text
-                    quaterary
-                    round
-                    type="primary"
-                    @click="selectFilter('producer', bookInfo.producer)"
-                  >
-                    {{ bookInfo.producer }}
-                  </n-button>
-                </p>
-                <p v-if="bookInfo.series && props.cardType == 'default'">
-                  丛书：
-                  <n-button
-                    text
-                    quaterary
-                    round
-                    type="primary"
-                    @click="selectFilter('series', bookInfo.series)"
-                    style="white-space: normal"
-                  >
-                    {{ bookInfo.series }}
-                  </n-button>
-                </p>
-              </div>
+              <p>
+                <strong>作者</strong>：
+                <span
+                  v-for="(author, index) in bookInfo.author"
+                  :key="author"
+                  @click="selectFilter('author', author)"
+                  style="cursor: pointer"
+                >
+                  {{
+                    author + (index < bookInfo.author.length - 1 ? ' / ' : '')
+                  }}
+                </span>
+              </p>
+              <p>
+                <strong>出版社</strong>：
+                <n-button
+                  text
+                  quaterary
+                  round
+                  type="info"
+                  @click="selectFilter('publish', bookInfo.publish)"
+                >
+                  {{ bookInfo.publish }}
+                </n-button>
+              </p>
+              <p v-if="bookInfo.producer">
+                <strong>出版方</strong>：
+                <n-button
+                  text
+                  quaterary
+                  round
+                  type="primary"
+                  @click="selectFilter('producer', bookInfo.producer)"
+                >
+                  {{ bookInfo.producer }}
+                </n-button>
+              </p>
+              <p>
+                <strong>丛书</strong>：
+                <n-button
+                  text
+                  quaterary
+                  round
+                  type="primary"
+                  @click="selectFilter('series', bookInfo.series)"
+                  style="white-space: normal"
+                >
+                  {{ bookInfo.series }}
+                </n-button>
+              </p>
             </div>
           </n-col>
         </n-row>
@@ -79,6 +72,65 @@
       <template #action>
         <span class="time"> 购买于{{ bookInfo.buy_date }}</span>
       </template>
+    </n-card>
+    <n-card
+      class="card"
+      :hoverable="true"
+      v-else-if="props.cardType == 'status'"
+    >
+      <div style="height: 130px">
+        <n-row>
+          <n-col :span="6">
+            <div class="cover-container">
+              <img :src="decodedCover" alt="封面图像" class="cover-image" />
+            </div>
+          </n-col>
+          <n-col :span="18">
+            <div class="content">
+              <h3 @click="showDetailModal = true" style="cursor: pointer">
+                {{ bookInfo.title }}
+              </h3>
+              <div>
+                <p>
+                  <strong>作者</strong>：
+                  <span
+                    v-for="(author, index) in bookInfo.author"
+                    :key="author"
+                  >
+                    {{
+                      author + (index < bookInfo.author.length - 1 ? ' / ' : '')
+                    }}
+                  </span>
+                </p>
+                <p>
+                  <strong>出版社</strong>：
+                  {{ bookInfo.publish }}
+                </p>
+                <p
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                  "
+                >
+                  <span style="font-size: 12px"
+                    >{{ max_page }}/{{ bookInfo.pages }}</span
+                  >
+                  <span style="font-size: 12px">{{ latest_date }}</span>
+                </p>
+                <n-progress
+                  type="line"
+                  style="margin-top: 10px"
+                  indicator-placement="inside"
+                  :percentage="
+                    Math.round((max_page / parseInt(bookInfo.pages)) * 100)
+                  "
+                />
+              </div>
+            </div>
+          </n-col>
+        </n-row>
+      </div>
     </n-card>
     <book-detail
       :bookInfo="bookInfo"
@@ -120,6 +172,19 @@ const props = defineProps({
     default: 'default'
   }
 })
+
+const max_page = ref(0)
+const latest_date = ref('')
+
+const getReadStatus = async () => {
+  const data = (await getInfo(getRequest, {
+    table: 'reading_record',
+    fields: ['MAX(end_page) AS max_page', 'MAX(date) AS latest_date'],
+    conditions: ['book_id=' + props.id]
+  })) as { max_page: number; latest_date: string }[]
+  max_page.value = data[0].max_page
+  latest_date.value = data[0].latest_date
+}
 
 const selectFilter = (key: string, value: string) => {
   bookStore.setParams({
@@ -181,6 +246,7 @@ eventBus.on('updateFilter', async () => {
 
 onMounted(async () => {
   await fetchBookInfo()
+  await getReadStatus()
 })
 </script>
 
@@ -200,7 +266,7 @@ onMounted(async () => {
   height: auto;
 }
 .content {
-  padding-left: 20px;
+  padding-left: 15px;
 }
 .cover-container {
   max-width: 100%;
@@ -217,11 +283,5 @@ onMounted(async () => {
 .time {
   font-size: 12px;
   color: #999;
-}
-.field-container-1 {
-  max-height: 1.5em; /* Adjust this value as needed */
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
 }
 </style>
