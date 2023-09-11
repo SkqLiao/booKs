@@ -100,13 +100,14 @@ function queryRawData($sql) {
         printMessage([
             "code" => $errorMessages["db_query_error"]["code"],
             "message" => $errorMessages["db_query_error"]["message"],
-            "error" => $conn->error
+            "error" => $conn->error,
+            "sql" => $sql
         ]);
     }
     return $result;
 }
 
-function addData($tableName, $input_data) {
+function addData($tableName, $input_data, $ended = true) {
     global $errorMessages, $conn;
     $result = queryRawData("SHOW COLUMNS FROM $tableName");
     $columns_in_table = array();
@@ -127,6 +128,7 @@ function addData($tableName, $input_data) {
     $sql = "INSERT INTO $tableName ($columns) VALUES ($values)";
 
     if ($conn->query($sql) === TRUE) {
+        if (!$ended) return;
         printMessage([
             "code" => 200,
             "message" => "增加成功！"
@@ -141,7 +143,7 @@ function addData($tableName, $input_data) {
     }
 }
 
-function updateData($tableName, $input_data, $condition) {
+function updateData($tableName, $input_data, $condition, $ended=true) {
     global $conn, $errorMessages;
     $valid_columns = array();
     
@@ -165,9 +167,11 @@ function updateData($tableName, $input_data, $condition) {
     $sql = "UPDATE $tableName SET $updates WHERE $condition";
     
     if ($conn->query($sql) === TRUE) {
+        if (!$ended) return;
         printMessage([
             "code" => 200,
-            "message" => "更新成功！"
+            "message" => "更新成功！",
+            "sql" => $sql
         ]);
     } else {
         printMessage([
@@ -179,10 +183,11 @@ function updateData($tableName, $input_data, $condition) {
     }
 }
 
-function deleteData($tableName, $condition) {
+function deleteData($tableName, $condition, $ended=true) {
     global $conn, $errorMessages;
     $sql = "DELETE FROM $tableName WHERE $condition";
     if ($conn->query($sql) === TRUE) {
+        if (!$ended) return;
         printMessage([
             "code" => 200,
             "message" => "删除成功！",
