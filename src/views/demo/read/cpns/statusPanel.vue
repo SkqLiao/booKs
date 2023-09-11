@@ -1,48 +1,36 @@
 <template>
-  <div style="display: flex">
-    <div style="width: 50%">
-      <n-grid :x-gap="8" :y-gap="5" :cols="2">
-        <n-grid-item v-for="id in bookIds" :key="id">
-          <book-card :id="id" />
-        </n-grid-item>
-      </n-grid>
-      <div class="container">
-        <n-pagination
-          v-model:page="currentPage"
-          :page-size="pageSize"
-          :item-count="totalBooks"
-          show-quick-jumper
-          :on-update:page="handlePageChange"
-        >
-          <template #goto> 跳转至 </template>
-        </n-pagination>
-      </div>
-    </div>
-    <div style="width: 50%">
-      <n-grid :x-gap="8" :y-gap="5" :cols="2">
-        <n-grid-item v-for="id in bookIds" :key="id">
-          <book-card :id="id" />
-        </n-grid-item>
-      </n-grid>
-      <div class="container">
-        <n-pagination
-          v-model:page="currentPage"
-          :page-size="pageSize"
-          :item-count="totalBooks"
-          show-quick-jumper
-          :on-update:page="handlePageChange"
-        >
-          <template #goto> 跳转至 </template>
-        </n-pagination>
-      </div>
-    </div>
+  <div>
+    <n-grid :x-gap="8" :y-gap="5" :cols="2">
+      <n-grid-item v-for="id in bookIds" :key="id">
+        <book-card :id="id" cardType="status" />
+      </n-grid-item>
+    </n-grid>
+  </div>
+  <div class="container">
+    <n-pagination
+      v-model:page="currentPage"
+      :page-size="pageSize"
+      :item-count="totalBooks"
+      show-quick-jumper
+      :on-update:page="handlePageChange"
+    >
+      <template #goto> 跳转至 </template>
+    </n-pagination>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { getRequest } from '@/service/book/book'
 import { getInfo } from '@/service/book/book'
 import bookCard from '@/views/demo/book/cpns/bookCard.vue'
+
+const props = defineProps({
+  status: {
+    type: Boolean,
+    required: true
+  }
+})
 
 const totalBooks = ref(0)
 const pageSize = 6
@@ -53,7 +41,7 @@ const fetchBookNumber = async (page: number) => {
   const data = (await getInfo(getRequest, {
     table: 'reading_status',
     fields: ['COUNT(*) as count'],
-    conditions: ['finished = true']
+    conditions: ['finished = ' + props.status]
   })) as { count: number }[]
   totalBooks.value = data[0].count
   const startIndex = (page - 1) * pageSize
