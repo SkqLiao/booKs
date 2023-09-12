@@ -31,6 +31,7 @@ module.exports = {
     'no-console': 'off',
     'vue/multi-word-component-names': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
-    'vue/no-dupe-keys': 'off'
+    'vue/no-dupe-keys': 'off',
+    '@typescript-eslint/no-non-null-assertion': 'off'
   }
 }
