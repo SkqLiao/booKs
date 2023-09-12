@@ -85,8 +85,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
-import { addReadingRecord, addReadingExcerpt } from '@/service/book/book'
+import { ref, computed, watch, onMounted } from 'vue'
+import {
+  addReadingRecord,
+  addReadingExcerpt,
+  getInfo,
+  getRequest
+} from '@/service/book/book'
 
 const props = defineProps({
   type: {
@@ -122,6 +127,19 @@ const time_length = ref(0)
 const readDate = ref(new Date().toISOString().split('T')[0])
 const emits = defineEmits(['updateAddVisible'])
 const finished = ref(false)
+
+const getStartPage = async () => {
+  const data = (await getInfo(getRequest, {
+    table: 'reading_record',
+    fields: ['MAX(end_page)'],
+    conditions: ['book_id=' + props.id]
+  })) as [{ 'MAX(end_page)': number }]
+  startPage.value = data[0]['MAX(end_page)']
+}
+
+onMounted(async () => {
+  await getStartPage()
+})
 
 const addRecord = async () => {
   try {
