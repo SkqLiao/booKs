@@ -95,3 +95,7 @@ Based on [qs admin](https://github.com/zclzone/qs-admin).
 ### 2023-09-11
 
 - [x] 书籍阅读状态页面及卡片布局
+
+### 2023-09-12
+
+- [x] 新增阅读数据总览页及子组件
