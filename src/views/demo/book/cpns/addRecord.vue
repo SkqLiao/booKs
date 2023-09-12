@@ -163,7 +163,6 @@ const thoughts = ref('')
 
 const addExcerpt = async () => {
   try {
-    console.log('excerpt')
     if (excerpt_page.value < 0) {
       window.$message?.warning('页码不能为负数')
       return
@@ -179,7 +178,6 @@ const addExcerpt = async () => {
       thoughts: thoughts.value,
       date: readDate.value
     })
-    console.log(response)
     if (response.code !== 200) {
       window.$message?.warning('增加失败：' + response.message)
     } else {

@@ -53,7 +53,6 @@ const fetchBookNumber = async (page: number) => {
     conditions: ['finished = ' + props.status]
   })) as [{ book_id: number }]
   bookIds.value = data2.map((item) => item.book_id)
-  console.log(bookIds.value)
 }
 
 onMounted(() => {
