@@ -10,7 +10,7 @@
     <n-pagination
       v-model:page="currentPage"
       :page-size="pageSize"
-      :item-count="totalBooks"
+      :item-count="totalBookIds.length"
       show-quick-jumper
       :on-update:page="handlePageChange"
     >
@@ -20,48 +20,38 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { getRequest } from '@/service/book/book'
-import { getInfo } from '@/service/book/book'
+import { ref, watch } from 'vue'
 import bookCard from '@/views/demo/book/cpns/bookCard.vue'
 
 const props = defineProps({
-  status: {
-    type: Boolean,
+  book_ids: {
+    type: Array,
     required: true
   }
 })
 
-const totalBooks = ref(0)
 const pageSize = 6
 const currentPage = ref(1)
+const totalBookIds = ref<number[]>([])
 const bookIds = ref<number[]>([])
 
-const fetchBookNumber = async (page: number) => {
-  const data = (await getInfo(getRequest, {
-    table: 'reading_status',
-    fields: ['COUNT(*) as count'],
-    conditions: ['finished = ' + props.status]
-  })) as { count: number }[]
-  totalBooks.value = data[0].count
+function fetchBookNumber(page: number) {
   const startIndex = (page - 1) * pageSize
-  const data2 = (await getInfo(getRequest, {
-    table: 'reading_status',
-    fields: ['book_id'],
-    limit: Math.min(pageSize, totalBooks.value - startIndex),
-    offset: startIndex,
-    conditions: ['finished = ' + props.status]
-  })) as [{ book_id: number }]
-  bookIds.value = data2.map((item) => item.book_id)
+  const len = Math.min(pageSize, totalBookIds.value.length - startIndex)
+  bookIds.value = totalBookIds.value.slice(startIndex, startIndex + len)
 }
 
-onMounted(() => {
-  fetchBookNumber(1)
-})
+watch(
+  () => props.book_ids,
+  (newVal) => {
+    totalBookIds.value = newVal as number[]
+    handlePageChange(1)
+  }
+)
 
-const handlePageChange = async (page: number) => {
+const handlePageChange = (page: number) => {
   currentPage.value = page
-  await fetchBookNumber(page)
+  fetchBookNumber(page)
 }
 </script>
 <style scoped>
