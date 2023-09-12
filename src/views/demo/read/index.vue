@@ -7,9 +7,11 @@
       <n-tab-pane name="overview" tab="阅读总览">
         <div style="display: flex">
           <div class="status-panel">
+            <h2>已读完：</h2>
             <status-panel :book_ids="book_ids1" />
           </div>
           <div class="status-panel">
+            <h2>阅读中：</h2>
             <status-panel :book_ids="book_ids0" />
           </div>
         </div>
