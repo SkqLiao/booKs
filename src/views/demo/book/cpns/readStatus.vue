@@ -97,20 +97,20 @@ const updateRecord = ref(false)
 const updateExcerpt = ref(false)
 
 const getTime = async () => {
-  const response = await getInfo(getRequest, {
+  const response = (await getInfo(getRequest, {
     table: 'reading_record',
-    fields: ['SUM(time_length)'],
+    fields: ['SUM(time_length) as length'],
     conditions: ['book_id = ' + props.bookid]
-  })
-  total_time.value = response[0]['SUM(time_length)']
+  })) as { length: number }[]
+  total_time.value = response[0]['length']
 }
 
 const getExcerpt = async () => {
-  const response = await getInfo(getRequest, {
+  const response = (await getInfo(getRequest, {
     table: 'reading_excerpt',
     fields: ['COUNT(*) as count'],
     conditions: ['book_id = ' + props.bookid]
-  })
+  })) as { count: number }[]
   total_excerpt.value = response[0]['count']
 }
 

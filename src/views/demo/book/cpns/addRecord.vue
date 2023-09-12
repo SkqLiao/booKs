@@ -104,14 +104,7 @@ const props = defineProps({
 })
 
 const getStyle = computed(() => {
-  if (props.type === 1) {
-    return {
-      width: '18%'
-    }
-  }
-  return {
-    width: '50%'
-  }
+  return props.type == 1 ? { width: '18%' } : { width: '50%' }
 })
 
 const localShowModal = ref(false)
