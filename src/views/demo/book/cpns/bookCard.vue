@@ -52,7 +52,7 @@
                   {{ bookInfo.producer }}
                 </n-button>
               </p>
-              <p>
+              <p v-if="bookInfo.series">
                 <strong>丛书</strong>：
                 <n-button
                   text
