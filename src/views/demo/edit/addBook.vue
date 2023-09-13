@@ -3,7 +3,9 @@
     <edit-book :bookInfo="bookInfo" ref="child"></edit-book>
     <div class="centered-button">
       <n-button type="info" @click="queryBook">查询</n-button>
-      <n-button type="success" @click="addBook">提交</n-button>
+      <n-button type="success" @click="addBook" :disabled="disabled_submit"
+        >提交</n-button
+      >
     </div>
   </CommonPage>
 </template>
@@ -16,8 +18,10 @@ import { bookDoubanRequest, bookAddRequest } from '@/service/book/book'
 
 const child = ref()
 const bookInfo = ref({} as Ibook)
+const disabled_submit = ref(true)
 
 const queryBook = async () => {
+  disabled_submit.value = true
   const isbn = child.value.isbn ?? ''
   try {
     const response = (await bookDoubanRequest(isbn)) as DoubanAPI
@@ -42,6 +46,7 @@ const queryBook = async () => {
   } catch (error) {
     window.$message?.warning('查询失败')
   }
+  disabled_submit.value = false
 }
 
 const addBook = async () => {
@@ -62,6 +67,7 @@ const addBook = async () => {
         const response = await bookAddRequest(bookInfo)
         if (response.code == 200) {
           window.$message?.success(response.message)
+          disabled_submit.value = true
         } else {
           window.$message?.warning('增加失败：' + response.message)
           if (response?.sql) {
