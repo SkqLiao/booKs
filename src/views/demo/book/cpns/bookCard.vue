@@ -257,6 +257,10 @@ onMounted(async () => {
   flex-direction: column;
   justify-content: space-between;
 }
+
+.n-card >>> .n-card__content {
+  --n-padding-left: 10px;
+}
 .cover-container {
   width: 100%;
   text-align: center;
