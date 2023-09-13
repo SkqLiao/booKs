@@ -17,7 +17,6 @@ Based on [qs admin](https://github.com/zclzone/qs-admin).
 ### 2023/08/13
 
 - [x] 获取京东订单的图书所有封面图片，完善get API
-
 - [x] 主页面初步布局+分页（El-Pagination）
 - [x] 详情页面初步布局（El-Dialog）
 - [x] El-Rate无法显示星星的bug（fixed：08/14）
@@ -99,3 +98,8 @@ Based on [qs admin](https://github.com/zclzone/qs-admin).
 ### 2023-09-12
 
 - [x] 新增阅读数据总览页及子组件
+
+### 2023-09-13
+
+- [x] 修改阅读数据总览为年度数据总览
+- [x] 录入当当/京东余下数据
