@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import bookCard from '@/views/demo/book/cpns/bookCard.vue'
 
 const props = defineProps({
@@ -48,6 +48,11 @@ watch(
     handlePageChange(1)
   }
 )
+
+onMounted(() => {
+  totalBookIds.value = props.book_ids as number[]
+  handlePageChange(1)
+})
 
 const handlePageChange = (page: number) => {
   currentPage.value = page
