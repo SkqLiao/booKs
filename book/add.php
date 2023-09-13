@@ -7,11 +7,14 @@ checkRequiredFields($input_data, ["isbn"]);
 
 $isbn = $input_data["isbn"];
 
+unset($input_data['id']);
+
 $result = queryRawData("SELECT * FROM basic_info WHERE isbn = '$isbn'");
+
 if ($result->num_rows > 0) {
     printMessage([
-        "code" => $errorMessage["book_exists"]["code"],
-        "message" => sprintf($errorMessages["book_exists"]["message"], $isbn)
+        "code" => $errorMessages["exists"]["code"],
+        "message" => sprintf($errorMessages["exists"]["message"], $isbn)
     ]);
 }
 

@@ -27,6 +27,7 @@ $username = "root";
 $password = "123456";
 $database = "book";
 $conn = new mysqli('p:'.$host, $username, $password, $database);
+$conn->set_charset("utf8mb4");
 
 if ($conn->connect_error) {
     printMessage([
@@ -119,9 +120,9 @@ function addData($tableName, $input_data, $ended = true) {
     $values = array();
     foreach ($valid_columns as $column) {
         if (is_array($input_data[$column])) {
-            $values[] = "'" . json_encode($input_data[$column], JSON_UNESCAPED_UNICODE) . "'";
+            $values[] = "'" . mysqli_real_escape_string($conn, json_encode($input_data[$column], JSON_UNESCAPED_UNICODE)) . "'";
         } else {
-            $values[] = "'" . $input_data[$column] . "'";
+            $values[] = "'" . mysqli_real_escape_string($conn, $input_data[$column]) . "'";
         }
     }
     $values = implode(", ", $values);
