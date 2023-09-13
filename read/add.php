@@ -14,13 +14,15 @@ $result = queryRawData("SELECT * from reading_status WHERE book_id = {$input_dat
 if ($result->num_rows > 0) {
     updateData("reading_status", 
     [
-        "finished" => $finished
+        "finished" => $finished,
+        "date" => $input_data["date"]
     ],
     "book_id = {$input_data["book_id"]}");
 } else {
     addData("reading_status", [
         "book_id" => $input_data["book_id"],
-        "finished" => $finished
+        "finished" => $finished,
+        "date" => $input_data["date"]
     ]);
 }
 
