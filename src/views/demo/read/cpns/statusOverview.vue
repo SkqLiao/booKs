@@ -1,25 +1,44 @@
 <template>
   <n-row>
-    <n-col :span="5">
+    <n-col :span="6">
       <n-statistic label="已阅读"> {{ readingBookNumber[1] }} 本 </n-statistic>
     </n-col>
-    <n-col :span="5">
-      <n-statistic label="书籍总数"> {{ bookNumber }} 本 </n-statistic>
-    </n-col>
-    <n-col :span="5">
+    <n-col :span="6">
       <n-statistic label="阅读中"> {{ readingBookNumber[0] }} 本 </n-statistic>
     </n-col>
-    <n-col :span="5">
+    <n-col :span="6">
       <n-statistic label="阅读天数"> {{ readingDateNumber }} 天 </n-statistic>
     </n-col>
-    <n-col :span="4">
+    <n-col :span="6">
       <n-statistic label="阅读总时长">
         {{ Math.floor(readingTimeLength / 60) }} 小时
         {{ readingTimeLength % 60 }} 分钟
       </n-statistic>
     </n-col>
   </n-row>
-  <div id="main" style="width: 100%; height: 400px; padding-top: 20px"></div>
+  <n-row>
+    <n-col :span="2">
+      <n-tabs
+        type="card"
+        animated
+        placement="left"
+        :on-update:value="changeYear"
+        :default-value="0"
+      >
+        <n-tab
+          :key="year"
+          :value="year"
+          :name="year ? year + '年' : '汇总'"
+          v-for="year in years"
+        >
+        </n-tab>
+      </n-tabs>
+    </n-col>
+    <n-col :span="22">
+      <div id="overview-dom" style="width: 100%; height: 400px"></div>
+    </n-col>
+  </n-row>
+
   <status-drawer
     :show="showDrawer"
     :date="drawerDate"
@@ -33,38 +52,39 @@ import { getInfo, getRequest } from '@/service/book/book'
 import * as echarts from 'echarts'
 import statusDrawer from './statusDrawer.vue'
 
-const bookNumber = ref(0)
 const readingBookNumber = ref([0, 0])
 const readingDateNumber = ref(0)
 const readingTimeLength = ref(0)
 const showDrawer = ref(false)
 const drawerDate = ref('')
+const startDate = ref('')
+const endDate = ref('')
+const years = ref([0])
+const myChart = ref<any>()
 
-const getBookNumber = async () => {
-  const response = (await getInfo(getRequest, {
-    table: 'basic_info',
-    fields: ['COUNT(*) as count']
-  })) as { count: number }[]
-  bookNumber.value = response[0].count
-}
-
-const getReadingBookNumber = async () => {
-  const response = (await getInfo(getRequest, {
-    table: 'reading_status',
-    fields: [
-      'COUNT(CASE WHEN finished = 0 THEN 1 END) AS count0',
-      'COUNT(CASE WHEN finished = 1 THEN 1 END) AS count1'
-    ]
-  })) as { count0: number; count1: number }[]
-  readingBookNumber.value[0] = response[0].count0
-  readingBookNumber.value[1] = response[0].count1
-}
-
-const getReadingDateNumber = async () => {
+const getReadingBookNumber = async (year: number) => {
+  const condition = year ? 'YEAR(date) = ' + year : '1=1'
   const response = (await getInfo(getRequest, {
     table: 'reading_record',
-    fields: ['COUNT(DISTINCT date) as count']
+    fields: ['COUNT(DISTINCT book_id) as count'],
+    conditions: [condition]
   })) as { count: number }[]
+  readingBookNumber.value[0] = response[0].count
+  const response2 = (await getInfo(getRequest, {
+    table: 'reading_status',
+    fields: ['COUNT(*) as count'],
+    conditions: [condition + ' AND finished=1']
+  })) as { count: number }[]
+  readingBookNumber.value[1] = response2[0].count
+}
+
+const getReadingDateNumber = async (year: number) => {
+  const response = (await getInfo(getRequest, {
+    table: 'reading_record',
+    fields: ['COUNT(DISTINCT date) as count'],
+    conditions: [!year ? '1=1' : 'YEAR(date) = ' + year]
+  })) as { count: number }[]
+  console.log(!year ? '1=1' : 'YEAR(date) = ' + year)
   readingDateNumber.value = response[0].count
 }
 
@@ -77,41 +97,64 @@ const getReadingInfo = async (field: string, condition: string) => {
   return response[0]
 }
 
-const initChart = async () => {
-  const startDate = (
+const initYear = async () => {
+  startDate.value = (
     (await getInfo(getRequest, {
       table: 'reading_record',
       fields: ['MIN(date) as date']
     })) as { date: string }[]
   )[0].date
-  const endDate = new Date().toISOString().split('T')[0]
-  const year_s = parseInt(startDate.split('-')[0])
-  const year_e = parseInt(endDate.split('-')[0])
-  const month_s = parseInt(startDate.split('-')[1])
-  const month_e = parseInt(endDate.split('-')[1])
+  endDate.value = new Date().toISOString().split('T')[0]
+  const year_s = parseInt(startDate.value.split('-')[0])
+  const year_e = parseInt(endDate.value.split('-')[0])
+  for (let year = year_s; year <= year_e; ++year) years.value.push(year)
+}
+
+const changeYear = async (name: string) => {
+  const year = name === '汇总' ? 0 : parseInt(name.split('年')[0])
+  initChart(year)
+  await getReadingBookNumber(year)
+  await getReadingDateNumber(year)
+  const condition = year ? 'YEAR(date) = ' + year : '1=1'
+  readingTimeLength.value =
+    ((await getReadingInfo('SUM(time_length) as length', condition))
+      .length as number) ?? 0
+}
+
+const initChart = async (in_year: number) => {
+  const year_s = in_year ? in_year : parseInt(startDate.value.split('-')[0])
+  const year_e = in_year ? in_year : parseInt(endDate.value.split('-')[0])
+  const month_s = in_year ? 1 : parseInt(startDate.value.split('-')[1])
+  const month_e = in_year ? 12 : parseInt(endDate.value.split('-')[1])
   let x = []
   let y0: number[] = []
   let y1: number[] = []
-  for (let year = year_s; year <= year_e; year++) {
-    let month_l = year == year_s ? month_s : 1
-    let month_r = year == year_e ? month_e : 12
-    for (let month = month_l; month <= month_r; ++month) {
-      const condition = `YEAR(date) = ${year} AND MONTH(date) = ${month}`
-      x.push(`${year}年${month.toString().padStart(2, '0')}月`)
-      const time_length = await getReadingInfo(
-        'SUM(time_length) as length',
-        condition
-      )
-      y1.push((time_length.length as number) ?? 0)
-      const day_num = await getReadingInfo(
-        'COUNT(DISTINCT date) as count',
-        condition
-      )
-      y0.push((day_num.count as number) ?? 0)
+  for (let year = year_s, month = month_s; ; ) {
+    const condition = `YEAR(date) = ${year} AND MONTH(date) = ${month}`
+    x.push(`${year}年${month.toString().padStart(2, '0')}月`)
+    const time_length = await getReadingInfo(
+      'SUM(time_length) as length',
+      condition
+    )
+    y1.push((time_length.length as number) ?? 0)
+    const day_num = await getReadingInfo(
+      'COUNT(DISTINCT date) as count',
+      condition
+    )
+    y0.push((day_num.count as number) ?? 0)
+    if (year === year_e && month === month_e) break
+    if (month == 12) {
+      year += 1
+      month = 1
+    } else {
+      month += 1
     }
   }
-  const chartDom = document.getElementById('main')!
-  const myChart = echarts.init(chartDom)
+  const chartDom = document.getElementById('overview-dom')!
+  if (myChart.value) {
+    myChart.value.dispose()
+  }
+  myChart.value = echarts.init(chartDom)
   const option = {
     tooltip: {
       trigger: 'axis',
@@ -177,8 +220,8 @@ const initChart = async () => {
       }
     ]
   } as echarts.EChartsOption
-  option && myChart.setOption(option)
-  myChart.on('click', (params) => {
+  option && myChart.value.setOption(option)
+  myChart.value.on('click', (params: any) => {
     showDrawer.value = true
     drawerDate.value = params.name
   })
@@ -189,13 +232,13 @@ function updateDrawerVisible() {
 }
 
 onMounted(async () => {
-  await getBookNumber()
-  await getReadingBookNumber()
-  await getReadingDateNumber()
+  await getReadingBookNumber(0)
+  await getReadingDateNumber(0)
   readingTimeLength.value =
     ((await getReadingInfo('SUM(time_length) as length', '1=1'))
       .length as number) ?? 0
-  await initChart()
+  await initYear()
+  await initChart(0)
 })
 </script>
 
