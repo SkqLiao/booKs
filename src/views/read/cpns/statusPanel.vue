@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
-import bookCard from '@/views/demo/book/cpns/bookCard.vue'
+import bookCard from '@/views/book/cpns/bookCard.vue'
 
 const props = defineProps({
   book_ids: {

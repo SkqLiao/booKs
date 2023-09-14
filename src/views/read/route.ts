@@ -25,7 +25,7 @@ export default {
     },
     {
       name: '阅读总览',
-      path: 'status',
+      path: 'panel',
       component: () => import('./panel.vue'),
       meta: {
         title: '阅读总览',

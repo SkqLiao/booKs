@@ -140,7 +140,7 @@
 import { ref, watch } from 'vue'
 import { Ibook } from '@/service/book/types'
 import { ExternalLinkAlt as LinkIcon } from '@vicons/fa'
-import BookEdit from '@/views/demo/edit/editBook.vue'
+import BookEdit from '@/views/edit/editBook.vue'
 import ReadStatus from './readStatus.vue'
 
 const props = defineProps({
