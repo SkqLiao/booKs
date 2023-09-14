@@ -22,5 +22,6 @@ export default {
         icon: 'tabler:error-404'
       }
     }
-  ]
+  ],
+  isHidden: true
 } as RouteType

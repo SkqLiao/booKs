@@ -9,7 +9,6 @@ export const basicRoutes: RoutesType = [
     component: () => import('@/views/error-page/404.vue'),
     isHidden: true
   },
-
   {
     name: 'Login',
     path: '/login',
@@ -19,7 +18,6 @@ export const basicRoutes: RoutesType = [
       title: '登录页'
     }
   },
-
   {
     name: 'ExternalLink',
     path: '/external-link',
@@ -32,20 +30,11 @@ export const basicRoutes: RoutesType = [
     children: [
       {
         name: 'LinkGithubSrc',
-        path: 'https://github.com/zclzone/qs-admin',
+        path: 'https://github.com/SkqLiao/booKs',
         component: () => {},
         meta: {
-          title: '源码 - github',
+          title: '源代码',
           icon: 'mdi:github'
-        }
-      },
-      {
-        name: 'LinkGiteeSrc',
-        path: 'https://gitee.com/zclzone/qs-admin-ts',
-        component: () => {},
-        meta: {
-          title: '源码 - gitee',
-          icon: 'simple-icons:gitee'
         }
       }
     ]

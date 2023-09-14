@@ -1,49 +1,55 @@
 <template>
-  <n-row>
-    <n-col :span="6">
-      <n-statistic label="已阅读"> {{ readingBookNumber[1] }} 本 </n-statistic>
-    </n-col>
-    <n-col :span="6">
-      <n-statistic label="阅读中"> {{ readingBookNumber[0] }} 本 </n-statistic>
-    </n-col>
-    <n-col :span="6">
-      <n-statistic label="阅读天数"> {{ readingDateNumber }} 天 </n-statistic>
-    </n-col>
-    <n-col :span="6">
-      <n-statistic label="阅读总时长">
-        {{ Math.floor(readingTimeLength / 60) }} 小时
-        {{ readingTimeLength % 60 }} 分钟
-      </n-statistic>
-    </n-col>
-  </n-row>
-  <n-row>
-    <n-col :span="2">
-      <n-tabs
-        type="card"
-        animated
-        placement="left"
-        :on-update:value="changeYear"
-        :default-value="0"
-      >
-        <n-tab
-          :key="year"
-          :value="year"
-          :name="year ? year + '年' : '汇总'"
-          v-for="year in years"
+  <CommonPage :show-footer="true">
+    <n-row>
+      <n-col :span="6">
+        <n-statistic label="已阅读">
+          {{ readingBookNumber[1] }} 本
+        </n-statistic>
+      </n-col>
+      <n-col :span="6">
+        <n-statistic label="阅读中">
+          {{ readingBookNumber[0] }} 本
+        </n-statistic>
+      </n-col>
+      <n-col :span="6">
+        <n-statistic label="阅读天数"> {{ readingDateNumber }} 天 </n-statistic>
+      </n-col>
+      <n-col :span="6">
+        <n-statistic label="阅读总时长">
+          {{ Math.floor(readingTimeLength / 60) }} 小时
+          {{ readingTimeLength % 60 }} 分钟
+        </n-statistic>
+      </n-col>
+    </n-row>
+    <n-row>
+      <n-col :span="2">
+        <n-tabs
+          type="card"
+          animated
+          placement="left"
+          :on-update:value="changeYear"
+          :default-value="0"
         >
-        </n-tab>
-      </n-tabs>
-    </n-col>
-    <n-col :span="22">
-      <div id="overview-dom" style="width: 100%; height: 400px"></div>
-    </n-col>
-  </n-row>
+          <n-tab
+            :key="year"
+            :value="year"
+            :name="year ? year + '年' : '汇总'"
+            v-for="year in years"
+          >
+          </n-tab>
+        </n-tabs>
+      </n-col>
+      <n-col :span="22">
+        <div id="overview-dom" style="width: 100%; height: 400px"></div>
+      </n-col>
+    </n-row>
 
-  <status-drawer
-    :show="showDrawer"
-    :date="drawerDate"
-    @update-drawer-visible="updateDrawerVisible"
-  />
+    <status-drawer
+      :show="showDrawer"
+      :date="drawerDate"
+      @update-drawer-visible="updateDrawerVisible"
+    />
+  </CommonPage>
 </template>
 
 <script setup lang="ts">
@@ -126,7 +132,7 @@ const initChart = async (in_year: number) => {
   const year_e = in_year ? in_year : parseInt(endDate.value.split('-')[0])
   const month_s = in_year ? 1 : parseInt(startDate.value.split('-')[1])
   const month_e = in_year ? 12 : parseInt(endDate.value.split('-')[1])
-  let x = []
+  let x: string[] = []
   let y0: number[] = []
   let y1: number[] = []
   for (let year = year_s, month = month_s; ; ) {

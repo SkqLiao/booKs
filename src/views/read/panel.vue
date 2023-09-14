@@ -1,32 +1,20 @@
 <template>
   <CommonPage :show-footer="true">
-    <n-tabs type="line" animated>
-      <n-tab-pane name="calendar" tab="阅读日历">
-        <status-calendar />
-      </n-tab-pane>
-      <n-tab-pane name="overview" tab="阅读总览">
-        <div style="display: flex">
-          <div class="status-panel">
-            <h2>已读完：</h2>
-            <status-panel :book_ids="book_ids1" />
-          </div>
-          <div class="status-panel">
-            <h2>阅读中：</h2>
-            <status-panel :book_ids="book_ids0" />
-          </div>
-        </div>
-      </n-tab-pane>
-      <n-tab-pane name="log" tab="数据总览">
-        <status-overview />
-      </n-tab-pane>
-    </n-tabs>
+    <div style="display: flex">
+      <div class="status-panel">
+        <h2>已读完：</h2>
+        <status-panel :book_ids="book_ids1" />
+      </div>
+      <div class="status-panel">
+        <h2>阅读中：</h2>
+        <status-panel :book_ids="book_ids0" />
+      </div>
+    </div>
   </CommonPage>
 </template>
 
 <script setup lang="ts">
-import statusCalendar from './cpns/statusCalendar.vue'
 import statusPanel from './cpns/statusPanel.vue'
-import statusOverview from './cpns/statusOverview.vue'
 import { onMounted, ref, Ref } from 'vue'
 import { getRequest, getInfo } from '@/service/book/book'
 
