@@ -90,7 +90,6 @@ const getReadingDateNumber = async (year: number) => {
     fields: ['COUNT(DISTINCT date) as count'],
     conditions: [!year ? '1=1' : 'YEAR(date) = ' + year]
   })) as { count: number }[]
-  console.log(!year ? '1=1' : 'YEAR(date) = ' + year)
   readingDateNumber.value = response[0].count
 }
 
