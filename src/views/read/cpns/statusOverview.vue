@@ -66,7 +66,7 @@ const drawerDate = ref('')
 const startDate = ref('')
 const endDate = ref('')
 const years = ref([0])
-const myChart = ref<any>()
+let myChart
 
 const getReadingBookNumber = async (year: number) => {
   const condition = year ? 'YEAR(date) = ' + year : '1=1'
@@ -157,10 +157,10 @@ const initChart = async (in_year: number) => {
     }
   }
   const chartDom = document.getElementById('overview-dom')!
-  if (myChart.value) {
-    myChart.value.dispose()
+  if (myChart) {
+    myChart.dispose()
   }
-  myChart.value = echarts.init(chartDom)
+  myChart = echarts.init(chartDom)
   const option = {
     tooltip: {
       trigger: 'axis',
@@ -226,8 +226,8 @@ const initChart = async (in_year: number) => {
       }
     ]
   } as echarts.EChartsOption
-  option && myChart.value.setOption(option)
-  myChart.value.on('click', (params: any) => {
+  option && myChart.setOption(option)
+  myChart.on('click', (params: any) => {
     showDrawer.value = true
     drawerDate.value = params.name
   })
