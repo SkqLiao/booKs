@@ -10,7 +10,6 @@ import { setupNaiveDiscreteApi } from './utils'
 import { setupCalendar, Calendar } from 'v-calendar'
 import 'v-calendar/style.css'
 import * as echarts from 'echarts'
-import 'default-passive-events'
 
 async function setupApp() {
   const app = createApp(App)

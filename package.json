@@ -32,7 +32,6 @@
     "axios": "^1.4.0",
     "crypto-js": "^4.1.1",
     "dayjs": "^1.11.8",
-    "default-passive-events": "^2.0.0",
     "echarts": "^5.4.3",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
