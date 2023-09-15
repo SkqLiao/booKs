@@ -58,33 +58,8 @@ const userStore = useUserStore()
         </n-card>
       </n-watermark>
 
-      <n-card title="项目" size="small" :segmented="true" mt-15 rounded-10>
-        <template #header-extra>
-          <n-button text type="primary"> 更多 </n-button>
-        </template>
-        <div flex flex-wrap justify-around>
-          <n-card
-            v-for="i in 20"
-            :key="i"
-            w-300
-            flex-shrink-0
-            mt-10
-            mb-10
-            cursor-pointer
-            hover:card-shadow
-            title="奇思Admin"
-            size="small"
-          >
-            <p op-60>
-              一个基于 Vue3、Vite3、TypeScript、Pinia、Unocss、Naive UI
-              的轻量级后台管理模板
-            </p>
-          </n-card>
-          <div w-300 h-0 />
-          <div w-300 h-0 />
-          <div w-300 h-0 />
-          <div w-300 h-0 />
-        </div>
+      <n-card title="更新日志" size="small" :segmented="true" mt-15 rounded-10>
+        <template #content> 测试 </template>
       </n-card>
     </div>
   </AppPage>
