@@ -70,7 +70,27 @@
         </n-row>
       </div>
       <template #action>
-        <span class="time"> 购买于{{ bookInfo.buy_date }}</span>
+        <!-- <span class="time" style="float: left">
+          购买于{{ bookInfo.buy_date }}</span
+        > -->
+        <n-tag type="info" size="small" round style="float: left">
+          {{ bookInfo.buy_date }}
+          <template #icon>
+            <n-icon :component="MoneyCollectFilled" />
+          </template>
+        </n-tag>
+        <n-tag
+          type="success"
+          size="small"
+          round
+          style="float: right"
+          v-if="latest_date"
+        >
+          {{ latest_date }}
+          <template #icon>
+            <n-icon :component="BookReader" />
+          </template>
+        </n-tag>
       </template>
     </n-card>
     <n-card
@@ -160,6 +180,8 @@ import bookDetail from './bookDetail.vue'
 import eventBus from '@/eventbus/index'
 import { useBookStore } from '@/store'
 import defaultCoverImage from '@/assets/images/default_cover.jpg'
+import { BookReader } from '@vicons/fa'
+import { MoneyCollectFilled } from '@vicons/antd'
 const bookStore = useBookStore()
 
 const props = defineProps({
@@ -175,15 +197,19 @@ const props = defineProps({
 
 const max_page = ref(0)
 const latest_date = ref('')
+const read_finished = ref(false)
 
 const getReadStatus = async () => {
   const data = (await getInfo(getRequest, {
-    table: 'reading_record',
-    fields: ['MAX(end_page) AS max_page', 'MAX(date) AS latest_date'],
+    table: 'reading_status',
+    fields: ['date', 'finished'],
     conditions: ['book_id=' + props.id]
-  })) as { max_page: number; latest_date: string }[]
-  max_page.value = data[0].max_page
-  latest_date.value = data[0].latest_date
+  })) as { date: string; finished: boolean }[]
+  if (data.length === 0) {
+    return
+  }
+  read_finished.value = data[0].finished
+  latest_date.value = data[0].date
 }
 
 const selectFilter = (key: string, value: string) => {
