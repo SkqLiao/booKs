@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import { ref, watch, Ref } from 'vue'
 import { getInfo, getRequest } from '@/service/book/book'
-import statusPanel from './statusPanel.vue'
+import statusPanel from '@/views/common/panel.vue'
 
 const props = defineProps({
   showDrawer: {
