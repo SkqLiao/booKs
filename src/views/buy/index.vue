@@ -2,7 +2,7 @@
   <CommonPage :show-footer="true">
     <n-row>
       <n-col :span="12">
-        <n-statistic label="共购买"> {{ bookNumber }} 本 </n-statistic>
+        <n-statistic label="购买书籍"> {{ bookNumber }} 册 </n-statistic>
       </n-col>
       <n-col :span="12">
         <n-statistic label="阅读总花费">
@@ -27,6 +27,11 @@
           >
           </n-tab>
         </n-tabs>
+        <n-select
+          v-model:value="selected_buy_pos"
+          :options="buyPosOptions"
+          :on-update:value="changeBuyPos"
+        />
       </n-col>
       <n-col :span="22">
         <div id="overview-dom" style="width: 100%; height: 400px"></div>
@@ -42,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, Ref } from 'vue'
 import { getInfo, getRequest } from '@/service/book/book'
 import * as echarts from 'echarts'
 import statusDrawer from './cpns/drawer.vue'
@@ -56,47 +61,53 @@ const endDate = ref('')
 const years = ref([0])
 let myChart
 
+const buyPosOptions = ref<{ label: string; value: string }[]>([])
+const selected_buy_pos = ref('不限')
+const selected_year = ref(0)
+
 const getBookNumber = async (year: number) => {
   const condition = year ? 'YEAR(buy_date) = ' + year : '1=1'
+  const cond_buy_pos =
+    selected_buy_pos.value == '不限'
+      ? '1=1'
+      : 'buy_pos="' + selected_buy_pos.value + '"'
   const response = (await getInfo(getRequest, {
     table: 'basic_info',
     fields: ['COUNT(*) as count'],
-    conditions: [condition]
+    conditions: [condition, cond_buy_pos]
   })) as { count: number }[]
   bookNumber.value = response[0].count
 }
 
 const getBookInfo = async (field: string, condition: string) => {
+  const cond_buy_pos =
+    selected_buy_pos.value == '不限'
+      ? '1=1'
+      : 'buy_pos="' + selected_buy_pos.value + '"'
   const response = (await getInfo(getRequest, {
     table: 'basic_info',
     fields: [field],
-    conditions: [condition]
+    conditions: [condition, cond_buy_pos]
   })) as any[]
   return response[0]
 }
 
 const initYear = async () => {
+  const cond_buy_pos =
+    selected_buy_pos.value == '不限'
+      ? '1=1'
+      : 'buy_pos="' + selected_buy_pos.value + '"'
   startDate.value = (
     (await getInfo(getRequest, {
       table: 'basic_info',
-      fields: ['MIN(buy_date) as date']
+      fields: ['MIN(buy_date) as date'],
+      conditions: [cond_buy_pos]
     })) as { date: string }[]
   )[0].date
   endDate.value = new Date().toISOString().split('T')[0]
   const year_s = parseInt(startDate.value.split('-')[0])
   const year_e = parseInt(endDate.value.split('-')[0])
   for (let year = year_e; year >= year_s; --year) years.value.push(year)
-}
-
-const changeYear = async (name: string) => {
-  const year = name === '汇总' ? 0 : parseInt(name.split('年')[0])
-  initChart(year)
-  await getBookNumber(year)
-  const condition = year ? 'YEAR(buy_date) = ' + year : '1=1'
-  totalCost.value =
-    ((await getBookInfo('SUM(real_price) as price', condition))
-      .price as number) ?? 0
-  initChart(year)
 }
 
 const initChart = async (in_year: number) => {
@@ -215,7 +226,48 @@ function updateDrawerVisible() {
   showDrawer.value = false
 }
 
+const getBuyPos = async () => {
+  const response = (await getInfo(getRequest, {
+    table: 'basic_info',
+    fields: ['buy_pos AS field'],
+    group_by: 'buy_pos'
+  })) as any[]
+  let info = response
+    .filter((item) => item.field != '')
+    .map((item) => ({
+      label: item.field,
+      value: item.field
+    }))
+  info.push({
+    label: '不限',
+    value: '不限'
+  })
+  info.sort((a, b) => a.value.localeCompare(b.value))
+  buyPosOptions.value = info
+}
+
+const updatePage = async () => {
+  const year = selected_year.value
+  await getBookNumber(year)
+  const condition = year ? 'YEAR(buy_date) = ' + year : '1=1'
+  totalCost.value =
+    ((await getBookInfo('SUM(real_price) as price', condition))
+      .price as number) ?? 0
+  initChart(year)
+}
+
+const changeBuyPos = async (value: string) => {
+  selected_buy_pos.value = value
+  await updatePage()
+}
+
+const changeYear = async (name: string) => {
+  selected_year.value = name === '汇总' ? 0 : parseInt(name.split('年')[0])
+  await updatePage()
+}
+
 onMounted(async () => {
+  await getBuyPos()
   await getBookNumber(0)
   totalCost.value =
     ((await getBookInfo('SUM(real_price) as price', '1=1')).price as number) ??
