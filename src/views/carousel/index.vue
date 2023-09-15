@@ -1,5 +1,9 @@
 <template>
   <CommonPage :show-footer="true">
+    <n-switch @update:value="handleChange">
+      <template #checked> 时间倒序 </template>
+      <template #unchecked> 随机排序 </template>
+    </n-switch>
     <n-carousel
       effect="card"
       prev-slide-style="transform: translateX(-150%) translateZ(-800px);"
@@ -29,18 +33,29 @@ import * as echarts from 'echarts'
 
 const bookIds: Ref<number[]> = ref([])
 
-const fetchBookNumber = async () => {
+const fetchBookNumber = async (sortBy: string) => {
   const data = (await getInfo(getRequest, {
     table: 'reading_status',
-    fields: ['book_id'],
+    fields: ['book_id', 'date'],
     conditions: ['finished=true']
-  })) as [{ book_id: number }]
+  })) as [{ book_id: number; date: string }]
+  if (sortBy === 'time') {
+    data.sort((a, b) => {
+      return new Date(a.date).getTime() - new Date(b.date).getTime()
+    })
+  } else {
+    data.sort(() => Math.random() - 0.5)
+  }
   bookIds.value = data.map((item) => item.book_id)
-  bookIds.value = bookIds.value.sort(() => Math.random() - 0.5)
+  await load(bookIds.value[0])
 }
 
 const records = ref<IRecord[]>()
 const myChart = ref<any>()
+
+const handleChange = (value: boolean) => {
+  fetchBookNumber(value ? 'random' : 'time')
+}
 
 const reload = async (currentIndex: number, lastIndex: number) => {
   await load(bookIds.value[currentIndex])
@@ -133,8 +148,7 @@ const load = async (bookid: number) => {
 }
 
 onMounted(async () => {
-  await fetchBookNumber()
-  await load(bookIds.value[0])
+  await fetchBookNumber('random')
 })
 </script>
 
