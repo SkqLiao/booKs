@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import statusPanel from '@/view/common/statusPanel.vue'
+import statusPanel from '@/views/common/panel.vue'
 import { onMounted, ref, Ref } from 'vue'
 import { getRequest, getInfo } from '@/service/book/book'
 
