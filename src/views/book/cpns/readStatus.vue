@@ -118,7 +118,8 @@ const load = async () => {
   const response = (await getInfo(getRequest, {
     table: 'reading_record',
     fields: ['*'],
-    conditions: ['book_id = ' + props.bookid]
+    conditions: ['book_id = ' + props.bookid],
+    order_by: 'start_time ASC'
   })) as IRecord[]
   records.value = response
   if (records.value?.length === 0) {
@@ -135,7 +136,7 @@ const load = async () => {
   })
   total_page.value = records.value?.[records.value.length - 1].end_page || 0
   total_time.value = sum
-  total_day.value = new Set(records.value?.map((item) => item.date)).size
+  total_day.value = new Set(records.value?.map((item) => item.start_time)).size
   emits('updatePagePercent', total_page.value)
   const chartDom = document.getElementById('main')!
   if (myChart.value) {
@@ -146,7 +147,7 @@ const load = async () => {
   const option = {
     xAxis: {
       type: 'category',
-      data: records.value?.map((item) => item.date)
+      data: records.value?.map((item) => item.start_time.split(' ')[0])
     },
     yAxis: [
       {

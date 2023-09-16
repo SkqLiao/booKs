@@ -35,8 +35,14 @@
             <template #suffix> 分钟 </template>
           </n-input-number>
         </n-form-item>
-        <n-form-item label="阅读日期" path="read_date" required>
-          <n-date-picker panel v-model:formatted-value="readDate" />
+        <n-form-item label="开始时间" path="start_time" required>
+          <n-date-picker
+            v-model:formatted-value="start_time"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            type="datetime"
+            style="width: 100%"
+            clearable
+          />
         </n-form-item>
         <n-form-item label="已读完" path="finished">
           <n-switch v-model:value="finished" />
@@ -124,6 +130,7 @@ watch(
 const startPage = ref(0)
 const endPage = ref(0)
 const time_length = ref(0)
+const start_time = ref(new Date().toISOString().replace('T', ' ').split('.')[0])
 const readDate = ref(new Date().toISOString().split('T')[0])
 const emits = defineEmits(['updateAddVisible'])
 const finished = ref(false)
@@ -138,6 +145,7 @@ const getStartPage = async () => {
 }
 
 onMounted(async () => {
+  console.log(start_time.value)
   await getStartPage()
 })
 
@@ -151,13 +159,13 @@ const addRecord = async () => {
       book_id: props.id,
       start_page: startPage.value,
       end_page: endPage.value,
-      read_date: readDate.value,
+      start_time: start_time.value,
       time_length: time_length.value,
-      date: readDate.value,
-      finished: finished.value
+      finished: finished.value ? 1 : 0
     })
     if (response.code !== 200) {
       window.$message?.warning('增加失败：' + response.message)
+      console.log(response?.error)
     } else {
       window.$message?.success('增加成功！')
       localShowModal.value = false
@@ -191,6 +199,7 @@ const addExcerpt = async () => {
     })
     if (response.code !== 200) {
       window.$message?.warning('增加失败：' + response.message)
+      console.log(response?.error)
     } else {
       window.$message?.success('增加成功！')
       localShowModal.value = false

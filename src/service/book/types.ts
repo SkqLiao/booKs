@@ -55,7 +55,7 @@ export interface DoubanAPI {
 export interface IRecord {
   id: number
   book_id: number
-  date: Date
+  start_time: string
   time_length: number
   start_page: number
   end_page: number

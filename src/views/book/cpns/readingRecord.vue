@@ -26,8 +26,13 @@
       :model="modalForm"
       :disabled="modalAction === 'view'"
     >
-      <n-form-item label="日期" path="date">
-        <n-date-picker type="date" v-model:formatted-value="modalForm.date" />
+      <n-form-item label="开始时间" path="start_time">
+        <n-date-picker
+          v-model:formatted-value="modalForm.start_time"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          type="datetime"
+          clearable
+        />
       </n-form-item>
       <n-form-item label="时长（分钟）" path="timeLength">
         <n-input-number
@@ -52,10 +57,10 @@
 </template>
 
 <script lang="ts" setup>
-import { h } from 'vue'
+import { h, ref, watch, onMounted } from 'vue'
 import { NButton } from 'naive-ui'
 import { CrudModal, CrudTable, useCRUD } from '@zclzone/crud'
-import { formatDate, renderIcon } from '@/utils'
+import { renderIcon } from '@/utils'
 
 const props = defineProps({
   bookid: {
@@ -77,7 +82,7 @@ const queryItems = ref<any>({
 })
 
 const extraParams = ref<any>({
-  order_by: 'date DESC'
+  order_by: 'start_time DESC'
 })
 
 const emits = defineEmits(['updateRecord'])
@@ -117,16 +122,16 @@ const columns: any = [
     title: '#',
     key: 'id',
     width: 80,
-    render(row: any) {
-      return h('span', row.id)
+    render(row: any, index: number) {
+      return h('span', index)
     }
   },
   {
-    title: '阅读日期',
+    title: '开始时间',
     key: 'date',
     width: 150,
     render(row: any) {
-      return h('span', formatDate(row.date))
+      return h('span', row.start_time)
     }
   },
   {

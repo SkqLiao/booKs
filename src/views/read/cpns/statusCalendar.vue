@@ -58,7 +58,7 @@ const updateView = async (pages: { month: number; year: number }[]) => {
   const readingInfo = (await getInfo(getRequest, {
     table: 'reading_record',
     fields: ['*'],
-    conditions: ['YEAR(date) = ' + year]
+    conditions: ['YEAR(start_time) = ' + year]
   })) as IRecord[]
   const ids = new Set(readingInfo.map((item) => item.book_id))
   const titles = new Map<number, string>()
@@ -73,7 +73,9 @@ const updateView = async (pages: { month: number; year: number }[]) => {
   const titleInfo = readingInfo.map((info) => {
     return titles.get(info.book_id) as string
   })
-  const dates = readingInfo.map((item) => new Date(item.date))
+  const dates = readingInfo.map(
+    (item) => new Date(item.start_time.split(' ')[0])
+  )
   const intervals = getIntervals(dates)
 
   const colors = [
@@ -97,7 +99,7 @@ const updateView = async (pages: { month: number; year: number }[]) => {
   attributes.value = readingInfo.map((item: IRecord, index: number) => {
     return {
       dot: colors[item.book_id % 9],
-      dates: [new Date(item.date)],
+      dates: [new Date(item.start_time.split(' ')[0])],
       popover: {
         label:
           titleInfo[index] +
