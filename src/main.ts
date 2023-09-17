@@ -10,10 +10,19 @@ import { setupNaiveDiscreteApi } from './utils'
 import { setupCalendar, Calendar } from 'v-calendar'
 import 'v-calendar/style.css'
 import * as echarts from 'echarts'
+import VueTippy from 'vue-tippy'
 
 async function setupApp() {
   const app = createApp(App)
   app.use(setupCalendar, {})
+  app.use(
+    VueTippy,
+    // optional
+    {
+      directive: 'tippy', // => v-tippy
+      component: 'tippy' // => <tippy/>
+    }
+  )
   app.component('VCalendar', Calendar)
   setupStore(app)
   setupNaiveDiscreteApi()
