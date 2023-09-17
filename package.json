@@ -45,6 +45,7 @@
     "pnpm": "^8.7.0",
     "prettier": "^3.0.2",
     "recommended": "link:@vue/typescript/recommended",
+    "tippy.js": "^6.3.7",
     "v-calendar": "^3.0.3",
     "vue": "^3.3.4",
     "vue-router": "^4.2.2",

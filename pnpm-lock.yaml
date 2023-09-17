@@ -62,6 +62,9 @@ dependencies:
   recommended:
     specifier: link:@vue/typescript/recommended
     version: link:@vue/typescript/recommended
+  tippy.js:
+    specifier: ^6.3.7
+    version: registry.npmmirror.com/tippy.js@6.3.7
   v-calendar:
     specifier: ^3.0.3
     version: 3.0.3(@popperjs/core@2.11.8)(vue@3.3.4)

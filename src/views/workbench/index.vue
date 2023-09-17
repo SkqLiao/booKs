@@ -26,7 +26,6 @@ import { ref, Ref, onMounted } from 'vue'
 import { getInfo, getRequest } from '@/service/book/book'
 import * as chroma from 'chroma.ts'
 import * as d3 from 'd3'
-import 'tippy.js/dist/tippy.css'
 
 const getReadingTime = async () => {
   const res = (await getInfo(getRequest, {
