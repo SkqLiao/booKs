@@ -79,7 +79,7 @@ const queryItems = ref<any>({
 })
 
 const extraParams = ref<any>({
-  order_by: 'date DESC'
+  order_by: 'date ASC'
 })
 
 const emits = defineEmits(['updateExcerpt'])

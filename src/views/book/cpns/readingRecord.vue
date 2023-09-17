@@ -82,7 +82,7 @@ const queryItems = ref<any>({
 })
 
 const extraParams = ref<any>({
-  order_by: 'start_time DESC'
+  order_by: 'start_time ASC'
 })
 
 const emits = defineEmits(['updateRecord'])
