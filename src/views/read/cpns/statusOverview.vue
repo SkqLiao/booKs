@@ -73,13 +73,16 @@ const getReadingBookNumber = async (year: number) => {
   const response = (await getInfo(getRequest, {
     table: 'reading_record',
     fields: ['COUNT(DISTINCT book_id) as count'],
-    conditions: [condition]
+    conditions: [
+      condition,
+      'book_id NOT IN(SELECT book_id FROM reading_record WHERE finished=1)'
+    ]
   })) as { count: number }[]
   readingBookNumber.value[0] = response[0].count
   const response2 = (await getInfo(getRequest, {
-    table: 'reading_status',
+    table: 'reading_record',
     fields: ['COUNT(*) as count'],
-    conditions: [condition + ' AND finished=1']
+    conditions: [condition, 'finished=1']
   })) as { count: number }[]
   readingBookNumber.value[1] = response2[0].count
 }
