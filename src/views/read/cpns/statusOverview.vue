@@ -27,7 +27,7 @@
           type="card"
           animated
           placement="left"
-          :on-up:value="changeYear"
+          :on-update:value="changeYear"
           :default-value="0"
         >
           <n-tab
@@ -46,8 +46,8 @@
 
     <status-drawer
       :show="showDrawer"
-      :="drawerDate"
-      @up-drawer-visible="upDrawerVisible"
+      :date="drawerDate"
+      @update-drawer-visible="updateDrawerVisible"
     />
   </CommonPage>
 </template>
@@ -66,7 +66,7 @@ const drawerDate = ref('')
 const startDate = ref('')
 const endDate = ref('')
 const years = ref([0])
-let myChart
+let myChart: any = null
 
 const getReadingBookNumber = async (year: number) => {
   const condition = year ? 'YEAR(start_time) = ' + year : '1=1'
@@ -106,9 +106,9 @@ const initYear = async () => {
   startDate.value = (
     (await getInfo(getRequest, {
       table: 'reading_record',
-      fields: ['MIN(start_time) as ']
-    })) as { : string }[]
-  )[0].
+      fields: ['MIN(start_time) as date']
+    })) as { date: string }[]
+  )[0].date
   endDate.value = new Date().toISOString().split('T')[0]
   const year_s = parseInt(startDate.value.split('-')[0])
   const year_e = parseInt(endDate.value.split('-')[0])
@@ -232,7 +232,7 @@ const initChart = async (in_year: number) => {
   })
 }
 
-function upDrawerVisible() {
+function updateDrawerVisible() {
   showDrawer.value = false
 }
 

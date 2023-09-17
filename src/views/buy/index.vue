@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, Ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { getInfo, getRequest } from '@/service/book/book'
 import * as echarts from 'echarts'
 import statusDrawer from './cpns/drawer.vue'
@@ -59,7 +59,7 @@ const drawerDate = ref('')
 const startDate = ref('')
 const endDate = ref('')
 const years = ref([0])
-let myChart
+let myChart: any = null
 
 const buyPosOptions = ref<{ label: string; value: string }[]>([])
 const selected_buy_pos = ref('不限')
