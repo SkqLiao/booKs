@@ -117,3 +117,8 @@ Based on [qs admin](https://github.com/zclzone/qs-admin).
 
 - [x] 导入所有历史订单
 - [x] 修改阅读记录表结构
+
+### 2023-09-17
+
+- [x] 导入所有阅读记录
+- [x] 增加阅读时刻热力图
