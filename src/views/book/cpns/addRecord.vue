@@ -169,6 +169,7 @@ const addRecord = async () => {
     } else {
       window.$message?.success('增加成功！')
       localShowModal.value = false
+      startPage.value = endPage.value
       emits('updateAddVisible')
     }
   } catch (error) {
