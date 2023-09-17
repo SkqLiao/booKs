@@ -45,7 +45,7 @@ const getBookIds = async () => {
   const data = (await getInfo(getRequest, {
     table: 'reading_record',
     fields: ['DISTINCT book_id'],
-    conditions: [`YEAR(date) = ${year} AND MONTH(date) = ${month}`]
+    conditions: [`YEAR(start_time) = ${year} AND MONTH(start_time) = ${month}`]
   })) as { book_id: number }[]
   book_ids.value = data.map((item) => item.book_id)
 }

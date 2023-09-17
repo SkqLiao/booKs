@@ -27,7 +27,7 @@
           type="card"
           animated
           placement="left"
-          :on-update:value="changeYear"
+          :on-up:value="changeYear"
           :default-value="0"
         >
           <n-tab
@@ -46,8 +46,8 @@
 
     <status-drawer
       :show="showDrawer"
-      :date="drawerDate"
-      @update-drawer-visible="updateDrawerVisible"
+      :="drawerDate"
+      @up-drawer-visible="upDrawerVisible"
     />
   </CommonPage>
 </template>
@@ -69,7 +69,7 @@ const years = ref([0])
 let myChart
 
 const getReadingBookNumber = async (year: number) => {
-  const condition = year ? 'YEAR(date) = ' + year : '1=1'
+  const condition = year ? 'YEAR(start_time) = ' + year : '1=1'
   const response = (await getInfo(getRequest, {
     table: 'reading_record',
     fields: ['COUNT(DISTINCT book_id) as count'],
@@ -87,8 +87,8 @@ const getReadingBookNumber = async (year: number) => {
 const getReadingDateNumber = async (year: number) => {
   const response = (await getInfo(getRequest, {
     table: 'reading_record',
-    fields: ['COUNT(DISTINCT date) as count'],
-    conditions: [!year ? '1=1' : 'YEAR(date) = ' + year]
+    fields: ['COUNT(DISTINCT DATE(start_time)) as count'],
+    conditions: [!year ? '1=1' : 'YEAR(start_time) = ' + year]
   })) as { count: number }[]
   readingDateNumber.value = response[0].count
 }
@@ -106,9 +106,9 @@ const initYear = async () => {
   startDate.value = (
     (await getInfo(getRequest, {
       table: 'reading_record',
-      fields: ['MIN(date) as date']
-    })) as { date: string }[]
-  )[0].date
+      fields: ['MIN(start_time) as ']
+    })) as { : string }[]
+  )[0].
   endDate.value = new Date().toISOString().split('T')[0]
   const year_s = parseInt(startDate.value.split('-')[0])
   const year_e = parseInt(endDate.value.split('-')[0])
@@ -120,7 +120,7 @@ const changeYear = async (name: string) => {
   initChart(year)
   await getReadingBookNumber(year)
   await getReadingDateNumber(year)
-  const condition = year ? 'YEAR(date) = ' + year : '1=1'
+  const condition = year ? 'YEAR(start_time) = ' + year : '1=1'
   readingTimeLength.value =
     ((await getReadingInfo('SUM(time_length) as length', condition))
       .length as number) ?? 0
@@ -135,7 +135,7 @@ const initChart = async (in_year: number) => {
   let y0: number[] = []
   let y1: number[] = []
   for (let year = year_s, month = month_s; ; ) {
-    const condition = `YEAR(date) = ${year} AND MONTH(date) = ${month}`
+    const condition = `YEAR(start_time) = ${year} AND MONTH(start_time) = ${month}`
     x.push(`${year}年${month.toString().padStart(2, '0')}月`)
     const time_length = await getReadingInfo(
       'SUM(time_length) as length',
@@ -143,7 +143,7 @@ const initChart = async (in_year: number) => {
     )
     y1.push((time_length.length as number) ?? 0)
     const day_num = await getReadingInfo(
-      'COUNT(DISTINCT date) as count',
+      'COUNT(DISTINCT DATE(start_time)) as count',
       condition
     )
     y0.push((day_num.count as number) ?? 0)
@@ -232,7 +232,7 @@ const initChart = async (in_year: number) => {
   })
 }
 
-function updateDrawerVisible() {
+function upDrawerVisible() {
   showDrawer.value = false
 }
 
