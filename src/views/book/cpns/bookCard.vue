@@ -153,7 +153,9 @@
                   style="margin-top: 10px"
                   indicator-placement="inside"
                   :percentage="
-                    Math.round((max_page / parseInt(bookInfo.pages)) * 100)
+                    read_finished
+                      ? 100
+                      : Math.round((max_page / parseInt(bookInfo.pages)) * 100)
                   "
                 />
               </div>
@@ -213,20 +215,22 @@ const props = defineProps({
 
 const max_page = ref(0)
 const latest_date = ref('')
-const read_finished = ref(false)
+const read_finished = ref(1)
 
 const getReadStatus = async () => {
   const data = (await getInfo(getRequest, {
     table: 'reading_record',
     fields: [
+      'MAX(end_page) as max_page',
       'MAX(start_time) as max_start_time',
       'MAX(finished) as max_finished'
     ],
     conditions: ['book_id=' + props.id]
-  })) as { max_start_time: string; max_finished: boolean }[]
+  })) as { max_start_time: string; max_finished: number; max_page: number }[]
   read_finished.value = data[0].max_finished
   if (data[0].max_start_time)
     latest_date.value = data[0].max_start_time.split(' ')[0]
+  max_page.value = data[0].max_page
 }
 
 const selectFilter = (key: string, value: string) => {
