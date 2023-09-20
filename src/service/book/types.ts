@@ -18,13 +18,14 @@ export interface Ibook {
   url: string
   catalog: string[]
   cover_base64: string
-  buy_date: Date
+  buy_date: string
   buy_pos: string
   real_price: number
   publishDate: string
   rating_count: number
   rating_value: number
   rating_percent: number[]
+  status: string
 }
 
 export interface IQueryParams {

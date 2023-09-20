@@ -58,11 +58,12 @@
         <n-card>
           <n-form-item label="购买日期" path="buy_date" required>
             <n-date-picker
+              :default-formatted-value="new Date().toISOString().split('T')[0]"
               v-model:formatted-value="bookInfo.buy_date"
               style="width: 100%"
             />
           </n-form-item>
-          <n-form-item label="购买价格" path="real_price">
+          <n-form-item label="购买价格" path="real_price" required>
             <n-input-number
               v-model:value="bookInfo.real_price"
               style="width: 100%"
@@ -70,11 +71,17 @@
               <template #prefix> ￥ </template>
             </n-input-number>
           </n-form-item>
-          <n-form-item label="购买平台" path="buy_pos">
+          <n-form-item label="购买平台" path="buy_pos" required>
             <n-select
               v-model:value="bookInfo.buy_pos"
               :options="buy_pos_options"
-              required
+            />
+          </n-form-item>
+          <n-form-item label="状态" path="status" required>
+            <n-select
+              v-model:value="bookInfo.status"
+              :default-value="bookInfo.status ?? '购买'"
+              :options="status_options"
             />
           </n-form-item>
         </n-card>
@@ -135,6 +142,16 @@ watch(
   }
 )
 
+watch(
+  () => bookInfo.value.status,
+  (newValue) => {
+    if (newValue === '借阅' || newValue === '赠送') {
+      bookInfo.value.buy_pos = '其他'
+      bookInfo.value.real_price = 0
+    }
+  }
+)
+
 const base64ToUrl = (base64Data: string): string => {
   const byteCharacters = atob(base64Data)
   const byteNumbers = new Uint8Array(byteCharacters.length)
@@ -174,18 +191,22 @@ const rules = {
     }
   },
   real_price: {
-    required: true,
     validator(rule: FormItemRule, x: number) {
       return x >= 0
     }
-  },
-  buy_pos: {
-    required: true
   }
 }
 
 const buy_pos = ['京东', '淘宝', '拼多多', '其他', '当当', '线下']
 const buy_pos_options = buy_pos.map((item) => {
+  return {
+    label: item,
+    value: item
+  }
+})
+
+const status = ['购买', '借阅', '赠送']
+const status_options = status.map((item) => {
   return {
     label: item,
     value: item
