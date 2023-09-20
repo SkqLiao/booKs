@@ -18,6 +18,11 @@
         ></div>
       </div>
     </div>
+    <h2>
+      最喜欢阅读的时间：{{ l_hour }}:{{ l_minute }} ~ {{ r_hour }}:{{
+        r_minute
+      }}
+    </h2>
   </CommonPage>
 </template>
 
@@ -35,16 +40,13 @@ const getReadingTime = async () => {
   return res
 }
 
-const getNextMinute = (hour: number, minute: number) => {
-  if (minute === 59) {
-    return [(hour + 1) % 24, 0]
-  } else {
-    return [hour, minute + 1]
-  }
+const getNextMinute = (hour: number, minute: number, step = 1) => {
+  let next_minute = (minute + step) % 60
+  let next_hour = (hour + Math.floor((minute + step) / 60)) % 24
+  return [next_hour, next_minute]
 }
 
 const time = ref(new Array(24).fill(0).map(() => new Array(60).fill(0)))
-const finished = ref(false)
 
 const calculateReadingTime = (
   res: { start_time: string; time_length: number }[]
@@ -86,10 +88,43 @@ function chroma_scale(length: number, chroma_scale: any) {
   return colors
 }
 
+const l_hour = ref(0)
+const l_minute = ref(0)
+const r_hour = ref(0)
+const r_minute = ref(0)
+
+const getMaxInterval = (interval_length: number) => {
+  let sum_time = new Array(24 * 60).fill(0)
+  for (let hour = 0; hour < 24; ++hour) {
+    for (let minute = 0; minute < 60; ++minute) {
+      sum_time[hour * 60 + minute] += time.value[hour][minute]
+      sum_time[hour * 60 + minute + 1] == sum_time[hour][minute]
+    }
+  }
+  let max_count = 0
+  let result = [0, 0]
+  for (let hour = 0; hour < 24; ++hour) {
+    for (let minute = 0; minute < 60; ++minute) {
+      const l = hour * 60 + minute
+      const r = (l + interval_length - 1) % (24 * 60)
+      let sum_count = 0
+      if (r > l) {
+        sum_count = sum_time[r] - (l ? sum_time[l - 1] : 0)
+      } else {
+        sum_count = sum_time[24 * 60 - 1] - sum_time[l] + sum_time[r]
+      }
+      if (sum_count > max_count) {
+        max_count = sum_count
+        result = [hour, minute]
+      }
+    }
+  }
+  return result
+}
+
 onMounted(async () => {
   colors.value = chroma_scale(16, chroma.scale('BuGn'))
   calculateReadingTime(await getReadingTime())
-  finished.value = true
   const max = Math.max(...time.value.map((item) => Math.max(...item)))
 
   cells.value.forEach((cell, index) => {
@@ -97,6 +132,12 @@ onMounted(async () => {
     const y = index % 60
     cell.setAttribute('style', getCellStyle(time.value[x][y] / max))
   })
+  const result = getMaxInterval(45)
+  l_hour.value = result[0]
+  l_minute.value = result[1]
+  const [rh, rm] = getNextMinute(result[0], result[1], 45)
+  r_hour.value = rh
+  r_minute.value = rm
 })
 </script>
 
