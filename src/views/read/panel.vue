@@ -21,18 +21,34 @@ import { getRequest, getInfo } from '@/service/book/book'
 const book_ids1: Ref<number[]> = ref([])
 const book_ids0: Ref<number[]> = ref([])
 
-const fetchBookNumber = async (finished: boolean) => {
+const fetchFinishedBookNumber = async () => {
   const data = (await getInfo(getRequest, {
-    table: 'reading_status',
+    table: 'reading_record',
     fields: ['book_id'],
-    conditions: ['finished=' + finished]
+    conditions: ['finished=1'],
+    order_by: 'start_time DESC'
+  })) as [{ book_id: number }]
+  return data.map((item) => item.book_id)
+}
+
+const fetchReadingBookNumber = async () => {
+  const data = (await getInfo(getRequest, {
+    table: 'reading_record',
+    fields: ['DISTINCT(book_id)'],
+    conditions: [
+      'book_id NOT IN (\
+  SELECT book_id\
+  FROM reading_record\
+  WHERE finished = 1\
+);'
+    ]
   })) as [{ book_id: number }]
   return data.map((item) => item.book_id)
 }
 
 onMounted(async () => {
-  book_ids0.value = await fetchBookNumber(false)
-  book_ids1.value = await fetchBookNumber(true)
+  book_ids0.value = await fetchReadingBookNumber()
+  book_ids1.value = await fetchFinishedBookNumber()
 })
 </script>
 
