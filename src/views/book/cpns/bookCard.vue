@@ -2,17 +2,25 @@
   <div v-if="bookInfo">
     <n-card class="card" :hoverable="true" v-if="props.cardType == 'default'">
       <template #header>
-        <h4
-          @click="showDetailModal = true"
-          style="cursor: pointer"
-          v-if="read_finished"
-        >
-          <n-gradient-text type="info">
+        <h4 @click="showDetailModal = true" style="cursor: pointer">
+          <n-gradient-text
+            gradient="linear-gradient(90deg, red 0%, green 50%, blue 100%)"
+            v-if="read_finished"
+          >
             {{ bookInfo.title }}
           </n-gradient-text>
-        </h4>
-        <h4 @click="showDetailModal = true" style="cursor: pointer" v-else>
-          {{ bookInfo.title }}
+          <n-gradient-text type="info" v-else-if="max_page > 0">
+            {{ bookInfo.title }}
+          </n-gradient-text>
+          <n-gradient-text
+            :gradient="{
+              from: 'rgb(85, 85, 85)',
+              to: 'rgb(170, 170, 170)'
+            }"
+            v-else
+          >
+            {{ bookInfo.title }}
+          </n-gradient-text>
         </h4>
       </template>
       <div style="height: 130px">
