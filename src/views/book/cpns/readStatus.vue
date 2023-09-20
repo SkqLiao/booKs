@@ -1,6 +1,6 @@
 <template>
   <n-grid cols="5" :x-gap="12">
-    <n-grid-item :style="{ marginTop: '50px' }">
+    <n-grid-item :span="1">
       <n-card>
         <p class="book-info-p"><strong>页数：</strong> {{ total_page }} 页</p>
         <p class="book-info-p"><strong>天数：</strong> {{ total_day }} 天</p>

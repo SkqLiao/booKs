@@ -77,13 +77,6 @@
               :options="buy_pos_options"
             />
           </n-form-item>
-          <n-form-item label="状态" path="status" required>
-            <n-select
-              v-model:value="bookInfo.status"
-              :default-value="bookInfo.status ?? '购买'"
-              :options="status_options"
-            />
-          </n-form-item>
         </n-card>
       </n-gi>
     </n-grid>
@@ -142,16 +135,6 @@ watch(
   }
 )
 
-watch(
-  () => bookInfo.value.status,
-  (newValue) => {
-    if (newValue === '借阅' || newValue === '赠送') {
-      bookInfo.value.buy_pos = '其他'
-      bookInfo.value.real_price = 0
-    }
-  }
-)
-
 const base64ToUrl = (base64Data: string): string => {
   const byteCharacters = atob(base64Data)
   const byteNumbers = new Uint8Array(byteCharacters.length)
@@ -197,16 +180,8 @@ const rules = {
   }
 }
 
-const buy_pos = ['京东', '淘宝', '拼多多', '其他', '当当', '线下']
+const buy_pos = ['京东', '淘宝', '拼多多', '借阅', '赠送', '当当', '线下']
 const buy_pos_options = buy_pos.map((item) => {
-  return {
-    label: item,
-    value: item
-  }
-})
-
-const status = ['购买', '借阅', '赠送']
-const status_options = status.map((item) => {
   return {
     label: item,
     value: item

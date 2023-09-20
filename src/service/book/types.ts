@@ -25,7 +25,6 @@ export interface Ibook {
   rating_count: number
   rating_value: number
   rating_percent: number[]
-  status: string
 }
 
 export interface IQueryParams {

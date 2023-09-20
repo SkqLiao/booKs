@@ -2,7 +2,16 @@
   <div v-if="bookInfo">
     <n-card class="card" :hoverable="true" v-if="props.cardType == 'default'">
       <template #header>
-        <h4 @click="showDetailModal = true" style="cursor: pointer">
+        <h4
+          @click="showDetailModal = true"
+          style="cursor: pointer"
+          v-if="read_finished"
+        >
+          <n-gradient-text type="info">
+            {{ bookInfo.title }}
+          </n-gradient-text>
+        </h4>
+        <h4 @click="showDetailModal = true" style="cursor: pointer" v-else>
           {{ bookInfo.title }}
         </h4>
       </template>
@@ -70,13 +79,14 @@
         </n-row>
       </div>
       <template #action>
-        <!-- <span class="time" style="float: left">
-          购买于{{ bookInfo.buy_date }}</span
-        > -->
         <n-tag type="info" size="small" round style="float: left">
           {{ bookInfo.buy_date }}
           <template #icon>
-            <n-icon :component="MoneyCollectFilled" />
+            <n-icon
+              :component="MoneyCollectFilled"
+              v-if="bookInfo.buy_pos != '借阅'"
+            />
+            <n-icon :component="Library" v-else />
           </template>
         </n-tag>
         <n-tag
@@ -166,7 +176,12 @@
         :style="props.cardType == 'default' ? 'height: 160px' : 'height: 120px'"
       />
       <template #action>
-        <span class="time">购买于</span>
+        <n-tag type="info" size="small" round style="float: left">
+          1970-01-01
+          <template #icon>
+            <n-icon :component="MoneyCollectFilled" />
+          </template>
+        </n-tag>
       </template>
     </n-card>
   </div>
@@ -182,6 +197,7 @@ import { useBookStore } from '@/store'
 import defaultCoverImage from '@/assets/images/default_cover.jpg'
 import { BookReader } from '@vicons/fa'
 import { MoneyCollectFilled } from '@vicons/antd'
+import { Library } from '@vicons/ionicons5'
 const bookStore = useBookStore()
 
 const props = defineProps({
@@ -201,15 +217,16 @@ const read_finished = ref(false)
 
 const getReadStatus = async () => {
   const data = (await getInfo(getRequest, {
-    table: 'reading_status',
-    fields: ['date', 'finished'],
+    table: 'reading_record',
+    fields: [
+      'MAX(start_time) as max_start_time',
+      'MAX(finished) as max_finished'
+    ],
     conditions: ['book_id=' + props.id]
-  })) as { date: string; finished: boolean }[]
-  if (data.length === 0) {
-    return
-  }
-  read_finished.value = data[0].finished
-  latest_date.value = data[0].date
+  })) as { max_start_time: string; max_finished: boolean }[]
+  read_finished.value = data[0].max_finished
+  if (data[0].max_start_time)
+    latest_date.value = data[0].max_start_time.split(' ')[0]
 }
 
 const selectFilter = (key: string, value: string) => {

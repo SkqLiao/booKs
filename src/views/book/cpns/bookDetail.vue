@@ -4,7 +4,7 @@
       v-model:show="showModal"
       class="custom-card"
       preset="card"
-      style="width: 70%"
+      style="width: 75%"
       size="huge"
       :bordered="false"
       :on-after-leave="() => $emit('updateDetailVisible', props.id)"
@@ -72,12 +72,20 @@
           >
         </n-gi>
         <n-gi span="0 m:2 l:2">
-          <n-card title="购买记录" size="small" hoverable>
+          <n-card
+            title="书籍来源"
+            size="small"
+            hoverable
+            v-if="props.bookInfo.buy_pos === '购买'"
+          >
             <n-tag type="info" round> {{ props.bookInfo.buy_pos }}</n-tag>
             <n-tag type="success" round> {{ props.bookInfo.buy_date }}</n-tag>
             <n-tag type="warning" round>
               {{ Math.round(props.bookInfo.real_price) }} 元</n-tag
             >
+          </n-card>
+          <n-card title="书籍来源" size="small" hoverable v-else>
+            <n-tag type="info" round> {{ props.bookInfo.buy_pos }}</n-tag>
           </n-card>
           <n-card title="阅读状态" size="small" hoverable>
             <n-progress
@@ -108,7 +116,7 @@
                   :height="15"
                   :border-radius="4"
                   :fill-border-radius="0"
-                  style="width: 85%"
+                  style="width: 80%"
                 />
               </div>
             </div>

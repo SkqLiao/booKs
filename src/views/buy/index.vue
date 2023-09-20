@@ -65,43 +65,42 @@ const buyPosOptions = ref<{ label: string; value: string }[]>([])
 const selected_buy_pos = ref('不限')
 const selected_year = ref(0)
 
+const getBuyPosCond = () => {
+  const buy_pos_except = ['其他', '借阅', '赠送']
+  const cond =
+    selected_buy_pos.value == '不限'
+      ? `buy_pos NOT IN (${buy_pos_except
+          .map((value) => `'${value}'`)
+          .join(', ')})`
+      : 'buy_pos="' + selected_buy_pos.value + '"'
+  return cond
+}
+
 const getBookNumber = async (year: number) => {
   const condition = year ? 'YEAR(buy_date) = ' + year : '1=1'
-  const cond_buy_pos =
-    selected_buy_pos.value == '不限'
-      ? '1=1'
-      : 'buy_pos="' + selected_buy_pos.value + '"'
   const response = (await getInfo(getRequest, {
     table: 'basic_info',
     fields: ['COUNT(*) as count'],
-    conditions: [condition, cond_buy_pos]
+    conditions: [condition, getBuyPosCond()]
   })) as { count: number }[]
   bookNumber.value = response[0].count
 }
 
 const getBookInfo = async (field: string, condition: string) => {
-  const cond_buy_pos =
-    selected_buy_pos.value == '不限'
-      ? '1=1'
-      : 'buy_pos="' + selected_buy_pos.value + '"'
   const response = (await getInfo(getRequest, {
     table: 'basic_info',
     fields: [field],
-    conditions: [condition, cond_buy_pos]
+    conditions: [condition, getBuyPosCond()]
   })) as any[]
   return response[0]
 }
 
 const initYear = async () => {
-  const cond_buy_pos =
-    selected_buy_pos.value == '不限'
-      ? '1=1'
-      : 'buy_pos="' + selected_buy_pos.value + '"'
   startDate.value = (
     (await getInfo(getRequest, {
       table: 'basic_info',
       fields: ['MIN(buy_date) as date'],
-      conditions: [cond_buy_pos]
+      conditions: [getBuyPosCond()]
     })) as { date: string }[]
   )[0].date
   endDate.value = new Date().toISOString().split('T')[0]
@@ -232,8 +231,9 @@ const getBuyPos = async () => {
     fields: ['buy_pos AS field'],
     group_by: 'buy_pos'
   })) as any[]
+  const not_field = ['其他', '借阅', '赠送', '']
   let info = response
-    .filter((item) => item.field != '')
+    .filter((item) => !not_field.includes(item.field))
     .map((item) => ({
       label: item.field,
       value: item.field
