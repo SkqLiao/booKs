@@ -9,7 +9,7 @@
           class="cell"
           ref="cells"
           v-tippy="{
-            content: `${x.toString().padStart(2, '0')}:${y
+            content: `${(x - 1).toString().padStart(2, '0')}:${(y - 1)
               .toString()
               .padStart(2, '0')} ${time[x - 1][y - 1]}`,
             placement: 'top',
