@@ -7,7 +7,7 @@
     :columns="columns"
     :get-data="getPosts"
     @on-checked="onChecked"
-    :isPagination="false"
+    :remote="false"
   >
   </CrudTable>
   <CrudModal
