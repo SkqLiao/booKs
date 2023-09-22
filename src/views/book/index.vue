@@ -10,7 +10,7 @@ import bookSearch from './cpns/bookSearch.vue'
 const bookStore = useBookStore()
 const filters: Ref<string[]> = ref([])
 
-eventBus.on('deleteBook', async (id: number) => {
+eventBus.on('deleteBook', async () => {
   await fetchBookNumber(currentPage.value)
 })
 
