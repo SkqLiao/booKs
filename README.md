@@ -122,3 +122,7 @@ Based on [qs admin](https://github.com/zclzone/qs-admin).
 
 - [x] 导入所有阅读记录
 - [x] 增加阅读时刻热力图
+
+### 2023-09-22
+
+- [x] 图书搜索功能

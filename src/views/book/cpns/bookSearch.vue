@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 import { ref, h } from 'vue'
-import { SelectOption, NAvatar, NText, SelectRenderLabel } from 'naive-ui'
+import { SelectOption, NText, SelectRenderLabel } from 'naive-ui'
 import { getInfo, getRequest, bookCoverRequest } from '@/service/book/book'
 import bookDetail from './bookDetail.vue'
 import { Ibook } from '@/service/book/types'
@@ -38,7 +38,7 @@ const showDetailModal = ref(false)
 const props = defineProps({
   style: {
     type: Object,
-    default: () => ({ width: '50%' })
+    default: () => ({ width: '100%' })
   }
 })
 
@@ -95,12 +95,6 @@ const handleSearch = async (query: string) => {
       conditions: ['title like ' + `'%${query}%'`],
       order_by: 'id DESC'
     })) as { book_id: number; title: string; publish: string; isbn: string }[]
-    options.value.map(async (item) => {
-      const response = await bookCoverRequest({
-        isbn: item.isbn as string
-      })
-      item.cover = base64ToUrl(response.data)
-    })
     loading.value = false
   }, 500)
 }
@@ -115,15 +109,11 @@ const renderLabel: SelectRenderLabel = (option) => {
       }
     },
     [
-      h(NAvatar, {
-        src: option.cover as string,
-        size: 'medium'
-      }),
       h(
         'div',
         {
           style: {
-            marginLeft: '12px',
+            marginLeft: '10px',
             padding: '4px 0'
           }
         },
