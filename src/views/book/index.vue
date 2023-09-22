@@ -5,6 +5,7 @@ import bookFilter from './cpns/bookFilter.vue'
 import { ref, Ref, onMounted } from 'vue'
 import eventBus from '@/eventbus/index'
 import { useBookStore } from '@/store'
+import bookSearch from './cpns/bookSearch.vue'
 
 const bookStore = useBookStore()
 const filters: Ref<string[]> = ref([])
@@ -125,12 +126,17 @@ const removeFilter = (info: string) => {
         >{{ key }}</n-tag
       >
     </span>
+    <div
+      style="display: flex; justify-content: space-between; align-items: center"
+    >
+      <n-button type="info" @click="showFilterModal = true">筛选</n-button>
+      <book-search :style="{ width: '30%' }"></book-search>
+    </div>
     <n-grid :x-gap="8" :y-gap="5" :cols="4">
       <n-grid-item v-for="id in bookIds" :key="id">
         <book-card :id="id" />
       </n-grid-item>
     </n-grid>
-    <n-button type="info" @click="showFilterModal = true">筛选</n-button>
     <div class="container">
       <n-pagination
         v-model:page="currentPage"
