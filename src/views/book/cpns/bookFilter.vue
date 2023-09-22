@@ -10,8 +10,8 @@
     :on-after-leave="() => $emit('updateFilterVisible')"
   >
     <n-form>
-      <n-form-item label="标题">
-        <n-input v-model:value="inputTitle" placeholder="请输出标题" />
+      <n-form-item label="作者">
+        <n-input v-model:value="inputAuthor" placeholder="请输出作者" />
       </n-form-item>
       <n-form-item label="出版社">
         <n-select
@@ -136,7 +136,7 @@ const seriesOptions = ref<{ label: string; value: string }[]>([])
 const publishOptions = ref<{ label: string; value: string }[]>([])
 const produceOptions = ref<{ label: string; value: string }[]>([])
 const buyPosOptions = ref<{ label: string; value: string }[]>([])
-const inputTitle = ref('')
+const inputAuthor = ref('')
 
 const getInfo = async (group_by: string) => {
   try {
@@ -187,8 +187,8 @@ const applyFilter = () => {
   if (selectedBuyPos.value.length > 0) {
     filters.buy_pos = selectedBuyPos.value
   }
-  if (inputTitle.value.length > 0) {
-    filters.title = inputTitle.value
+  if (inputAuthor.value.length > 0) {
+    filters.author = inputAuthor.value
   }
   bookStore.setParams(filters)
   eventBus.emit('updateFilter')
@@ -220,7 +220,7 @@ onMounted(async () => {
       ? [bookStore.getParams.buy_price_from, bookStore.getParams.buy_price_to]
       : []
   selectedBuyPos.value = bookStore.getParams?.buy_pos ?? []
-  inputTitle.value = bookStore.getParams?.title ?? ''
+  inputAuthor.value = bookStore.getParams?.author ?? ''
 })
 </script>
 

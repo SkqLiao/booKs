@@ -70,8 +70,8 @@ const getFilterInfo = () => {
     info.push(`价格: [${params.buy_price_from},${params.buy_price_to}]`)
   }
 
-  if ('title' in params) {
-    info.push(`标题: ${params.title}`)
+  if ('author' in params) {
+    info.push(`作者: ${params.author}`)
   }
 
   return info
@@ -112,26 +112,37 @@ const removeFilter = (info: string) => {
   justify-content: center;
   align-items: center;
 }
+.left-wrapper {
+  display: inline-block;
+}
+.right-wrapper {
+  width: 25%;
+  display: inline-block;
+}
 </style>
 
 <template>
   <CommonPage :show-footer="true">
-    <span v-if="filters.length > 0">
-      <n-tag
-        v-for="(key, index) in filters"
-        :key="index"
-        type="info"
-        closable
-        @close="removeFilter(key)"
-        >{{ key }}</n-tag
-      >
-    </span>
-    <div
-      style="display: flex; justify-content: space-between; align-items: center"
-    >
-      <n-button type="info" @click="showFilterModal = true">筛选</n-button>
-      <book-search :style="{ width: '30%' }"></book-search>
+    <div style="display: flex; justify-content: space-between">
+      <div class="left-wrapper">
+        <n-button type="info" @click="showFilterModal = true">筛选</n-button>
+        <span v-if="filters.length > 0">
+          <n-tag
+            v-for="(key, index) in filters"
+            :key="index"
+            size="large"
+            type="info"
+            closable
+            @close="removeFilter(key)"
+            >{{ key }}</n-tag
+          >
+        </span>
+      </div>
+      <div class="right-wrapper">
+        <book-search></book-search>
+      </div>
     </div>
+
     <n-grid :x-gap="8" :y-gap="5" :cols="4">
       <n-grid-item v-for="id in bookIds" :key="id">
         <book-card :id="id" />

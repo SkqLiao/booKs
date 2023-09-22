@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 export interface BookParams {
   title?: string
   isbn?: string
-  author?: string[]
+  author?: string
   publish?: string[]
   producer?: string[]
   series?: string[]
@@ -45,11 +45,8 @@ export const useBookStore = defineStore('book', {
       }
 
       // 根据 author 字段构建条件
-      if (this.params.author && this.params.author.length > 0) {
-        const authorConditions = this.params.author.map(
-          (author) => `author LIKE '%${author}%'`
-        )
-        conditions.push(`(${authorConditions.join(' OR ')})`)
+      if (this.params.author) {
+        conditions.push(`author LIKE '%${this.params.author}%'`)
       }
 
       // 根据 publish 字段构建条件
