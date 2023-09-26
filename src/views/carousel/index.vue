@@ -11,7 +11,6 @@
       style="height: 300px"
       :show-dots="false"
       :on-update:current-index="reload"
-      :current-index="currentIndex"
       autoplay
       show-arrow
     >
@@ -22,26 +21,6 @@
       >
         <book-card :id="id" />
       </n-carousel-item>
-      <template #arrow="{ prev, next }">
-        <div class="custom-arrow">
-          <button type="button" class="custom-arrow--left" @click="prev">
-            <n-icon><ArrowBack /></n-icon>
-          </button>
-          <button type="button" class="custom-arrow--right" @click="next">
-            <n-icon><ArrowForward /></n-icon>
-          </button>
-        </div>
-      </template>
-      <template #dots="{ total, currentIndex, to }">
-        <ul class="custom-dots">
-          <li
-            v-for="index of total"
-            :key="index"
-            :class="{ ['is-active']: currentIndex === index - 1 }"
-            @click="to(index - 1)"
-          />
-        </ul>
-      </template>
     </n-carousel>
     <div id="statistics" style="width: 100%; height: 350px"></div>
   </CommonPage>
@@ -52,11 +31,9 @@ import { onMounted, ref, Ref } from 'vue'
 import { getRequest, getInfo } from '@/service/book/book'
 import bookCard from '@/views/book/cpns/bookCard.vue'
 import { IRecord } from '@/service/book/types'
-import { ArrowBack, ArrowForward } from '@vicons/ionicons5'
 import * as echarts from 'echarts'
 
 const bookIds: Ref<number[]> = ref([])
-const currentIndex = ref(0)
 
 const fetchBookNumber = async (sortBy: string) => {
   const data = (await getInfo(getRequest, {
@@ -66,13 +43,12 @@ const fetchBookNumber = async (sortBy: string) => {
   })) as [{ book_id: number; start_time: string }]
   if (sortBy === 'time') {
     data.sort((a, b) => {
-      return new Date(b.start_time).getTime() - new Date(a.start_time).getTime()
+      return new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
     })
   } else {
     data.sort(() => Math.random() - 0.5)
   }
   bookIds.value = data.map((item) => item.book_id)
-  currentIndex.value = 0
   await load(bookIds.value[0])
 }
 
@@ -80,7 +56,7 @@ const records = ref<IRecord[]>()
 const myChart = ref<any>()
 
 const handleChange = (value: boolean) => {
-  fetchBookNumber(!value ? 'random' : 'time')
+  fetchBookNumber(value ? 'random' : 'time')
 }
 
 const reload = async (currentIndex: number, lastIndex: number) => {
