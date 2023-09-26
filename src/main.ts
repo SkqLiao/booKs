@@ -12,6 +12,7 @@ import 'v-calendar/style.css'
 import * as echarts from 'echarts'
 import VueTippy from 'vue-tippy'
 import 'tippy.js/dist/tippy.css'
+import 'default-passive-events'
 
 async function setupApp() {
   const app = createApp(App)
