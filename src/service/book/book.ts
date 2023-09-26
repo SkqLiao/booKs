@@ -30,10 +30,16 @@ export function bookInfoDelete(params: { isbn: string }) {
   })
 }
 
-export function bookDoubanRequest(isbn: string) {
-  return hyRequest2.get<DoubanAPI>({
-    url: '/isbn/' + isbn
-  })
+export function bookDoubanRequest(val: string, type: string) {
+  if (type === 'isbn') {
+    return hyRequest2.get<DoubanAPI>({
+      url: '/isbn/' + val
+    })
+  } else {
+    return hyRequest2.get<DoubanAPI>({
+      url: '/subject/' + val
+    })
+  }
 }
 
 export function bookAddRequest(params: Ibook) {

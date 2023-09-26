@@ -15,8 +15,11 @@
           <n-button>选择图片</n-button>
         </n-upload>
 
-        <n-form-item label="ISBN" required>
+        <n-form-item label="ISBN">
           <n-input v-model:value="isbn" :disabled="props.disabled" />
+        </n-form-item>
+        <n-form-item label="豆瓣ID">
+          <n-input v-model:value="douban_id" :disabled="props.disabled" />
         </n-form-item>
       </n-gi>
       <n-gi>
@@ -105,6 +108,7 @@ const props = defineProps({
 })
 
 const isbn = ref('')
+const douban_id = ref('')
 const decodedCover = ref(defaultCoverImage)
 const authors = ref('')
 const translators = ref('')
@@ -132,6 +136,7 @@ watch(
     bookInfo.value = newValue
     authors.value = bookInfo.value.author.join(',')
     translators.value = bookInfo.value.translator.join(',')
+    douban_id.value = bookInfo.value?.douban_id.toString()
   }
 )
 
@@ -152,6 +157,7 @@ onMounted(() => {
   bookInfo.value = props.bookInfo
   authors.value = bookInfo.value?.author?.join(',') ?? ''
   translators.value = bookInfo.value?.translator?.join(',') ?? ''
+  douban_id.value = bookInfo.value?.douban_id ?? ''
   if (bookInfo.value.cover_base64) {
     decodedCover.value = base64ToUrl(bookInfo.value.cover_base64)
   }
@@ -194,7 +200,8 @@ defineExpose({
   formRef,
   authors,
   translators,
-  uploaded_cover
+  uploaded_cover,
+  douban_id
 })
 </script>
 

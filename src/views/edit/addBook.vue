@@ -22,9 +22,11 @@ const disabled_submit = ref(true)
 
 const queryBook = async () => {
   disabled_submit.value = true
-  const isbn = child.value.isbn ?? ''
+  const type = child.value.isbn ? 'isbn' : 'douban_id'
+  const val = child.value.isbn === '' ? child.value.douban_id : child.value.isbn
   try {
-    const response = (await bookDoubanRequest(isbn)) as DoubanAPI
+    console.log(val, type)
+    const response = (await bookDoubanRequest(val, type)) as DoubanAPI
     window.$message?.success('查询成功')
     bookInfo.value = {
       ...bookInfo.value,
