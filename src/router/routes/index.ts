@@ -17,28 +17,28 @@ export const basicRoutes: RoutesType = [
     meta: {
       title: '登录页'
     }
-  },
-  {
-    name: 'ExternalLink',
-    path: '/external-link',
-    component: Layout,
-    meta: {
-      title: '外部链接',
-      icon: 'mdi:link-variant',
-      order: 3
-    },
-    children: [
-      {
-        name: 'LinkGithubSrc',
-        path: 'https://github.com/SkqLiao/booKs',
-        component: () => {},
-        meta: {
-          title: '源代码',
-          icon: 'mdi:github'
-        }
-      }
-    ]
   }
+  // {
+  //   name: 'ExternalLink',
+  //   path: '/external-link',
+  //   component: Layout,
+  //   meta: {
+  //     title: '外部链接',
+  //     icon: 'mdi:link-variant',
+  //     order: 3
+  //   },
+  //   children: [
+  //     {
+  //       name: 'LinkGithubSrc',
+  //       path: 'https://github.com/SkqLiao/booKs',
+  //       component: () => {},
+  //       meta: {
+  //         title: '源代码',
+  //         icon: 'mdi:github'
+  //       }
+  //     }
+  //   ]
+  // }
 ]
 
 export const NOT_FOUND_ROUTE: RouteType = {
