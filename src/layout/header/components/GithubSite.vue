@@ -1,6 +1,6 @@
 <script setup lang="ts">
 function handleLinkClick() {
-  window.open('https://github.com/zclzone/qs-admin')
+  window.open('https://github.com/SkqLiao/booKs')
 }
 </script>
 
