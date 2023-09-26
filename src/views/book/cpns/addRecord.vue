@@ -145,7 +145,6 @@ const getStartPage = async () => {
 }
 
 onMounted(async () => {
-  console.log(start_time.value)
   await getStartPage()
 })
 

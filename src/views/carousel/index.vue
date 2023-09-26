@@ -71,8 +71,6 @@ const fetchBookNumber = async (sortBy: string) => {
   } else {
     data.sort(() => Math.random() - 0.5)
   }
-  console.log(sortBy)
-  console.log(data.map((item) => item.start_time))
   bookIds.value = data.map((item) => item.book_id)
   currentIndex.value = 0
   await load(bookIds.value[0])
