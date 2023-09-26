@@ -1,43 +1,93 @@
 <template>
   <CommonPage :show-footer="true">
-    <h2>阅读时刻热力图</h2>
-    <div class="heatmap">
-      <div v-for="x in 24" :key="x" class="row">
-        <div
-          v-for="y in 60"
-          :key="y"
-          class="cell"
-          ref="cells"
-          v-tippy="{
-            content: `${(x - 1).toString().padStart(2, '0')}:${(y - 1)
-              .toString()
-              .padStart(2, '0')} ${time[x - 1][y - 1]}`,
-            placement: 'top',
-            arrow: true
-          }"
-        ></div>
-      </div>
-    </div>
-    <h2>
+    <n-grid cols="4">
+      <n-grid-item :span="3">
+        <h2 style="text-align: center">阅读时刻热力图</h2>
+        <div class="heatmap">
+          <div v-for="x in 24" :key="x" class="row">
+            <div
+              v-for="y in 60"
+              :key="y"
+              class="cell"
+              ref="cells"
+              v-tippy="{
+                content: `${(x - 1).toString().padStart(2, '0')}:${(y - 1)
+                  .toString()
+                  .padStart(2, '0')} ${time[x - 1][y - 1]}`,
+                placement: 'top',
+                arrow: true
+              }"
+            ></div>
+          </div>
+        </div>
+      </n-grid-item>
+      <n-grid-item :span="1">
+        <n-timeline>
+          <n-timeline-item
+            :title="title[item.book_id]"
+            :content="item.start_page + ' ~ ' + item.end_page + '页'"
+            :type="item.finished ? 'success' : 'info'"
+            :time="item.start_time"
+            :key="index"
+            v-for="(item, index) in getreadingRecord(page)"
+          />
+        </n-timeline>
+        <n-pagination
+          v-model:page="page"
+          :page-size="pageSize"
+          :item-count="readingRecord.length"
+          simple
+        />
+      </n-grid-item>
+    </n-grid>
+
+    <!-- <h2>
       最喜欢阅读的时间：{{ l_hour }}:{{ l_minute }} ~ {{ r_hour }}:{{
         r_minute
-      }}
-    </h2>
+      }} 
+    </h2> -->
   </CommonPage>
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { getInfo, getRequest } from '@/service/book/book'
+import { IRecord } from '@/service/book/types'
 import * as chroma from 'chroma.ts'
 import * as d3 from 'd3'
+
+const page = ref(1)
+const pageSize = 5
+
+const title: Record<number, string> = {}
+
+const getreadingRecord = (page: number) => {
+  const start = (page - 1) * pageSize
+  const end = Math.min(page * pageSize, readingRecord.value.length)
+  return readingRecord.value.slice(start, end)
+}
 
 const getReadingTime = async () => {
   const res = (await getInfo(getRequest, {
     table: 'reading_record',
-    fields: ['start_time', 'time_length']
-  })) as { start_time: string; time_length: number }[]
+    fields: ['*'],
+    order_by: 'start_time DESC'
+  })) as IRecord[]
+  for (const item of res) {
+    if (!title[item.book_id]) {
+      title[item.book_id] = await queryBook(item.book_id)
+    }
+  }
   return res
+}
+
+const queryBook = async (book_id: number) => {
+  const res = (await getInfo(getRequest, {
+    table: 'basic_info',
+    fields: ['title'],
+    conditions: ['id =' + book_id]
+  })) as { title: string }[]
+  return res[0].title
 }
 
 const getNextMinute = (hour: number, minute: number, step = 1) => {
@@ -48,14 +98,13 @@ const getNextMinute = (hour: number, minute: number, step = 1) => {
 
 const time = ref(new Array(24).fill(0).map(() => new Array(60).fill(0)))
 
-const calculateReadingTime = (
-  res: { start_time: string; time_length: number }[]
-) => {
+const calculateReadingTime = () => {
+  const res = readingRecord.value
   res.map((item) => {
-    item.start_time = item.start_time.split(' ')[1]
-  })
-  res.map((item) => {
-    let [hour, minute, second] = item.start_time.split(':').map(Number)
+    let [hour, minute, second] = item.start_time
+      .split(' ')[1]
+      .split(':')
+      .map(Number)
     if (second > 30) {
       const [nextHour, nextMinute] = getNextMinute(hour, minute)
       hour = nextHour
@@ -74,8 +123,8 @@ function getCellStyle(value: number): string {
   return `background-color: ${colors.value[Math.round(value * 15)]}`
 }
 
-const cells: Ref<HTMLBaseElement[]> = ref([])
-const colors: Ref<chroma.Color[]> = ref([])
+const cells = ref<HTMLBaseElement[]>([])
+const colors = ref<chroma.Color[]>([])
 
 function chroma_scale(length: number, chroma_scale: any) {
   const scale = d3.scaleLinear([1, length], [0, 1])
@@ -87,6 +136,8 @@ function chroma_scale(length: number, chroma_scale: any) {
 
   return colors
 }
+
+const readingRecord = ref<IRecord[]>([])
 
 const l_hour = ref(0)
 const l_minute = ref(0)
@@ -122,9 +173,9 @@ const getMaxInterval = (interval_length: number) => {
   return result
 }
 
-onMounted(async () => {
+const getHeatmap = async () => {
   colors.value = chroma_scale(16, chroma.scale('BuGn'))
-  calculateReadingTime(await getReadingTime())
+  calculateReadingTime()
   const max = Math.max(...time.value.map((item) => Math.max(...item)))
 
   cells.value.forEach((cell, index) => {
@@ -138,6 +189,16 @@ onMounted(async () => {
   const [rh, rm] = getNextMinute(result[0], result[1], 45)
   r_hour.value = rh
   r_minute.value = rm
+}
+
+const getTimeLine = async () => {
+  const res = readingRecord.value
+}
+
+onMounted(async () => {
+  readingRecord.value = await getReadingTime()
+  await getHeatmap()
+  await getTimeLine()
 })
 </script>
 
